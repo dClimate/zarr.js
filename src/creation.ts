@@ -8,6 +8,7 @@ import { NestedArray } from './nestedArray/index';
 import { normalizeStoragePath } from './util';
 import { ContainsArrayError, ValueError, ArrayNotFoundError, ContainsGroupError } from './errors';
 import { HTTPStore } from './storage/httpStore';
+import { IPFSSTORE } from './storage/ipfsStore';
 
 export type CreateArrayOptions = {
     shape: number | number[];
@@ -127,13 +128,19 @@ export async function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>
 type OpenArrayOptions = Partial<CreateArrayOptions & { mode: PersistenceMode }>;
 
 export async function openArray(
-    { shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator }: OpenArrayOptions = {},
+    { ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator }: any = {},
 ) {
-    store = normalizeStoreArgument(store);
+    console.log(ipfsClient);
+    console.log(cid);
+    store = normalizeStoreArgument(store, cid, ipfsClient);
+    console.log(store);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
-    path = normalizeStoragePath(path);
+    if (path === null) {
+        path = "";
+    }
+
 
     if (mode === "r" || mode === "r+") {
         if (!await containsArray(store, path)) {
@@ -179,9 +186,12 @@ export async function openArray(
 }
 
 
-export function normalizeStoreArgument(store?: Store | string): Store {
+export function normalizeStoreArgument(store?: Store | string, cid?: any, ipfsClient?: any): Store {
     if (store === undefined) {
         return new MemoryStore();
+    } else if (store === "ipfs") {
+        console.log("ipfsStore");
+        return new IPFSSTORE(cid, ipfsClient);
     } else if (typeof store === "string") {
         return new HTTPStore(store);
     }

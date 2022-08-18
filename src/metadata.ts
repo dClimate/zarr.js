@@ -9,6 +9,11 @@ export function parseMetadata(
     // or a string of JSON that we will parse here. We allow for an already-parsed
     // object to accommodate a consolidated metadata store, where all the metadata for
     // all groups and arrays will already have been parsed from JSON.
+
+    // IPFS returns already parsed object
+    if (typeof s === 'object') {
+        return s
+    }
     if (typeof s !== 'string') {
         // tslint:disable-next-line: strict-type-predicates
         if (IS_NODE && Buffer.isBuffer(s)) {

@@ -236,6 +236,10 @@ export class ZarrArray {
     this.cacheMetadata = cacheMetadata;
     this.cacheAttrs = cacheAttrs;
     this.meta = metadata;
+    if (this.meta.compressor === undefined) {
+      this.meta.compressor = null;
+    } 
+
     if (this.meta.compressor !== null) {
       this.compressor = getCodec(this.meta.compressor);
     } else {
@@ -381,7 +385,6 @@ export class ZarrArray {
     if (chunkCoords.length !== this._chunkDataShape.length) {
       throw new ValueError(`Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}`);
     }
-
     const cKey = this.chunkKey(chunkCoords);
     try {
       const cdata = await this.chunkStore.getItem(cKey);
