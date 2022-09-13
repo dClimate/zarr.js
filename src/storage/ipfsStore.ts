@@ -28,6 +28,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
         throw new Error("Method not implemented.");
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getItem(item: string, opts?: RequestInit) {
         if (item === ".zarray") {
             const cid = this.cid;
@@ -42,16 +43,17 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                 let jsonKey = "";
                 let combinedTree = {};
                 // Find the location of the data being addressed. This is done by checking for an area with more than one dimension
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const [key, keyValue] of Object.entries(value.value[".zmetadata"].metadata)) {
                     try {
                         if (value.value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"].length >= 2) {
                             jsonKey = key.replace("/.zattrs", "");
                         }
-                    } catch (error) {
-                        throw new Error("Error fetching metadata");
-                    }
+                    // eslint-disable-next-line no-empty
+                    } catch (error) {}
                 }
                 // To rebuild the tree we assume the data is found 
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 for (const [secondKey, secondKeyValue] of Object.entries(
                     value.value[jsonKey],
                 )) {
@@ -77,9 +79,8 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                             if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
                                 addCodec(Zlib.codecId, () => Blosc);
                             } 
-                        } catch (error) {
-                            throw new Error("Error fetching codec");
-                        }
+                        // eslint-disable-next-line no-empty
+                        } catch (error) {}
                         return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
                     }
                 }
@@ -93,9 +94,8 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
                         addCodec(Zlib.codecId, () => Blosc);
                     } 
-                } catch (error) {
-                    throw new Error("Error fetching codec");
-                }
+                // eslint-disable-next-line no-empty
+                } catch (error) {}
         
                 return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
             }
