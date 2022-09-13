@@ -1,6 +1,6 @@
 {
   "name": "zarr",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Javascript implementation of Zarr",
   "keywords": [
     "ndarray",
@@ -67,6 +67,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.15.0",
+    "@petamoriken/float16": "^3.6.6",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@types/jest": "^27.0.2",
