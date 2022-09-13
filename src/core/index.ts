@@ -203,6 +203,7 @@ export class ZarrArray {
       path = normalizeStoragePath(path);
       const keyPrefix = pathToPrefix(path);
       const metaStoreValue = await store.getItem(keyPrefix + ARRAY_META_KEY);
+      console.log(metaStoreValue);
       return parseMetadata(metaStoreValue);
     } catch (error) {
       if (await containsGroup(store, path)) {

@@ -20,7 +20,7 @@ export class IPFSSTORE {
                 // Item is not found
                 throw new KeyError(item);
             }
-            ;
+            console.log(value);
             if (!value.value) {
                 throw new Error("Zarr does not exist at CID");
             }
@@ -38,7 +38,6 @@ export class IPFSSTORE {
                         throw new Error("Error fetching metadata");
                     }
                 }
-                ;
                 // To rebuild the tree we assume the data is found 
                 for (const [secondKey, secondKeyValue] of Object.entries(value.value[jsonKey])) {
                     // If a tree exists we denominate the start of the object with a "/"
@@ -74,6 +73,7 @@ export class IPFSSTORE {
                         addCodec(Zlib.codecId, () => Zlib);
                     }
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
+                        console.log("blosc");
                         addCodec(Zlib.codecId, () => Blosc);
                     }
                 }

@@ -1,6 +1,5 @@
-import { ValidStoreType, AsyncStore } from "./types";
-import { IS_NODE, resolveUrl } from "../util";
-import { KeyError, HTTPError } from "../errors";
+import { AsyncStore } from "./types";
+import { KeyError } from "../errors";
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
 import { addCodec } from "../zarr-core";
@@ -36,7 +35,8 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
             if (value.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
-            } ;
+            } 
+            console.log(value);
             if (!value.value) {
                 throw new Error("Zarr does not exist at CID");
             } else {
@@ -51,7 +51,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                     } catch (error) {
                         throw new Error("Error fetching metadata");
                     }
-                };
+                }
                 // To rebuild the tree we assume the data is found 
                 for (const [secondKey, secondKeyValue] of Object.entries(
                     value.value[jsonKey],
@@ -92,6 +92,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                         addCodec(Zlib.codecId, () => Zlib);
                     }
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
+                        console.log("blosc");
                         addCodec(Zlib.codecId, () => Blosc);
                     } 
                 } catch (error) {
