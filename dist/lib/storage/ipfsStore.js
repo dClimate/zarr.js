@@ -1,45 +1,30 @@
-import { ValidStoreType, AsyncStore } from "./types";
-import { IS_NODE, resolveUrl } from "../util";
-import { KeyError, HTTPError } from "../errors";
+import { KeyError } from "../errors";
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
 import { addCodec } from "../zarr-core";
-
 import all from "it-all";
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class IPFSSTORE<CID = any, IPFSCLIENT = any>
-    implements AsyncStore<ArrayBuffer>
-{
-    listDir?: undefined;
-    rmDir?: undefined;
-    getSize?: undefined;
-    rename?: undefined;
-
-    public cid: CID;
-    public directory: any;
-    public ipfsClient: any;
-
-    constructor(cid: CID, ipfsClient: IPFSCLIENT) {
+export class IPFSSTORE {
+    constructor(cid, ipfsClient) {
         this.cid = cid;
         this.ipfsClient = ipfsClient;
     }
-
-    keys(): Promise<string[]> {
+    keys() {
         throw new Error("Method not implemented.");
     }
-
-    async getItem(item: string, opts?: RequestInit) {
+    async getItem(item, opts) {
         if (item === ".zarray") {
             const cid = this.cid;
             const value = await this.ipfsClient.dag.get(cid);
             if (value.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
-            } ;
+            }
+            ;
             if (!value.value) {
                 throw new Error("Zarr does not exist at CID");
-            } else {
+            }
+            else {
                 let jsonKey = "";
                 let combinedTree = {};
                 // Find the location of the data being addressed. This is done by checking for an area with more than one dimension
@@ -48,26 +33,22 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                         if (value.value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"].length >= 2) {
                             jsonKey = key.replace("/.zattrs", "");
                         }
-                    } catch (error) {
+                    }
+                    catch (error) {
                         throw new Error("Error fetching metadata");
                     }
-                };
+                }
+                ;
                 // To rebuild the tree we assume the data is found 
-                for (const [secondKey, secondKeyValue] of Object.entries(
-                    value.value[jsonKey],
-                )) {
+                for (const [secondKey, secondKeyValue] of Object.entries(value.value[jsonKey])) {
                     // If a tree exists we denominate the start of the object with a "/"
                     if (secondKey.includes("/")) {
                         const newCID = value.value[jsonKey][secondKey];
-                        const branch = await this.ipfsClient.dag.get(
-                            newCID,
-                        );
-                        combinedTree = Object.assign(
-                            combinedTree,
-                            branch.value,
-                        );
-                    // If an object does not have it and is not the ".zarray" or ".zattrs" then no tree exists
-                    } else if (secondKey !== ".zarray" && secondKey !== ".zattrs") {
+                        const branch = await this.ipfsClient.dag.get(newCID);
+                        combinedTree = Object.assign(combinedTree, branch.value);
+                        // If an object does not have it and is not the ".zarray" or ".zattrs" then no tree exists
+                    }
+                    else if (secondKey !== ".zarray" && secondKey !== ".zattrs") {
                         // assign to directory for later returns
                         this.directory = value.value[jsonKey];
                         // Ensure a codec is loaded
@@ -77,15 +58,16 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                             }
                             if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
                                 addCodec(Zlib.codecId, () => Blosc);
-                            } 
-                        } catch (error) {
+                            }
+                        }
+                        catch (error) {
                             throw new Error("Error fetching codec");
                         }
                         return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
                     }
                 }
                 // after the tree has been rebuilt, assign to the directory for parsing later
-                this.directory = combinedTree;         
+                this.directory = combinedTree;
                 // Ensure a codec is loaded
                 try {
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
@@ -93,34 +75,31 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                     }
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
                         addCodec(Zlib.codecId, () => Blosc);
-                    } 
-                } catch (error) {
+                    }
+                }
+                catch (error) {
                     throw new Error("Error fetching codec");
                 }
-        
                 return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
             }
-        } else {
+        }
+        else {
             if (this.directory[item]) {
-                const value = uint8ArrayConcat(
-                    await all(this.ipfsClient.cat(this.directory[item])),
-                );
+                const value = uint8ArrayConcat(await all(this.ipfsClient.cat(this.directory[item])));
                 return value.buffer;
-            } else {
+            }
+            else {
                 throw new KeyError(item);
             }
         }
     }
-
-    setItem(_item: string): Promise<boolean> {
+    setItem(_item) {
         throw new Error("Method not implemented.");
     }
-
-    deleteItem(_item: string): Promise<boolean> {
+    deleteItem(_item) {
         throw new Error("Method not implemented.");
     }
-
-    async containsItem(_item: string): Promise<boolean> {
+    async containsItem(_item) {
         const value = await this.ipfsClient.dag.get(this.cid);
         if (value) {
             return true;
@@ -128,3 +107,4 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
         return false;
     }
 }
+//# sourceMappingURL=ipfsStore.js.map

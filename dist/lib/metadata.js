@@ -1,15 +1,9 @@
-import { ZarrMetadataType, UserAttributes } from './types';
-import { ValidStoreType } from './storage/types';
 import { isArrayBufferLike, IS_NODE } from './util';
-
-export function parseMetadata(
-    s: ValidStoreType | ZarrMetadataType
-): ZarrMetadataType | UserAttributes {
+export function parseMetadata(s) {
     // Here we allow that a store may return an already-parsed metadata object,
     // or a string of JSON that we will parse here. We allow for an already-parsed
     // object to accommodate a consolidated metadata store, where all the metadata for
     // all groups and arrays will already have been parsed from JSON.
-
     // IPFS returns already parsed object
     if (typeof s === 'object') {
         return s;
@@ -20,13 +14,16 @@ export function parseMetadata(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             return JSON.parse(s.toString());
-        } else if (isArrayBufferLike(s)) {
+        }
+        else if (isArrayBufferLike(s)) {
             const utf8Decoder = new TextDecoder();
             const bytes = new Uint8Array(s);
             return JSON.parse(utf8Decoder.decode(bytes));
-        } else {
+        }
+        else {
             return s;
         }
     }
     return JSON.parse(s);
 }
+//# sourceMappingURL=metadata.js.map
