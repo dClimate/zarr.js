@@ -10,32 +10,32 @@
     "async"
   ],
   "files": [
-    "lib/*",
-    "types/*",
-    "core.mjs",
-    "core.mjs.map",
-    "zarr.mjs",
-    "zarr.mjs.map",
-    "zarr.cjs",
-    "zarr.cjs.map",
-    "zarr.umd.js",
-    "zarr.umd.js.map"
+    "dist/lib/*",
+    "dist/types/*",
+    "dist/core.mjs",
+    "dist/core.mjs.map",
+    "dist/zarr.mjs",
+    "dist/zarr.mjs.map",
+    "dist/zarr.cjs",
+    "dist/zarr.cjs.map",
+    "dist/zarr.umd.js",
+    "dist/zarr.umd.js.map"
   ],
   "sideEffects": [
-    "./zarr.mjs"
+    "./dist/zarr.mjs"
   ],
-  "main": "zarr.cjs",
-  "module": "zarr.mjs",
-  "umd:main": "zarr.umd.js",
-  "typings": "types/zarr.d.ts",
+  "main": "dist/zarr.cjs",
+  "module": "dist/zarr.mjs",
+  "umd:main": "dist/zarr.umd.js",
+  "typings": "dist/types/zarr.d.ts",
   "exports": {
     ".": {
-      "umd": "./zarr.umd.js",
-      "import": "./zarr.mjs",
-      "require": "./zarr.cjs"
+      "umd": "./dist/zarr.umd.js",
+      "import": "./dist/zarr.mjs",
+      "require": "./dist/zarr.cjs"
     },
     "./core": {
-      "import": "./core.mjs"
+      "import": "./dist/core.mjs"
     }
   },
   "author": "Guido Zuidhof <me@guido.io>",
