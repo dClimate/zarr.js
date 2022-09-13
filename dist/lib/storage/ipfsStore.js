@@ -20,7 +20,6 @@ export class IPFSSTORE {
                 // Item is not found
                 throw new KeyError(item);
             }
-            console.log(value);
             if (!value.value) {
                 throw new Error("Zarr does not exist at CID");
             }
@@ -73,7 +72,6 @@ export class IPFSSTORE {
                         addCodec(Zlib.codecId, () => Zlib);
                     }
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
-                        console.log("blosc");
                         addCodec(Zlib.codecId, () => Blosc);
                     }
                 }

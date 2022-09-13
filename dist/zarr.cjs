@@ -10377,7 +10377,6 @@ class ZarrArray {
             path = normalizeStoragePath(path);
             const keyPrefix = pathToPrefix(path);
             const metaStoreValue = await store.getItem(keyPrefix + ARRAY_META_KEY);
-            console.log(metaStoreValue);
             return parseMetadata(metaStoreValue);
         }
         catch (error) {
@@ -10946,7 +10945,6 @@ class IPFSSTORE {
                 // Item is not found
                 throw new KeyError(item);
             }
-            console.log(value);
             if (!value.value) {
                 throw new Error("Zarr does not exist at CID");
             }
@@ -10999,7 +10997,6 @@ class IPFSSTORE {
                         addCodec(Zlib$1.codecId, () => Zlib$1);
                     }
                     if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
-                        console.log("blosc");
                         addCodec(Zlib$1.codecId, () => Blosc$1);
                     }
                 }
