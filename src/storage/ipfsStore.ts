@@ -24,11 +24,13 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
     public ipfsClient: any;
     public loader: any;
     public hamt: boolean;
+    public key: string;
 
     constructor(cid: CID, ipfsClient: any) {
         this.cid = cid;
         this.hamt = false;
         this.ipfsClient = ipfsClient;
+        this.key="";
         this.loader = {
             async get(cid: CID) {
                 const bytes = await ipfsClient.block.get(cid, {
@@ -67,6 +69,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                     try {
                         if (value.value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"].length >= 2) {
                             jsonKey = key.replace("/.zattrs", "");
+                            this.key = jsonKey;
                         }
                     // eslint-disable-next-line no-empty
                     } catch (error) {}
@@ -96,11 +99,10 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                 return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
             }
         } else {
-            console.log(item);
-            console.log(this.hamt);
+
             // example is tp/0.3.2
             if (this.hamt) {
-                const location = await this.directory.get(item);
+                const location = await this.directory.get(`${this.key}/${item}`);
                 console.log(location);
                 if (location) {
                     const value = uint8ArrayConcat(
