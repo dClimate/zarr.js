@@ -96,6 +96,8 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                 return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
             }
         } else {
+            console.log(item);
+            console.log(this.hamt);
             // example is tp/0.3.2
             if (this.hamt) {
                 const location = await this.directory.get(item);
