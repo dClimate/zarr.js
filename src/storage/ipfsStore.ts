@@ -101,6 +101,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
             // example is tp/0.3.2
             if (this.hamt) {
                 const location = await this.directory.get(item);
+                console.log(location);
                 if (location) {
                     const value = uint8ArrayConcat(
                         await all(this.ipfsClient.cat(location)),
