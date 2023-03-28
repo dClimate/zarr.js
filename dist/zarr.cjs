@@ -17399,7 +17399,6 @@ class IPFSSTORE {
         }
         if (item.includes(".zarray")) {
             const { cid } = this;
-            console.log(item, this.ipfsClient);
             const response = await this.ipfsClient.dag.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
@@ -17476,10 +17475,16 @@ class IPFSSTORE {
         throw new Error("Method not implemented.");
     }
     async containsItem(_item) {
-        console.log(this.ipfsClient, _item);
-        const value = await this.ipfsClient.dag.get(this.cid);
-        if (value) {
-            return true;
+        const response = await this.ipfsClient.dag.get(this.cid);
+        const splitItems = _item.split("/");
+        let objectValue = response.value;
+        for (let i = 0; i < splitItems.length; i += 1) {
+            if (splitItems[i] === ".zarray" || splitItems[i] === ".zgroup") {
+                if (objectValue[splitItems[i]]) {
+                    return true;
+                }
+            }
+            objectValue = objectValue[splitItems[i]];
         }
         return false;
     }
