@@ -5,7 +5,6 @@ import { sha256 as blockHasher } from 'multiformats/hashes/sha2';
 import * as blockCodec from '@ipld/dag-cbor'; // encode blocks using the DAG-CBOR format
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
-import { CID } from 'multiformats/cid';
 import { addCodec } from "../zarr-core";
 
 import all from "it-all";

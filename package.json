@@ -93,6 +93,7 @@
   "dependencies": {
     "@ipld/dag-cbor": "6.0.5",
     "ipld-hashmap": "^2.1.17",
+    "multiformats": "^11.0.2",
     "numcodecs": "^0.2.2",
     "p-queue": "^7.1.0"
   }
