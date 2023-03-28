@@ -17391,6 +17391,7 @@ class IPFSSTORE {
         }
         if (item.includes(".zarray")) {
             const { cid } = this;
+            console.log(item, this.ipfsClient);
             const response = await this.ipfsClient.dag.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
@@ -17467,6 +17468,7 @@ class IPFSSTORE {
         throw new Error("Method not implemented.");
     }
     async containsItem(_item) {
+        console.log(this.ipfsClient, _item);
         const value = await this.ipfsClient.dag.get(this.cid);
         if (value) {
             return true;

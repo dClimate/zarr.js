@@ -67,6 +67,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
         }
         if (item.includes(".zarray")) {
             const { cid } = this;
+            console.log(item, this.ipfsClient);
             const response = await this.ipfsClient.dag.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
@@ -154,6 +155,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
     }
 
     async containsItem(_item: string): Promise<boolean> {
+        console.log(this.ipfsClient, _item);
         const value = await this.ipfsClient.dag.get(this.cid);
         if (value) {
             return true;
