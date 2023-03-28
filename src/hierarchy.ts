@@ -277,8 +277,9 @@ export async function group(store?: Store | string, path: string | null = null, 
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
  *
  */
-export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true) {
-    store = normalizeStoreArgument(store);
+export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsClient?: any,
+cid?: any,) {
+    store = normalizeStoreArgument(store, cid, ipfsClient);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -315,3 +316,4 @@ export async function openGroup(store?: Store | string, path: string | null = nu
     const readOnly = mode === "r";
     return Group.create(store, path, readOnly, chunkStore, cacheAttrs);
 }
+
