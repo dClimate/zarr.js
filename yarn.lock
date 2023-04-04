@@ -3710,10 +3710,10 @@ ipaddr.js@1.9.1:
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
 
-ipld-hashmap@^2.1.17:
-  version "2.1.17"
-  resolved "https://registry.yarnpkg.com/ipld-hashmap/-/ipld-hashmap-2.1.17.tgz#401ccc247a69a64e3b33e284c3b85de9fadc1487"
-  integrity sha512-i8wZ4AUOrOF6T8bWkBUj2hnkNVA3ghN8K5tetL2XDVi+yz73Qo7CLWzzh++dQcZ1kknBz63oLaikU3ucJzyByw==
+ipld-hashmap@^2.1.18:
+  version "2.1.18"
+  resolved "https://registry.yarnpkg.com/ipld-hashmap/-/ipld-hashmap-2.1.18.tgz#6b3cc16bda989a93c99c485216ff6e947a1c9d94"
+  integrity sha512-/CcFpZyKuQgxWb/sW15tblrN/Lzuaf2H+6W8iXsYvjWLRZuXnUKYwuv2azwsCSJEMKgZ6vjCpJ8DAaFpd2kdMw==
   dependencies:
     iamap "^2.0.12"
     ipld-schema "^3.0.2"

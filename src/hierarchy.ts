@@ -1,9 +1,10 @@
+import type { CID } from 'multiformats/cid';
 import { createProxy, AsyncMutableMapping, AsyncMutableMappingProxy } from './mutableMapping';
 import { Store, } from './storage/types';
 import { normalizeStoragePath } from './util';
 import { containsArray, pathToPrefix, containsGroup, initGroup } from './storage/index';
 import { ContainsArrayError, GroupNotFoundError, PermissionError, KeyError, ValueError, ContainsGroupError } from './errors';
-import { ZarrGroupMetadata, UserAttributes, PersistenceMode } from './types';
+import { ZarrGroupMetadata, UserAttributes, PersistenceMode, IPFSHTTPClient } from './types';
 import { GROUP_META_KEY, ATTRS_META_KEY } from './names';
 import { parseMetadata } from './metadata';
 import { Attributes } from './attributes';
@@ -278,8 +279,8 @@ export async function group(store?: Store | string, path: string | null = null, 
  * @param ipfsClient IPFS client
  * @param cid IPFS CID
  */
-export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsClient?: any,
-cid?: any,) {
+export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsClient?: IPFSHTTPClient,
+cid?: CID,) {
     store = normalizeStoreArgument(store, cid, ipfsClient);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);

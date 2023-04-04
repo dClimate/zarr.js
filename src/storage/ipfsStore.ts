@@ -2,16 +2,17 @@ import { AsyncStore } from "./types";
 import { KeyError } from "../errors";
 import { load } from 'ipld-hashmap';
 import { sha256 as blockHasher } from 'multiformats/hashes/sha2';
+import type { CID } from 'multiformats/cid';
 import * as blockCodec from '@ipld/dag-cbor'; // encode blocks using the DAG-CBOR format
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
 import { addCodec } from "../zarr-core";
 
 import all from "it-all";
+import { IPFSHTTPClient } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class IPFSSTORE<CID = any, IPFSCLIENT = any>
-    implements AsyncStore<ArrayBuffer>
+export class IPFSSTORE implements AsyncStore<ArrayBuffer>
 {
     listDir?: undefined;
     rmDir?: undefined;
@@ -20,12 +21,12 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
 
     public cid: CID;
     public directory: any;
-    public ipfsClient: any;
+    public ipfsClient: IPFSHTTPClient;
     public loader: any;
     public hamt: boolean;
     public key: string;
 
-    constructor(cid: CID, ipfsClient: any) {
+    constructor(cid: CID, ipfsClient: IPFSHTTPClient) {
         this.cid = cid;
         this.hamt = false;
         this.ipfsClient = ipfsClient;
@@ -95,7 +96,7 @@ export class IPFSSTORE<CID = any, IPFSCLIENT = any>
                 if (response.value.hamt) {
                     this.hamt = true;
                     // if there is a hamt, load it
-                    const hamtOptions: any = { blockHasher, blockCodec };
+                    const hamtOptions = { blockHasher, blockCodec };
                     const hamt = await load(
                         this.loader,
                         response.value.hamt,
