@@ -218,10 +218,11 @@ export async function group(store, path = null, chunkStore, overwrite = false, c
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- *
+ * @param ipfsClient IPFS client
+ * @param cid IPFS CID
  */
-export async function openGroup(store, path = null, mode = "a", chunkStore, cacheAttrs = true) {
-    store = normalizeStoreArgument(store);
+export async function openGroup(store, path = null, mode = "a", chunkStore, cacheAttrs = true, ipfsClient, cid) {
+    store = normalizeStoreArgument(store, cid, ipfsClient);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }

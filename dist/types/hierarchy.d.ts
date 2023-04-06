@@ -83,6 +83,7 @@ export declare function group(store?: Store | string, path?: string | null, chun
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- *
+ * @param ipfsClient IPFS client
+ * @param cid IPFS CID
  */
-export declare function openGroup(store?: Store | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store, cacheAttrs?: boolean): Promise<Group>;
+export declare function openGroup(store?: Store | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store, cacheAttrs?: boolean, ipfsClient?: any, cid?: any): Promise<Group>;
