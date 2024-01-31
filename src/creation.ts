@@ -128,7 +128,7 @@ export async function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>
 type OpenArrayOptions = Partial<CreateArrayOptions & { mode: PersistenceMode }>;
 
 export async function openArray({
-    ipfsClient,
+    ipfsElements,
     cid,
     shape,
     mode = "a",
@@ -146,7 +146,7 @@ export async function openArray({
     cacheAttrs = true,
     dimensionSeparator,
 }: any = {}) {
-    const store = normalizeStoreArgument(storeArgument, cid, ipfsClient);
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -195,11 +195,11 @@ export async function openArray({
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
 
-export function normalizeStoreArgument(store?: Store | string, cid?: any, ipfsClient?: any): Store {
+export function normalizeStoreArgument(store?: Store | string, cid?: any, ipfsElements?: any): Store {
     if (store === undefined) {
         return new MemoryStore();
     } else if (store === "ipfs") {
-        return new IPFSSTORE(cid, ipfsClient);
+        return new IPFSSTORE(cid, ipfsElements);
     } else if (typeof store === "string") {
         return new HTTPStore(store);
     }
