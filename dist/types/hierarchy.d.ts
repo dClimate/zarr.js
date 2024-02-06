@@ -7,11 +7,11 @@ import { CreateArrayOptions } from './creation';
 import { NestedArray } from './nestedArray';
 import { TypedArray } from './nestedArray/types';
 import { ZarrArray } from './core';
-export declare class Group implements AsyncMutableMapping<Group | ZarrArray> {
+export declare class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<StoreGetOptions> | ZarrArray<StoreGetOptions>> {
     /**
      * A `Store` providing the underlying storage for the group.
      */
-    store: Store;
+    store: Store<StoreGetOptions>;
     /**
      * Storage path.
      */
@@ -33,37 +33,37 @@ export declare class Group implements AsyncMutableMapping<Group | ZarrArray> {
     /**
      * A `Store` providing the underlying storage for array chunks.
      */
-    get chunkStore(): Store;
+    get chunkStore(): Store<StoreGetOptions>;
     private keyPrefix;
     readOnly: boolean;
     private meta;
-    static create(store: Store, path?: string | null, readOnly?: boolean, chunkStore?: Store | null, cacheAttrs?: boolean): Promise<Group>;
+    static create<StoreGetOptions>(store: Store<StoreGetOptions>, path?: string | null, readOnly?: boolean, chunkStore?: Store<StoreGetOptions> | null, cacheAttrs?: boolean): Promise<Group<StoreGetOptions>>;
     private static loadMetadataForConstructor;
     private constructor();
     private itemPath;
     /**
      * Create a sub-group.
      */
-    createGroup(name: string, overwrite?: boolean): Promise<Group>;
+    createGroup(name: string, overwrite?: boolean): Promise<Group<StoreGetOptions>>;
     /**
      * Obtain a sub-group, creating one if it doesn't exist.
      */
-    requireGroup(name: string, overwrite?: boolean): Promise<Group>;
+    requireGroup(name: string, overwrite?: boolean): Promise<Group<StoreGetOptions>>;
     private getOptsForArrayCreation;
     /**
      * Creates an array
      */
-    array(name: string, data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>, overwrite?: boolean): Promise<ZarrArray>;
-    empty(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-    zeros(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-    ones(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-    full(name: string, shape: number | number[], fillValue: number | null, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-    createDataset(name: string, shape?: number | number[], data?: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-    getItem(item: string): Promise<Group | ZarrArray>;
+    array(name: string, data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>, overwrite?: boolean): Promise<ZarrArray<any>>;
+    empty(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+    zeros(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+    ones(name: string, shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+    full(name: string, shape: number | number[], fillValue: number | null, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+    createDataset(name: string, shape?: number | number[], data?: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<StoreGetOptions>>;
+    getItem(item: string): Promise<Group<StoreGetOptions> | ZarrArray<StoreGetOptions>>;
     setItem(item: string, value: any): Promise<boolean>;
     deleteItem(_item: string): Promise<boolean>;
     containsItem(item: string): Promise<boolean>;
-    proxy(): AsyncMutableMappingProxy<Group>;
+    proxy(): AsyncMutableMappingProxy<Group<StoreGetOptions>>;
 }
 /**
  * Create a group.
@@ -74,7 +74,7 @@ export declare class Group implements AsyncMutableMapping<Group | ZarrArray> {
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations.
  *   If `false`, user attributes are reloaded from the store prior to all attribute read operations.
  */
-export declare function group(store?: Store | string, path?: string | null, chunkStore?: Store, overwrite?: boolean, cacheAttrs?: boolean): Promise<Group>;
+export declare function group<StoreGetOptions>(store?: Store<StoreGetOptions> | string, path?: string | null, chunkStore?: Store<StoreGetOptions>, overwrite?: boolean, cacheAttrs?: boolean): Promise<Group<StoreGetOptions>>;
 /**
  * Open a group using file-mode-like semantics.
  * @param store Store or path to directory in file system or name of zip file.
@@ -85,4 +85,4 @@ export declare function group(store?: Store | string, path?: string | null, chun
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
  *
  */
-export declare function openGroup(store?: Store | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store, cacheAttrs?: boolean): Promise<Group>;
+export declare function openGroup<StoreGetOptions>(store?: Store<StoreGetOptions> | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store<StoreGetOptions>, cacheAttrs?: boolean): Promise<Group<StoreGetOptions>>;

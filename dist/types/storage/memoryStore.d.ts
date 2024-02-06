@@ -1,6 +1,6 @@
 import { SyncStore, ValidStoreType } from "./types";
 import { MutableMappingProxy } from "../mutableMapping";
-export declare class MemoryStore<T extends ValidStoreType> implements SyncStore<T> {
+export declare class MemoryStore<T extends ValidStoreType> implements SyncStore<T, undefined> {
     listDir?: undefined;
     rmDir?: undefined;
     getSize?: undefined;

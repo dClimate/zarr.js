@@ -11,7 +11,7 @@ export declare type CreateArrayOptions = {
     compressor?: CompressorConfig | null;
     fillValue?: FillType;
     order?: Order;
-    store?: Store;
+    store?: Store | string;
     overwrite?: boolean;
     path?: string | null;
     chunkStore?: Store;
@@ -47,26 +47,26 @@ export declare type CreateArrayOptions = {
  * @param readOnly `true` if array should be protected against modification, defaults to `false`.
  * @param dimensionSeparator if specified, defines an alternate string separator placed between the dimension chunks.
  */
-export declare function create({ shape, chunks, dtype, compressor, fillValue, order, store, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, readOnly, dimensionSeparator }: CreateArrayOptions): Promise<ZarrArray>;
+export declare function create({ shape, chunks, dtype, compressor, fillValue, order, store: storeArgument, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, readOnly, dimensionSeparator }: CreateArrayOptions): Promise<ZarrArray>;
 /**
  * Create an empty array.
  */
-export declare function empty(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
+export declare function empty(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
 /**
  * Create an array, with zero being used as the default value for
  * uninitialized portions of the array.
  */
-export declare function zeros(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
+export declare function zeros(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
 /**
  * Create an array, with one being used as the default value for
  * uninitialized portions of the array.
  */
-export declare function ones(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
+export declare function ones(shape: number | number[], opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
 /**
  * Create an array, with `fill_value` being used as the default value for
  * uninitialized portions of the array
  */
-export declare function full(shape: number | number[], fillValue: FillType, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-export declare function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray>;
-export declare function openArray({ ipfsClient, cid, shape, mode, chunks, dtype, compressor, fillValue, order, store, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, dimensionSeparator, }?: any): Promise<ZarrArray>;
-export declare function normalizeStoreArgument(store?: Store | string, cid?: any, ipfsClient?: any): Store;
+export declare function full(shape: number | number[], fillValue: FillType, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+export declare function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
+export declare function openArray({ ipfsElements, cid, shape, mode, chunks, dtype, compressor, fillValue, order, store: storeArgument, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, dimensionSeparator, }?: any): Promise<ZarrArray<any>>;
+export declare function normalizeStoreArgument(store?: Store | string, cid?: any, ipfsElements?: any): Store;

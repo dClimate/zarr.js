@@ -7789,14 +7789,14 @@ class ArrayNotFoundError extends Error {
 }
 class GroupNotFoundError extends Error {
     constructor(path) {
-        super(`ground not found at path ${path}`);
+        super(`group not found at path ${path}`);
         this.__zarr__ = 'GroupNotFoundError';
         Object.setPrototypeOf(this, GroupNotFoundError.prototype);
     }
 }
 class PathNotFoundError extends Error {
     constructor(path) {
-        super(`nothing not found at path ${path}`);
+        super(`nothing found at path ${path}`);
         this.__zarr__ = 'PathNotFoundError';
         Object.setPrototypeOf(this, PathNotFoundError.prototype);
     }
@@ -8822,6 +8822,7 @@ class Attributes {
 const Float16Array = globalThis.Float16Array;
 const DTYPE_TYPEDARRAY_MAPPING = {
     '|b': Int8Array,
+    '|b1': Uint8Array,
     '|B': Uint8Array,
     '|u1': Uint8Array,
     '|i1': Int8Array,
@@ -9724,42 +9725,11 @@ class TimeoutError extends Error {
 	}
 }
 
-/**
-An error to be thrown when the request is aborted by AbortController.
-DOMException is thrown instead of this Error when DOMException is available.
-*/
-class AbortError$1 extends Error {
-	constructor(message) {
-		super();
-		this.name = 'AbortError';
-		this.message = message;
-	}
-}
-
-/**
-TODO: Remove AbortError and just throw DOMException when targeting Node 18.
-*/
-const getDOMException = errorMessage => globalThis.DOMException === undefined ?
-	new AbortError$1(errorMessage) :
-	new DOMException(errorMessage);
-
-/**
-TODO: Remove below function and just 'reject(signal.reason)' when targeting Node 18.
-*/
-const getAbortedReason = signal => {
-	const reason = signal.reason === undefined ?
-		getDOMException('This operation was aborted.') :
-		signal.reason;
-
-	return reason instanceof Error ? reason : getDOMException(reason);
-};
-
 function pTimeout(promise, milliseconds, fallback, options) {
 	let timer;
-
 	const cancelablePromise = new Promise((resolve, reject) => {
-		if (typeof milliseconds !== 'number' || Math.sign(milliseconds) !== 1) {
-			throw new TypeError(`Expected \`milliseconds\` to be a positive number, got \`${milliseconds}\``);
+		if (typeof milliseconds !== 'number' || milliseconds < 0) {
+			throw new TypeError('Expected `milliseconds` to be a positive number');
 		}
 
 		if (milliseconds === Number.POSITIVE_INFINITY) {
@@ -9771,17 +9741,6 @@ function pTimeout(promise, milliseconds, fallback, options) {
 			customTimers: {setTimeout, clearTimeout},
 			...options
 		};
-
-		if (options.signal) {
-			const {signal} = options;
-			if (signal.aborted) {
-				reject(getAbortedReason(signal));
-			}
-
-			signal.addEventListener('abort', () => {
-				reject(getAbortedReason(signal));
-			});
-		}
 
 		timer = options.customTimers.setTimeout.call(undefined, () => {
 			if (typeof fallback === 'function') {
@@ -9842,63 +9801,47 @@ function lowerBound(array, value, comparator) {
     return first;
 }
 
-var __classPrivateFieldGet$1 = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _PriorityQueue_queue;
 class PriorityQueue {
     constructor() {
-        _PriorityQueue_queue.set(this, []);
+        Object.defineProperty(this, "_queue", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: []
+        });
     }
     enqueue(run, options) {
+        var _a;
         options = {
             priority: 0,
-            ...options,
+            ...options
         };
         const element = {
             priority: options.priority,
-            run,
+            run
         };
-        if (this.size && __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f")[this.size - 1].priority >= options.priority) {
-            __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f").push(element);
+        if (this.size && ((_a = this._queue[this.size - 1]) === null || _a === void 0 ? void 0 : _a.priority) >= options.priority) {
+            this._queue.push(element);
             return;
         }
-        const index = lowerBound(__classPrivateFieldGet$1(this, _PriorityQueue_queue, "f"), element, (a, b) => b.priority - a.priority);
-        __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f").splice(index, 0, element);
+        const index = lowerBound(this._queue, element, (a, b) => b.priority - a.priority);
+        this._queue.splice(index, 0, element);
     }
     dequeue() {
-        const item = __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f").shift();
+        const item = this._queue.shift();
         return item === null || item === void 0 ? void 0 : item.run;
     }
     filter(options) {
-        return __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f").filter((element) => element.priority === options.priority).map((element) => element.run);
+        return this._queue.filter((element) => element.priority === options.priority).map((element) => element.run);
     }
     get size() {
-        return __classPrivateFieldGet$1(this, _PriorityQueue_queue, "f").length;
+        return this._queue.length;
     }
 }
-_PriorityQueue_queue = new WeakMap();
 
-var __classPrivateFieldSet = (undefined && undefined.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (undefined && undefined.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _PQueue_instances, _PQueue_carryoverConcurrencyCount, _PQueue_isIntervalIgnored, _PQueue_intervalCount, _PQueue_intervalCap, _PQueue_interval, _PQueue_intervalEnd, _PQueue_intervalId, _PQueue_timeoutId, _PQueue_queue, _PQueue_queueClass, _PQueue_pendingCount, _PQueue_concurrency, _PQueue_isPaused, _PQueue_throwOnTimeout, _PQueue_doesIntervalAllowAnother_get, _PQueue_doesConcurrentAllowAnother_get, _PQueue_next, _PQueue_emitEvents, _PQueue_onResumeInterval, _PQueue_isIntervalPaused_get, _PQueue_tryToStartAnother, _PQueue_initializeIntervalIfNeeded, _PQueue_onInterval, _PQueue_processQueue, _PQueue_onEvent;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const empty$1 = () => { };
 const timeoutError = new TimeoutError();
-/**
-The error thrown by `queue.add()` when a job is aborted before it is run. See `signal`.
-*/
-class AbortError extends Error {
-}
 /**
 Promise queue with concurrency control.
 */
@@ -9906,28 +9849,104 @@ class PQueue extends EventEmitter {
     constructor(options) {
         var _a, _b, _c, _d;
         super();
-        _PQueue_instances.add(this);
-        _PQueue_carryoverConcurrencyCount.set(this, void 0);
-        _PQueue_isIntervalIgnored.set(this, void 0);
-        _PQueue_intervalCount.set(this, 0);
-        _PQueue_intervalCap.set(this, void 0);
-        _PQueue_interval.set(this, void 0);
-        _PQueue_intervalEnd.set(this, 0);
-        _PQueue_intervalId.set(this, void 0);
-        _PQueue_timeoutId.set(this, void 0);
-        _PQueue_queue.set(this, void 0);
-        _PQueue_queueClass.set(this, void 0);
-        _PQueue_pendingCount.set(this, 0);
+        Object.defineProperty(this, "_carryoverConcurrencyCount", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_isIntervalIgnored", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_intervalCount", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 0
+        });
+        Object.defineProperty(this, "_intervalCap", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_interval", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_intervalEnd", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 0
+        });
+        Object.defineProperty(this, "_intervalId", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_timeoutId", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_queue", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_queueClass", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_pendingCount", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 0
+        });
         // The `!` is needed because of https://github.com/microsoft/TypeScript/issues/32194
-        _PQueue_concurrency.set(this, void 0);
-        _PQueue_isPaused.set(this, void 0);
-        _PQueue_throwOnTimeout.set(this, void 0);
-        /**
-        Per-operation timeout in milliseconds. Operations fulfill once `timeout` elapses if they haven't already.
-    
-        Applies to each future operation.
-        */
-        Object.defineProperty(this, "timeout", {
+        Object.defineProperty(this, "_concurrency", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_isPaused", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_resolveEmpty", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: empty$1
+        });
+        Object.defineProperty(this, "_resolveIdle", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: empty$1
+        });
+        Object.defineProperty(this, "_timeout", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_throwOnTimeout", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -9941,7 +9960,7 @@ class PQueue extends EventEmitter {
             concurrency: Number.POSITIVE_INFINITY,
             autoStart: true,
             queueClass: PriorityQueue,
-            ...options,
+            ...options
         };
         if (!(typeof options.intervalCap === 'number' && options.intervalCap >= 1)) {
             throw new TypeError(`Expected \`intervalCap\` to be a number from 1 and up, got \`${(_b = (_a = options.intervalCap) === null || _a === void 0 ? void 0 : _a.toString()) !== null && _b !== void 0 ? _b : ''}\` (${typeof options.intervalCap})`);
@@ -9949,26 +9968,124 @@ class PQueue extends EventEmitter {
         if (options.interval === undefined || !(Number.isFinite(options.interval) && options.interval >= 0)) {
             throw new TypeError(`Expected \`interval\` to be a finite number >= 0, got \`${(_d = (_c = options.interval) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ''}\` (${typeof options.interval})`);
         }
-        __classPrivateFieldSet(this, _PQueue_carryoverConcurrencyCount, options.carryoverConcurrencyCount, "f");
-        __classPrivateFieldSet(this, _PQueue_isIntervalIgnored, options.intervalCap === Number.POSITIVE_INFINITY || options.interval === 0, "f");
-        __classPrivateFieldSet(this, _PQueue_intervalCap, options.intervalCap, "f");
-        __classPrivateFieldSet(this, _PQueue_interval, options.interval, "f");
-        __classPrivateFieldSet(this, _PQueue_queue, new options.queueClass(), "f");
-        __classPrivateFieldSet(this, _PQueue_queueClass, options.queueClass, "f");
+        this._carryoverConcurrencyCount = options.carryoverConcurrencyCount;
+        this._isIntervalIgnored = options.intervalCap === Number.POSITIVE_INFINITY || options.interval === 0;
+        this._intervalCap = options.intervalCap;
+        this._interval = options.interval;
+        this._queue = new options.queueClass();
+        this._queueClass = options.queueClass;
         this.concurrency = options.concurrency;
-        this.timeout = options.timeout;
-        __classPrivateFieldSet(this, _PQueue_throwOnTimeout, options.throwOnTimeout === true, "f");
-        __classPrivateFieldSet(this, _PQueue_isPaused, options.autoStart === false, "f");
+        this._timeout = options.timeout;
+        this._throwOnTimeout = options.throwOnTimeout === true;
+        this._isPaused = options.autoStart === false;
+    }
+    get _doesIntervalAllowAnother() {
+        return this._isIntervalIgnored || this._intervalCount < this._intervalCap;
+    }
+    get _doesConcurrentAllowAnother() {
+        return this._pendingCount < this._concurrency;
+    }
+    _next() {
+        this._pendingCount--;
+        this._tryToStartAnother();
+        this.emit('next');
+    }
+    _resolvePromises() {
+        this._resolveEmpty();
+        this._resolveEmpty = empty$1;
+        if (this._pendingCount === 0) {
+            this._resolveIdle();
+            this._resolveIdle = empty$1;
+            this.emit('idle');
+        }
+    }
+    _onResumeInterval() {
+        this._onInterval();
+        this._initializeIntervalIfNeeded();
+        this._timeoutId = undefined;
+    }
+    _isIntervalPaused() {
+        const now = Date.now();
+        if (this._intervalId === undefined) {
+            const delay = this._intervalEnd - now;
+            if (delay < 0) {
+                // Act as the interval was done
+                // We don't need to resume it here because it will be resumed on line 160
+                this._intervalCount = (this._carryoverConcurrencyCount) ? this._pendingCount : 0;
+            }
+            else {
+                // Act as the interval is pending
+                if (this._timeoutId === undefined) {
+                    this._timeoutId = setTimeout(() => {
+                        this._onResumeInterval();
+                    }, delay);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    _tryToStartAnother() {
+        if (this._queue.size === 0) {
+            // We can clear the interval ("pause")
+            // Because we can redo it later ("resume")
+            if (this._intervalId) {
+                clearInterval(this._intervalId);
+            }
+            this._intervalId = undefined;
+            this._resolvePromises();
+            return false;
+        }
+        if (!this._isPaused) {
+            const canInitializeInterval = !this._isIntervalPaused();
+            if (this._doesIntervalAllowAnother && this._doesConcurrentAllowAnother) {
+                const job = this._queue.dequeue();
+                if (!job) {
+                    return false;
+                }
+                this.emit('active');
+                job();
+                if (canInitializeInterval) {
+                    this._initializeIntervalIfNeeded();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    _initializeIntervalIfNeeded() {
+        if (this._isIntervalIgnored || this._intervalId !== undefined) {
+            return;
+        }
+        this._intervalId = setInterval(() => {
+            this._onInterval();
+        }, this._interval);
+        this._intervalEnd = Date.now() + this._interval;
+    }
+    _onInterval() {
+        if (this._intervalCount === 0 && this._pendingCount === 0 && this._intervalId) {
+            clearInterval(this._intervalId);
+            this._intervalId = undefined;
+        }
+        this._intervalCount = this._carryoverConcurrencyCount ? this._pendingCount : 0;
+        this._processQueue();
+    }
+    /**
+    Executes all queued functions until it reaches the limit.
+    */
+    _processQueue() {
+        // eslint-disable-next-line no-empty
+        while (this._tryToStartAnother()) { }
     }
     get concurrency() {
-        return __classPrivateFieldGet(this, _PQueue_concurrency, "f");
+        return this._concurrency;
     }
     set concurrency(newConcurrency) {
         if (!(typeof newConcurrency === 'number' && newConcurrency >= 1)) {
             throw new TypeError(`Expected \`concurrency\` to be a number from 1 and up, got \`${newConcurrency}\` (${typeof newConcurrency})`);
         }
-        __classPrivateFieldSet(this, _PQueue_concurrency, newConcurrency, "f");
-        __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_processQueue).call(this);
+        this._concurrency = newConcurrency;
+        this._processQueue();
     }
     /**
     Adds a sync or async task to the queue. Always returns a promise.
@@ -9976,18 +10093,11 @@ class PQueue extends EventEmitter {
     async add(fn, options = {}) {
         return new Promise((resolve, reject) => {
             const run = async () => {
-                var _a;
-                var _b, _c;
-                __classPrivateFieldSet(this, _PQueue_pendingCount, (_b = __classPrivateFieldGet(this, _PQueue_pendingCount, "f"), _b++, _b), "f");
-                __classPrivateFieldSet(this, _PQueue_intervalCount, (_c = __classPrivateFieldGet(this, _PQueue_intervalCount, "f"), _c++, _c), "f");
+                this._pendingCount++;
+                this._intervalCount++;
                 try {
-                    if ((_a = options.signal) === null || _a === void 0 ? void 0 : _a.aborted) {
-                        // TODO: Use ABORT_ERR code when targeting Node.js 16 (https://nodejs.org/docs/latest-v16.x/api/errors.html#abort_err)
-                        reject(new AbortError('The task was aborted.'));
-                        return;
-                    }
-                    const operation = (this.timeout === undefined && options.timeout === undefined) ? fn({ signal: options.signal }) : pTimeout(Promise.resolve(fn({ signal: options.signal })), (options.timeout === undefined ? this.timeout : options.timeout), () => {
-                        if (options.throwOnTimeout === undefined ? __classPrivateFieldGet(this, _PQueue_throwOnTimeout, "f") : options.throwOnTimeout) {
+                    const operation = (this._timeout === undefined && options.timeout === undefined) ? fn() : pTimeout(Promise.resolve(fn()), (options.timeout === undefined ? this._timeout : options.timeout), () => {
+                        if (options.throwOnTimeout === undefined ? this._throwOnTimeout : options.throwOnTimeout) {
                             reject(timeoutError);
                         }
                         return undefined;
@@ -10000,10 +10110,10 @@ class PQueue extends EventEmitter {
                     reject(error);
                     this.emit('error', error);
                 }
-                __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_next).call(this);
+                this._next();
             };
-            __classPrivateFieldGet(this, _PQueue_queue, "f").enqueue(run, options);
-            __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_tryToStartAnother).call(this);
+            this._queue.enqueue(run, options);
+            this._tryToStartAnother();
             this.emit('add');
         });
     }
@@ -10019,24 +10129,24 @@ class PQueue extends EventEmitter {
     Start (or resume) executing enqueued tasks within concurrency limit. No need to call this if queue is not paused (via `options.autoStart = false` or by `.pause()` method.)
     */
     start() {
-        if (!__classPrivateFieldGet(this, _PQueue_isPaused, "f")) {
+        if (!this._isPaused) {
             return this;
         }
-        __classPrivateFieldSet(this, _PQueue_isPaused, false, "f");
-        __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_processQueue).call(this);
+        this._isPaused = false;
+        this._processQueue();
         return this;
     }
     /**
     Put queue execution on hold.
     */
     pause() {
-        __classPrivateFieldSet(this, _PQueue_isPaused, true, "f");
+        this._isPaused = true;
     }
     /**
     Clear the queue.
     */
     clear() {
-        __classPrivateFieldSet(this, _PQueue_queue, new (__classPrivateFieldGet(this, _PQueue_queueClass, "f"))(), "f");
+        this._queue = new this._queueClass();
     }
     /**
     Can be called multiple times. Useful if you for example add additional items at a later time.
@@ -10045,10 +10155,16 @@ class PQueue extends EventEmitter {
     */
     async onEmpty() {
         // Instantly resolve if the queue is empty
-        if (__classPrivateFieldGet(this, _PQueue_queue, "f").size === 0) {
+        if (this._queue.size === 0) {
             return;
         }
-        await __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onEvent).call(this, 'empty');
+        return new Promise(resolve => {
+            const existingResolve = this._resolveEmpty;
+            this._resolveEmpty = () => {
+                existingResolve();
+                resolve();
+            };
+        });
     }
     /**
     @returns A promise that settles when the queue size is less than the given limit: `queue.size < limit`.
@@ -10059,10 +10175,18 @@ class PQueue extends EventEmitter {
     */
     async onSizeLessThan(limit) {
         // Instantly resolve if the queue is empty.
-        if (__classPrivateFieldGet(this, _PQueue_queue, "f").size < limit) {
+        if (this._queue.size < limit) {
             return;
         }
-        await __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onEvent).call(this, 'next', () => __classPrivateFieldGet(this, _PQueue_queue, "f").size < limit);
+        return new Promise(resolve => {
+            const listener = () => {
+                if (this._queue.size < limit) {
+                    this.removeListener('next', listener);
+                    resolve();
+                }
+            };
+            this.on('next', listener);
+        });
     }
     /**
     The difference with `.onEmpty` is that `.onIdle` guarantees that all work from the queue has finished. `.onEmpty` merely signals that the queue is empty, but it could mean that some promises haven't completed yet.
@@ -10071,16 +10195,22 @@ class PQueue extends EventEmitter {
     */
     async onIdle() {
         // Instantly resolve if none pending and if nothing else is queued
-        if (__classPrivateFieldGet(this, _PQueue_pendingCount, "f") === 0 && __classPrivateFieldGet(this, _PQueue_queue, "f").size === 0) {
+        if (this._pendingCount === 0 && this._queue.size === 0) {
             return;
         }
-        await __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onEvent).call(this, 'idle');
+        return new Promise(resolve => {
+            const existingResolve = this._resolveIdle;
+            this._resolveIdle = () => {
+                existingResolve();
+                resolve();
+            };
+        });
     }
     /**
     Size of the queue, the number of queued items waiting to run.
     */
     get size() {
-        return __classPrivateFieldGet(this, _PQueue_queue, "f").size;
+        return this._queue.size;
     }
     /**
     Size of the queue, filtered by the given options.
@@ -10089,116 +10219,30 @@ class PQueue extends EventEmitter {
     */
     sizeBy(options) {
         // eslint-disable-next-line unicorn/no-array-callback-reference
-        return __classPrivateFieldGet(this, _PQueue_queue, "f").filter(options).length;
+        return this._queue.filter(options).length;
     }
     /**
     Number of running items (no longer in the queue).
     */
     get pending() {
-        return __classPrivateFieldGet(this, _PQueue_pendingCount, "f");
+        return this._pendingCount;
     }
     /**
     Whether the queue is currently paused.
     */
     get isPaused() {
-        return __classPrivateFieldGet(this, _PQueue_isPaused, "f");
+        return this._isPaused;
+    }
+    get timeout() {
+        return this._timeout;
+    }
+    /**
+    Set the timeout for future operations.
+    */
+    set timeout(milliseconds) {
+        this._timeout = milliseconds;
     }
 }
-_PQueue_carryoverConcurrencyCount = new WeakMap(), _PQueue_isIntervalIgnored = new WeakMap(), _PQueue_intervalCount = new WeakMap(), _PQueue_intervalCap = new WeakMap(), _PQueue_interval = new WeakMap(), _PQueue_intervalEnd = new WeakMap(), _PQueue_intervalId = new WeakMap(), _PQueue_timeoutId = new WeakMap(), _PQueue_queue = new WeakMap(), _PQueue_queueClass = new WeakMap(), _PQueue_pendingCount = new WeakMap(), _PQueue_concurrency = new WeakMap(), _PQueue_isPaused = new WeakMap(), _PQueue_throwOnTimeout = new WeakMap(), _PQueue_instances = new WeakSet(), _PQueue_doesIntervalAllowAnother_get = function _PQueue_doesIntervalAllowAnother_get() {
-    return __classPrivateFieldGet(this, _PQueue_isIntervalIgnored, "f") || __classPrivateFieldGet(this, _PQueue_intervalCount, "f") < __classPrivateFieldGet(this, _PQueue_intervalCap, "f");
-}, _PQueue_doesConcurrentAllowAnother_get = function _PQueue_doesConcurrentAllowAnother_get() {
-    return __classPrivateFieldGet(this, _PQueue_pendingCount, "f") < __classPrivateFieldGet(this, _PQueue_concurrency, "f");
-}, _PQueue_next = function _PQueue_next() {
-    var _a;
-    __classPrivateFieldSet(this, _PQueue_pendingCount, (_a = __classPrivateFieldGet(this, _PQueue_pendingCount, "f"), _a--, _a), "f");
-    __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_tryToStartAnother).call(this);
-    this.emit('next');
-}, _PQueue_emitEvents = function _PQueue_emitEvents() {
-    this.emit('empty');
-    if (__classPrivateFieldGet(this, _PQueue_pendingCount, "f") === 0) {
-        this.emit('idle');
-    }
-}, _PQueue_onResumeInterval = function _PQueue_onResumeInterval() {
-    __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onInterval).call(this);
-    __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_initializeIntervalIfNeeded).call(this);
-    __classPrivateFieldSet(this, _PQueue_timeoutId, undefined, "f");
-}, _PQueue_isIntervalPaused_get = function _PQueue_isIntervalPaused_get() {
-    const now = Date.now();
-    if (__classPrivateFieldGet(this, _PQueue_intervalId, "f") === undefined) {
-        const delay = __classPrivateFieldGet(this, _PQueue_intervalEnd, "f") - now;
-        if (delay < 0) {
-            // Act as the interval was done
-            // We don't need to resume it here because it will be resumed on line 160
-            __classPrivateFieldSet(this, _PQueue_intervalCount, (__classPrivateFieldGet(this, _PQueue_carryoverConcurrencyCount, "f")) ? __classPrivateFieldGet(this, _PQueue_pendingCount, "f") : 0, "f");
-        }
-        else {
-            // Act as the interval is pending
-            if (__classPrivateFieldGet(this, _PQueue_timeoutId, "f") === undefined) {
-                __classPrivateFieldSet(this, _PQueue_timeoutId, setTimeout(() => {
-                    __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onResumeInterval).call(this);
-                }, delay), "f");
-            }
-            return true;
-        }
-    }
-    return false;
-}, _PQueue_tryToStartAnother = function _PQueue_tryToStartAnother() {
-    if (__classPrivateFieldGet(this, _PQueue_queue, "f").size === 0) {
-        // We can clear the interval ("pause")
-        // Because we can redo it later ("resume")
-        if (__classPrivateFieldGet(this, _PQueue_intervalId, "f")) {
-            clearInterval(__classPrivateFieldGet(this, _PQueue_intervalId, "f"));
-        }
-        __classPrivateFieldSet(this, _PQueue_intervalId, undefined, "f");
-        __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_emitEvents).call(this);
-        return false;
-    }
-    if (!__classPrivateFieldGet(this, _PQueue_isPaused, "f")) {
-        const canInitializeInterval = !__classPrivateFieldGet(this, _PQueue_instances, "a", _PQueue_isIntervalPaused_get);
-        if (__classPrivateFieldGet(this, _PQueue_instances, "a", _PQueue_doesIntervalAllowAnother_get) && __classPrivateFieldGet(this, _PQueue_instances, "a", _PQueue_doesConcurrentAllowAnother_get)) {
-            const job = __classPrivateFieldGet(this, _PQueue_queue, "f").dequeue();
-            if (!job) {
-                return false;
-            }
-            this.emit('active');
-            job();
-            if (canInitializeInterval) {
-                __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_initializeIntervalIfNeeded).call(this);
-            }
-            return true;
-        }
-    }
-    return false;
-}, _PQueue_initializeIntervalIfNeeded = function _PQueue_initializeIntervalIfNeeded() {
-    if (__classPrivateFieldGet(this, _PQueue_isIntervalIgnored, "f") || __classPrivateFieldGet(this, _PQueue_intervalId, "f") !== undefined) {
-        return;
-    }
-    __classPrivateFieldSet(this, _PQueue_intervalId, setInterval(() => {
-        __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_onInterval).call(this);
-    }, __classPrivateFieldGet(this, _PQueue_interval, "f")), "f");
-    __classPrivateFieldSet(this, _PQueue_intervalEnd, Date.now() + __classPrivateFieldGet(this, _PQueue_interval, "f"), "f");
-}, _PQueue_onInterval = function _PQueue_onInterval() {
-    if (__classPrivateFieldGet(this, _PQueue_intervalCount, "f") === 0 && __classPrivateFieldGet(this, _PQueue_pendingCount, "f") === 0 && __classPrivateFieldGet(this, _PQueue_intervalId, "f")) {
-        clearInterval(__classPrivateFieldGet(this, _PQueue_intervalId, "f"));
-        __classPrivateFieldSet(this, _PQueue_intervalId, undefined, "f");
-    }
-    __classPrivateFieldSet(this, _PQueue_intervalCount, __classPrivateFieldGet(this, _PQueue_carryoverConcurrencyCount, "f") ? __classPrivateFieldGet(this, _PQueue_pendingCount, "f") : 0, "f");
-    __classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_processQueue).call(this);
-}, _PQueue_processQueue = function _PQueue_processQueue() {
-    // eslint-disable-next-line no-empty
-    while (__classPrivateFieldGet(this, _PQueue_instances, "m", _PQueue_tryToStartAnother).call(this)) { }
-}, _PQueue_onEvent = async function _PQueue_onEvent(event, filter) {
-    return new Promise(resolve => {
-        const listener = () => {
-            if (filter && !filter()) {
-                return;
-            }
-            this.off(event, listener);
-            resolve();
-        };
-        this.on(event, listener);
-    });
-};
 
 class ZarrArray {
     /**
@@ -10402,7 +10446,7 @@ class ZarrArray {
     getRaw(selection = null, opts = {}) {
         return this.getBasicSelection(selection, true, opts);
     }
-    async getBasicSelection(selection, asRaw = false, { concurrencyLimit = 10, progressCallback } = {}) {
+    async getBasicSelection(selection, asRaw = false, { concurrencyLimit = 10, progressCallback, storeOptions } = {}) {
         // Refresh metadata
         if (!this.cacheMetadata) {
             await this.reloadMetadata();
@@ -10412,14 +10456,14 @@ class ZarrArray {
             throw new Error("Shape [] indexing is not supported yet");
         }
         else {
-            return this.getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback);
+            return this.getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback, storeOptions);
         }
     }
-    getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback) {
+    getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback, storeOptions) {
         const indexer = new BasicIndexer(selection, this);
-        return this.getSelection(indexer, asRaw, concurrencyLimit, progressCallback);
+        return this.getSelection(indexer, asRaw, concurrencyLimit, progressCallback, storeOptions);
     }
-    async getSelection(indexer, asRaw, concurrencyLimit, progressCallback) {
+    async getSelection(indexer, asRaw, concurrencyLimit, progressCallback, storeOptions) {
         // We iterate over all chunks which overlap the selection and thus contain data
         // that needs to be extracted. Each chunk is processed in turn, extracting the
         // necessary data and storing into the correct location in the output array.
@@ -10448,6 +10492,7 @@ class ZarrArray {
         }
         // create promise queue with concurrency control
         const queue = new PQueue({ concurrency: concurrencyLimit });
+        const allTasks = [];
         if (progressCallback) {
             let progress = 0;
             let queueSize = 0;
@@ -10455,20 +10500,20 @@ class ZarrArray {
                 queueSize += 1;
             progressCallback({ progress: 0, queueSize: queueSize });
             for (const proj of indexer.iter()) {
-                (async () => {
-                    await queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes));
+                allTasks.push(queue.add(async () => {
+                    await this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes, storeOptions);
                     progress += 1;
                     progressCallback({ progress: progress, queueSize: queueSize });
-                })();
+                }));
             }
         }
         else {
             for (const proj of indexer.iter()) {
-                queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes));
+                allTasks.push(queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes, storeOptions)));
             }
         }
-        // guarantees that all work on queue has finished
-        await queue.onIdle();
+        // guarantees that all work on queue has finished and throws if any of the tasks errored.
+        await Promise.all(allTasks);
         // Return scalar instead of zero-dimensional array.
         if (out.shape.length === 0) {
             return out.data[0];
@@ -10483,13 +10528,13 @@ class ZarrArray {
      * @param outSelection Location of region within output array to store results in.
      * @param dropAxes Axes to squeeze out of the chunk.
      */
-    async chunkGetItem(chunkCoords, chunkSelection, out, outSelection, dropAxes) {
+    async chunkGetItem(chunkCoords, chunkSelection, out, outSelection, dropAxes, storeOptions) {
         if (chunkCoords.length !== this._chunkDataShape.length) {
             throw new ValueError(`Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}`);
         }
         const cKey = this.chunkKey(chunkCoords);
         try {
-            const cdata = await this.chunkStore.getItem(cKey);
+            const cdata = await this.chunkStore.getItem(cKey, storeOptions);
             const decodedChunk = await this.decodeChunk(cdata);
             if (out instanceof NestedArray) {
                 if (isContiguousSelection(outSelection) && isTotalSlice(chunkSelection, this.chunks) && !this.meta.filters) {
@@ -10674,6 +10719,7 @@ class ZarrArray {
             throw new Error("Unknown data type for setting :(");
         }
         const queue = new PQueue({ concurrency: concurrencyLimit });
+        const allTasks = [];
         if (progressCallback) {
             let queueSize = 0;
             for (const _ of indexer.iter())
@@ -10682,21 +10728,21 @@ class ZarrArray {
             progressCallback({ progress: 0, queueSize: queueSize });
             for (const proj of indexer.iter()) {
                 const chunkValue = this.getChunkValue(proj, indexer, value, selectionShape);
-                (async () => {
-                    await queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue));
+                allTasks.push(queue.add(async () => {
+                    await this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue);
                     progress += 1;
                     progressCallback({ progress: progress, queueSize: queueSize });
-                })();
+                }));
             }
         }
         else {
             for (const proj of indexer.iter()) {
                 const chunkValue = this.getChunkValue(proj, indexer, value, selectionShape);
-                queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue));
+                allTasks.push(queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue)));
             }
         }
-        // guarantees that all work on queue has finished
-        await queue.onIdle();
+        // guarantees that all work on queue has finished and throws if any of the tasks errored.
+        await Promise.all(allTasks);
     }
     async chunkSetItem(chunkCoords, chunkSelection, value) {
         if (this.meta.order === "F" && this.nDims > 1) {
@@ -10893,56 +10939,121 @@ class HTTPStore {
     }
 }
 
-function concat(arrays, length) {
-  if (!length) {
-    length = arrays.reduce((acc, curr) => acc + curr.length, 0);
-  }
-  const output = new Uint8Array(length);
-  let offset = 0;
-  for (const arr of arrays) {
-    output.set(arr, offset);
-    offset += arr.length;
-  }
-  return output;
+/**
+ * To guarantee Uint8Array semantics, convert nodejs Buffers
+ * into vanilla Uint8Arrays
+ */
+function asUint8Array(buf) {
+    if (globalThis.Buffer != null) {
+        return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+    }
+    return buf;
 }
 
 /**
- * Collects all values from an (async) iterable into an array and returns it.
- *
- * @template T
- * @param {AsyncIterable<T>|Iterable<T>} source
+ * Where possible returns a Uint8Array of the requested size that references
+ * uninitialized memory. Only use if you are certain you will immediately
+ * overwrite every value in the returned `Uint8Array`.
  */
-const all = async (source) => {
-  const arr = [];
+function allocUnsafe(size = 0) {
+    if (globalThis.Buffer?.allocUnsafe != null) {
+        return asUint8Array(globalThis.Buffer.allocUnsafe(size));
+    }
+    return new Uint8Array(size);
+}
 
-  for await (const entry of source) {
-    arr.push(entry);
-  }
+/**
+ * Returns a new Uint8Array created by concatenating the passed Uint8Arrays
+ */
+function concat(arrays, length) {
+    if (globalThis.Buffer != null) {
+        return asUint8Array(globalThis.Buffer.concat(arrays, length));
+    }
+    if (length == null) {
+        length = arrays.reduce((acc, curr) => acc + curr.length, 0);
+    }
+    const output = allocUnsafe(length);
+    let offset = 0;
+    for (const arr of arrays) {
+        output.set(arr, offset);
+        offset += arr.length;
+    }
+    return asUint8Array(output);
+}
 
-  return arr
-};
-
-var itAll = all;
+/**
+ * @packageDocumentation
+ *
+ * For when you need a one-liner to collect iterable values.
+ *
+ * @example
+ *
+ * ```javascript
+ * import all from 'it-all'
+ *
+ * // This can also be an iterator, etc
+ * const values = function * () {
+ *   yield * [0, 1, 2, 3, 4]
+ * }
+ *
+ * const arr = all(values)
+ *
+ * console.info(arr) // 0, 1, 2, 3, 4
+ * ```
+ *
+ * Async sources must be awaited:
+ *
+ * ```javascript
+ * const values = async function * () {
+ *   yield * [0, 1, 2, 3, 4]
+ * }
+ *
+ * const arr = await all(values())
+ *
+ * console.info(arr) // 0, 1, 2, 3, 4
+ * ```
+ */
+function isAsyncIterable(thing) {
+    return thing[Symbol.asyncIterator] != null;
+}
+function all(source) {
+    if (isAsyncIterable(source)) {
+        return (async () => {
+            const arr = [];
+            for await (const entry of source) {
+                arr.push(entry);
+            }
+            return arr;
+        })();
+    }
+    const arr = [];
+    for (const entry of source) {
+        arr.push(entry);
+    }
+    return arr;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class IPFSSTORE {
-    constructor(cid, ipfsClient) {
+    constructor(cid, ipfsElements) {
         this.cid = cid;
-        this.ipfsClient = ipfsClient;
+        this.ipfsElements = ipfsElements;
     }
     keys() {
         throw new Error("Method not implemented.");
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getItem(item, opts) {
+        var _a, _b, _c;
         if (item === ".zarray") {
             const cid = this.cid;
-            const value = await this.ipfsClient.dag.get(cid);
+            const dagCbor = this.ipfsElements.dagCbor;
+            const value = await dagCbor.get(cid);
             if (value.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
             }
-            if (!value.value) {
+            if (!value[".zmetadata"]) {
                 throw new Error("Zarr does not exist at CID");
             }
             else {
@@ -10950,61 +11061,68 @@ class IPFSSTORE {
                 let combinedTree = {};
                 // Find the location of the data being addressed. This is done by checking for an area with more than one dimension
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [key, keyValue] of Object.entries(value.value[".zmetadata"].metadata)) {
+                for (const [key, keyValue] of Object.entries(value[".zmetadata"].metadata)) {
                     try {
-                        if (value.value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"].length >= 2) {
+                        if (((_a = value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"]) === null || _a === void 0 ? void 0 : _a.length) >= 2) {
                             jsonKey = key.replace("/.zattrs", "");
                         }
                         // eslint-disable-next-line no-empty
                     }
-                    catch (error) { }
+                    catch (error) {
+                        console.log("error", error);
+                    }
                 }
                 // To rebuild the tree we assume the data is found 
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [secondKey, secondKeyValue] of Object.entries(value.value[jsonKey])) {
+                for (const [secondKey, secondKeyValue] of Object.entries(value[jsonKey])) {
                     // If a tree exists we denominate the start of the object with a "/"
                     if (secondKey.includes("/")) {
-                        const newCID = value.value[jsonKey][secondKey];
-                        const branch = await this.ipfsClient.dag.get(newCID);
-                        combinedTree = Object.assign(combinedTree, branch.value);
+                        const newCID = value[jsonKey][secondKey];
+                        const branch = await dagCbor.get(newCID);
+                        combinedTree = Object.assign(combinedTree, branch);
                         // If an object does not have it and is not the ".zarray" or ".zattrs" then no tree exists
                     }
                     else if (secondKey !== ".zarray" && secondKey !== ".zattrs") {
                         // assign to directory for later returns
-                        this.directory = value.value[jsonKey];
+                        this.directory = value[jsonKey];
                         // Ensure a codec is loaded
                         try {
-                            if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
+                            if (((_b = value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor) === null || _b === void 0 ? void 0 : _b.id) === "zlib") {
                                 addCodec(Zlib$1.codecId, () => Zlib$1);
                             }
-                            if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
+                            if (((_c = value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor) === null || _c === void 0 ? void 0 : _c.id) === "blosc") {
                                 addCodec(Zlib$1.codecId, () => Blosc$1);
                             }
                             // eslint-disable-next-line no-empty
                         }
-                        catch (error) { }
-                        return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
+                        catch (error) {
+                            console.log("error", error);
+                        }
+                        return value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
                     }
                 }
                 // after the tree has been rebuilt, assign to the directory for parsing later
                 this.directory = combinedTree;
                 // Ensure a codec is loaded
                 try {
-                    if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
+                    if (value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
                         addCodec(Zlib$1.codecId, () => Zlib$1);
                     }
-                    if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
+                    if (value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
                         addCodec(Zlib$1.codecId, () => Blosc$1);
                     }
                     // eslint-disable-next-line no-empty
                 }
-                catch (error) { }
-                return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
+                catch (error) {
+                    console.log("error", error);
+                }
+                return value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
             }
         }
         else {
-            if (this.directory[item]) {
-                const value = concat(await itAll(this.ipfsClient.cat(this.directory[item])));
+            if (this.directory && this.directory[item]) {
+                const fs = this.ipfsElements.unixfs;
+                const value = concat(await all(fs.cat(this.directory[item])));
                 return value.buffer;
             }
             else {
@@ -11019,7 +11137,8 @@ class IPFSSTORE {
         throw new Error("Method not implemented.");
     }
     async containsItem(_item) {
-        const value = await this.ipfsClient.dag.get(this.cid);
+        const dagCbor = this.ipfsElements.dagCbor;
+        const value = await dagCbor.get(this.cid);
         if (value) {
             return true;
         }
@@ -11053,8 +11172,8 @@ class IPFSSTORE {
  * @param readOnly `true` if array should be protected against modification, defaults to `false`.
  * @param dimensionSeparator if specified, defines an alternate string separator placed between the dimension chunks.
  */
-async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
-    store = normalizeStoreArgument(store);
+async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
+    const store = normalizeStoreArgument(storeArgument);
     await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
     const z = await ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
     return z;
@@ -11109,8 +11228,8 @@ async function array(data, opts = {}) {
     z.readOnly = wasReadOnly;
     return z;
 }
-async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
-    store = normalizeStoreArgument(store, cid, ipfsClient);
+async function openArray({ ipfsElements, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -11162,12 +11281,12 @@ async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dt
     const readOnly = mode === "r";
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
-function normalizeStoreArgument(store, cid, ipfsClient) {
+function normalizeStoreArgument(store, cid, ipfsElements) {
     if (store === undefined) {
         return new MemoryStore();
     }
     else if (store === "ipfs") {
-        return new IPFSSTORE(cid, ipfsClient);
+        return new IPFSSTORE(cid, ipfsElements);
     }
     else if (typeof store === "string") {
         return new HTTPStore(store);

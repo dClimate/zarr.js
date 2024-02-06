@@ -212,7 +212,7 @@ export class ZarrArray {
     getRaw(selection = null, opts = {}) {
         return this.getBasicSelection(selection, true, opts);
     }
-    async getBasicSelection(selection, asRaw = false, { concurrencyLimit = 10, progressCallback } = {}) {
+    async getBasicSelection(selection, asRaw = false, { concurrencyLimit = 10, progressCallback, storeOptions } = {}) {
         // Refresh metadata
         if (!this.cacheMetadata) {
             await this.reloadMetadata();
@@ -222,14 +222,14 @@ export class ZarrArray {
             throw new Error("Shape [] indexing is not supported yet");
         }
         else {
-            return this.getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback);
+            return this.getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback, storeOptions);
         }
     }
-    getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback) {
+    getBasicSelectionND(selection, asRaw, concurrencyLimit, progressCallback, storeOptions) {
         const indexer = new BasicIndexer(selection, this);
-        return this.getSelection(indexer, asRaw, concurrencyLimit, progressCallback);
+        return this.getSelection(indexer, asRaw, concurrencyLimit, progressCallback, storeOptions);
     }
-    async getSelection(indexer, asRaw, concurrencyLimit, progressCallback) {
+    async getSelection(indexer, asRaw, concurrencyLimit, progressCallback, storeOptions) {
         // We iterate over all chunks which overlap the selection and thus contain data
         // that needs to be extracted. Each chunk is processed in turn, extracting the
         // necessary data and storing into the correct location in the output array.
@@ -258,6 +258,7 @@ export class ZarrArray {
         }
         // create promise queue with concurrency control
         const queue = new PQueue({ concurrency: concurrencyLimit });
+        const allTasks = [];
         if (progressCallback) {
             let progress = 0;
             let queueSize = 0;
@@ -265,20 +266,20 @@ export class ZarrArray {
                 queueSize += 1;
             progressCallback({ progress: 0, queueSize: queueSize });
             for (const proj of indexer.iter()) {
-                (async () => {
-                    await queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes));
+                allTasks.push(queue.add(async () => {
+                    await this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes, storeOptions);
                     progress += 1;
                     progressCallback({ progress: progress, queueSize: queueSize });
-                })();
+                }));
             }
         }
         else {
             for (const proj of indexer.iter()) {
-                queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes));
+                allTasks.push(queue.add(() => this.chunkGetItem(proj.chunkCoords, proj.chunkSelection, out, proj.outSelection, indexer.dropAxes, storeOptions)));
             }
         }
-        // guarantees that all work on queue has finished
-        await queue.onIdle();
+        // guarantees that all work on queue has finished and throws if any of the tasks errored.
+        await Promise.all(allTasks);
         // Return scalar instead of zero-dimensional array.
         if (out.shape.length === 0) {
             return out.data[0];
@@ -293,13 +294,13 @@ export class ZarrArray {
      * @param outSelection Location of region within output array to store results in.
      * @param dropAxes Axes to squeeze out of the chunk.
      */
-    async chunkGetItem(chunkCoords, chunkSelection, out, outSelection, dropAxes) {
+    async chunkGetItem(chunkCoords, chunkSelection, out, outSelection, dropAxes, storeOptions) {
         if (chunkCoords.length !== this._chunkDataShape.length) {
             throw new ValueError(`Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}`);
         }
         const cKey = this.chunkKey(chunkCoords);
         try {
-            const cdata = await this.chunkStore.getItem(cKey);
+            const cdata = await this.chunkStore.getItem(cKey, storeOptions);
             const decodedChunk = await this.decodeChunk(cdata);
             if (out instanceof NestedArray) {
                 if (isContiguousSelection(outSelection) && isTotalSlice(chunkSelection, this.chunks) && !this.meta.filters) {
@@ -488,6 +489,7 @@ export class ZarrArray {
             throw new Error("Unknown data type for setting :(");
         }
         const queue = new PQueue({ concurrency: concurrencyLimit });
+        const allTasks = [];
         if (progressCallback) {
             let queueSize = 0;
             for (const _ of indexer.iter())
@@ -496,21 +498,21 @@ export class ZarrArray {
             progressCallback({ progress: 0, queueSize: queueSize });
             for (const proj of indexer.iter()) {
                 const chunkValue = this.getChunkValue(proj, indexer, value, selectionShape);
-                (async () => {
-                    await queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue));
+                allTasks.push(queue.add(async () => {
+                    await this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue);
                     progress += 1;
                     progressCallback({ progress: progress, queueSize: queueSize });
-                })();
+                }));
             }
         }
         else {
             for (const proj of indexer.iter()) {
                 const chunkValue = this.getChunkValue(proj, indexer, value, selectionShape);
-                queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue));
+                allTasks.push(queue.add(() => this.chunkSetItem(proj.chunkCoords, proj.chunkSelection, chunkValue)));
             }
         }
-        // guarantees that all work on queue has finished
-        await queue.onIdle();
+        // guarantees that all work on queue has finished and throws if any of the tasks errored.
+        await Promise.all(allTasks);
     }
     async chunkSetItem(chunkCoords, chunkSelection, value) {
         if (this.meta.order === "F" && this.nDims > 1) {

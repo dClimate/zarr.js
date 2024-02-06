@@ -5,12 +5,13 @@ import { ArraySelection, Slice } from "./types";
 import { NestedArray } from "../nestedArray";
 import { RawArray } from "../rawArray";
 import { TypedArray } from '../nestedArray/types';
-export interface GetOptions {
+export interface GetOptions<StoreGetOptions> {
     concurrencyLimit?: number;
     progressCallback?: (progressUpdate: {
         progress: number;
         queueSize: number;
     }) => void;
+    storeOptions?: StoreGetOptions;
 }
 export interface SetOptions {
     concurrencyLimit?: number;
@@ -19,17 +20,17 @@ export interface SetOptions {
         queueSize: number;
     }) => void;
 }
-export interface GetRawChunkOptions<O> {
-    storeOptions: O;
+export interface GetRawChunkOptions<StoreGetOptions> {
+    storeOptions: StoreGetOptions;
 }
-export declare class ZarrArray {
-    store: Store;
+export declare class ZarrArray<StoreGetOptions = any> {
+    store: Store<StoreGetOptions>;
     private compressor;
     private _chunkStore;
     /**
      * A `Store` providing the underlying storage for array chunks.
      */
-    get chunkStore(): Store;
+    get chunkStore(): Store<StoreGetOptions>;
     path: string;
     keyPrefix: string;
     readOnly: boolean;
@@ -95,7 +96,7 @@ export declare class ZarrArray {
      * @param cacheAttrs If true (default), user attributes will be cached for attribute read operations.
      * If false, user attributes are reloaded from the store prior to all attribute read operations.
      */
-    static create(store: Store, path?: null | string, readOnly?: boolean, chunkStore?: Store | null, cacheMetadata?: boolean, cacheAttrs?: boolean): Promise<ZarrArray>;
+    static create<StoreGetOptions>(store: Store<StoreGetOptions>, path?: null | string, readOnly?: boolean, chunkStore?: Store<StoreGetOptions> | null, cacheMetadata?: boolean, cacheAttrs?: boolean): Promise<ZarrArray<StoreGetOptions>>;
     private static loadMetadataForConstructor;
     /**
      * Instantiate an array from an initialized store.
@@ -115,14 +116,14 @@ export declare class ZarrArray {
      */
     reloadMetadata(): Promise<ZarrArrayMetadata>;
     private refreshMetadata;
-    get(selection?: undefined | Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], opts?: GetOptions): Promise<NestedArray<TypedArray> | number>;
-    get(selection?: ArraySelection, opts?: GetOptions): Promise<NestedArray<TypedArray> | number>;
-    getRaw(selection?: undefined | Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], opts?: GetOptions): Promise<RawArray | number>;
-    getRaw(selection?: ArraySelection, opts?: GetOptions): Promise<RawArray | number>;
-    getBasicSelection(selection: Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], asRaw?: false, opts?: GetOptions): Promise<NestedArray<TypedArray> | number>;
-    getBasicSelection(selection: ArraySelection, asRaw?: false, opts?: GetOptions): Promise<NestedArray<TypedArray> | number>;
-    getBasicSelection(selection: Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], asRaw?: true, opts?: GetOptions): Promise<RawArray | number>;
-    getBasicSelection(selection: ArraySelection, asRaw?: true, opts?: GetOptions): Promise<RawArray | number>;
+    get(selection?: undefined | Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], opts?: GetOptions<StoreGetOptions>): Promise<NestedArray<TypedArray> | number>;
+    get(selection?: ArraySelection, opts?: GetOptions<StoreGetOptions>): Promise<NestedArray<TypedArray> | number>;
+    getRaw(selection?: undefined | Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], opts?: GetOptions<StoreGetOptions>): Promise<RawArray | number>;
+    getRaw(selection?: ArraySelection, opts?: GetOptions<StoreGetOptions>): Promise<RawArray | number>;
+    getBasicSelection(selection: Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], asRaw?: false, opts?: GetOptions<StoreGetOptions>): Promise<NestedArray<TypedArray> | number>;
+    getBasicSelection(selection: ArraySelection, asRaw?: false, opts?: GetOptions<StoreGetOptions>): Promise<NestedArray<TypedArray> | number>;
+    getBasicSelection(selection: Slice | ":" | "..." | null | (Slice | null | ":" | "...")[], asRaw?: true, opts?: GetOptions<StoreGetOptions>): Promise<RawArray | number>;
+    getBasicSelection(selection: ArraySelection, asRaw?: true, opts?: GetOptions<StoreGetOptions>): Promise<RawArray | number>;
     private getBasicSelectionND;
     private getSelection;
     /**
@@ -134,7 +135,7 @@ export declare class ZarrArray {
      * @param dropAxes Axes to squeeze out of the chunk.
      */
     private chunkGetItem;
-    getRawChunk<O>(chunkCoords: number[], opts?: GetRawChunkOptions<O>): Promise<RawArray>;
+    getRawChunk(chunkCoords: number[], opts?: GetRawChunkOptions<StoreGetOptions>): Promise<RawArray>;
     private chunkKey;
     private ensureByteArray;
     private toTypedArray;
