@@ -31,8 +31,8 @@ import { IPFSSTORE } from './storage/ipfsStore';
  * @param readOnly `true` if array should be protected against modification, defaults to `false`.
  * @param dimensionSeparator if specified, defines an alternate string separator placed between the dimension chunks.
  */
-export async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
-    store = normalizeStoreArgument(store);
+export async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
+    const store = normalizeStoreArgument(storeArgument);
     await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
     const z = await ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
     return z;
@@ -87,8 +87,8 @@ export async function array(data, opts = {}) {
     z.readOnly = wasReadOnly;
     return z;
 }
-export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
-    store = normalizeStoreArgument(store, cid, ipfsClient);
+export async function openArray({ ipfsElements, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -140,12 +140,12 @@ export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = t
     const readOnly = mode === "r";
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
-export function normalizeStoreArgument(store, cid, ipfsClient) {
+export function normalizeStoreArgument(store, cid, ipfsElements) {
     if (store === undefined) {
         return new MemoryStore();
     }
     else if (store === "ipfs") {
-        return new IPFSSTORE(cid, ipfsClient);
+        return new IPFSSTORE(cid, ipfsElements);
     }
     else if (typeof store === "string") {
         return new HTTPStore(store);
