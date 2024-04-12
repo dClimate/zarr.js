@@ -1,16 +1,16 @@
 import { AsyncStore } from "./types";
-export declare class IPFSSTORE<CID = any, IPFSCLIENT = any> implements AsyncStore<ArrayBuffer> {
+export declare class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<ArrayBuffer> {
     listDir?: undefined;
     rmDir?: undefined;
     getSize?: undefined;
     rename?: undefined;
     cid: CID;
     directory: any;
-    ipfsClient: any;
+    ipfsElements: IPFSELEMENTS;
     loader: any;
     hamt: boolean;
     key: string;
-    constructor(cid: CID, ipfsClient: any);
+    constructor(cid: CID, ipfsElements: IPFSELEMENTS);
     keys(): Promise<string[]>;
     getItem(item: string, opts?: RequestInit): Promise<any>;
     setItem(_item: string): Promise<boolean>;

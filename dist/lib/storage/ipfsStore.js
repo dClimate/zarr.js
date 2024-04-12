@@ -8,16 +8,15 @@ import { addCodec } from "../zarr-core";
 import all from "it-all";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class IPFSSTORE {
-    constructor(cid, ipfsClient) {
+    constructor(cid, ipfsElements) {
         this.cid = cid;
         this.hamt = false;
-        this.ipfsClient = ipfsClient;
+        this.ipfsElements = ipfsElements;
         this.key = "";
         this.loader = {
             async get(cid) {
-                const bytes = await ipfsClient.block.get(cid, {
-                    codec: "dag-cbor",
-                });
+                const dagCbor = ipfsElements.dagCbor;
+                const bytes = await dagCbor.components.blockstore.get(cid);
                 return bytes;
             },
             // For our purposes of reading the HashMap we don't need to implement put
@@ -34,26 +33,28 @@ export class IPFSSTORE {
     async getItem(item, opts) {
         if (item === ".zgroup") {
             // Loading Group
-            const { cid } = this;
-            const response = await this.ipfsClient.dag.get(cid);
+            const { cid, ipfsElements } = this;
+            const dagCbor = ipfsElements.dagCbor;
+            const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
             }
-            if (!response.value) {
+            if (!response) {
                 throw new Error("Zarr Group does not exist at CID");
             }
             else {
-                return response.value[item];
+                return response[item];
             }
         }
         if (item.includes(".zarray")) {
-            const { cid } = this;
-            const response = await this.ipfsClient.dag.get(cid);
+            const { cid, ipfsElements } = this;
+            const dagCbor = ipfsElements.dagCbor;
+            const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
             }
-            if (!response.value) {
+            if (!response) {
                 throw new Error("Zarr does not exist at CID");
             }
             else {
@@ -61,11 +62,11 @@ export class IPFSSTORE {
                 // This is used to get the .zarray object
                 // In the case of a nested array, we need to get the parent object
                 // and so we have the directory in case it is not hamt
-                let objectValue = response.value;
-                let objectValueParent = response.value;
+                let objectValue = response;
+                let objectValueParent = response;
                 for (let i = 0; i < splitItems.length; i += 1) {
                     if (splitItems[0] === ".zarray") {
-                        objectValue = response.value[splitItems[i]];
+                        objectValue = response[splitItems[i]];
                         break;
                     }
                     if (i > 0) {
@@ -75,11 +76,11 @@ export class IPFSSTORE {
                     objectValue = objectValue[splitItems[i]];
                 }
                 // now check if using hamt
-                if (response.value.hamt) {
+                if (response.hamt) {
                     this.hamt = true;
                     // if there is a hamt, load it
                     const hamtOptions = { blockHasher, blockCodec };
-                    const hamt = await load(this.loader, response.value.hamt, hamtOptions);
+                    const hamt = await load(this.loader, response.hamt, hamtOptions);
                     // the hamt will have the KV pair for all the zarr arrays in the group directory
                     // so we can use it to get the CID for the array
                     this.directory = hamt;
@@ -90,10 +91,10 @@ export class IPFSSTORE {
                 }
                 // Ensure a codec is loaded
                 try {
-                    if (response.value[".zmetadata"].metadata[item].compressor.id === "zlib") {
+                    if (response[".zmetadata"].metadata[item].compressor.id === "zlib") {
                         addCodec(Zlib.codecId, () => Zlib);
                     }
-                    if (response.value[".zmetadata"].metadata[item].compressor.id === "blosc") {
+                    if (response[".zmetadata"].metadata[item].compressor.id === "blosc") {
                         addCodec(Zlib.codecId, () => Blosc);
                     }
                     // eslint-disable-next-line no-empty
@@ -103,16 +104,17 @@ export class IPFSSTORE {
             }
         }
         else {
+            const fs = this.ipfsElements.unixfs;
             if (this.hamt) {
                 const location = await this.directory.get(item);
                 if (location) {
-                    const response = uint8ArrayConcat(await all(this.ipfsClient.cat(location)));
+                    const response = uint8ArrayConcat(await all(fs.cat(location)));
                     return response.buffer;
                 }
                 throw new KeyError(item);
             }
             if (this.directory[item]) {
-                const value = uint8ArrayConcat(await all(this.ipfsClient.cat(this.directory[item])));
+                const value = uint8ArrayConcat(await all(fs.cat(this.directory[item])));
                 return value.buffer;
             }
             throw new KeyError(item);
@@ -125,9 +127,10 @@ export class IPFSSTORE {
         throw new Error("Method not implemented.");
     }
     async containsItem(_item) {
-        const response = await this.ipfsClient.dag.get(this.cid);
+        const dagCbor = this.ipfsElements.dagCbor;
+        const response = await dagCbor.get(this.cid);
         const splitItems = _item.split("/");
-        let objectValue = response.value;
+        let objectValue = response;
         for (let i = 0; i < splitItems.length; i += 1) {
             if (splitItems[i] === ".zarray" || splitItems[i] === ".zgroup") {
                 if (objectValue[splitItems[i]]) {

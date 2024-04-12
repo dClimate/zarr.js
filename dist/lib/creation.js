@@ -31,8 +31,8 @@ import { IPFSSTORE } from './storage/ipfsStore';
  * @param readOnly `true` if array should be protected against modification, defaults to `false`.
  * @param dimensionSeparator if specified, defines an alternate string separator placed between the dimension chunks.
  */
-export async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
-    store = normalizeStoreArgument(store);
+export async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
+    const store = normalizeStoreArgument(storeArgument);
     await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
     const z = await ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
     return z;
@@ -87,8 +87,8 @@ export async function array(data, opts = {}) {
     z.readOnly = wasReadOnly;
     return z;
 }
-export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
-    store = normalizeStoreArgument(store, cid, ipfsClient);
+export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsClient);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -145,6 +145,12 @@ export function normalizeStoreArgument(store, cid, ipfsClient) {
         return new MemoryStore();
     }
     else if (store === "ipfs") {
+        if (!cid) {
+            throw new Error("CID is required for IPFS store");
+        }
+        if (!ipfsClient) {
+            throw new Error("IPFS Http Client is required for IPFS store");
+        }
         return new IPFSSTORE(cid, ipfsClient);
     }
     else if (typeof store === "string") {
