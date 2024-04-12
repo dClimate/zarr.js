@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 /*! pako 2.0.3 https://github.com/nodeca/pako @license (MIT AND Zlib) */
 // (C) 1995-2013 Jean-loup Gailly and Mark Adler
 // (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
@@ -3570,7 +3572,7 @@ function ZStream() {
 
 var zstream = ZStream;
 
-const toString = Object.prototype.toString;
+const toString$1 = Object.prototype.toString;
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -3722,7 +3724,7 @@ function Deflate(options) {
     if (typeof opt.dictionary === 'string') {
       // If we need to compress text, change encoding to utf8.
       dict = strings.string2buf(opt.dictionary);
-    } else if (toString.call(opt.dictionary) === '[object ArrayBuffer]') {
+    } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
       dict = new Uint8Array(opt.dictionary);
     } else {
       dict = opt.dictionary;
@@ -3774,7 +3776,7 @@ Deflate.prototype.push = function (data, flush_mode) {
   if (typeof data === 'string') {
     // If we need to compress text, change encoding to utf8.
     strm.input = strings.string2buf(data);
-  } else if (toString.call(data) === '[object ArrayBuffer]') {
+  } else if (toString$1.call(data) === '[object ArrayBuffer]') {
     strm.input = new Uint8Array(data);
   } else {
     strm.input = data;
@@ -4706,7 +4708,7 @@ const            MATCH = 25;     /* o: waiting for output space to copy string *
 const            LIT = 26;       /* o: waiting for output space to write literal */
 const    CHECK = 27;     /* i: waiting for 32-bit check value */
 const    LENGTH = 28;    /* i: waiting for 32-bit length (gzip) */
-const    DONE = 29;      /* finished check, done -- remain here until reset */
+const    DONE$1 = 29;      /* finished check, done -- remain here until reset */
 const    BAD$1 = 30;       /* got a data error -- remain here until reset */
 const    MEM = 31;       /* got an inflate() memory error -- remain here until reset */
 const    SYNC = 32;      /* looking for synchronization bytes to restart inflate() */
@@ -6034,9 +6036,9 @@ const inflate = (strm, flush) => {
           //===//
           //Tracev((stderr, "inflate:   length matches trailer\n"));
         }
-        state.mode = DONE;
+        state.mode = DONE$1;
         /* falls through */
-      case DONE:
+      case DONE$1:
         ret = Z_STREAM_END$2;
         break inf_leave;
       case BAD$1:
@@ -6249,7 +6251,7 @@ function GZheader() {
 
 var gzheader = GZheader;
 
-const toString$1 = Object.prototype.toString;
+const toString$1$1 = Object.prototype.toString;
 
 /* Public constants ==========================================================*/
 /* ===========================================================================*/
@@ -6397,7 +6399,7 @@ function Inflate(options) {
     // Convert data if needed
     if (typeof opt.dictionary === 'string') {
       opt.dictionary = strings.string2buf(opt.dictionary);
-    } else if (toString$1.call(opt.dictionary) === '[object ArrayBuffer]') {
+    } else if (toString$1$1.call(opt.dictionary) === '[object ArrayBuffer]') {
       opt.dictionary = new Uint8Array(opt.dictionary);
     }
     if (opt.raw) { //In raw mode we need to set the dictionary early
@@ -6446,7 +6448,7 @@ Inflate.prototype.push = function (data, flush_mode) {
   else _flush_mode = flush_mode === true ? Z_FINISH$3 : Z_NO_FLUSH$2;
 
   // Convert data if needed
-  if (toString$1.call(data) === '[object ArrayBuffer]') {
+  if (toString$1$1.call(data) === '[object ArrayBuffer]') {
     strm.input = new Uint8Array(data);
   } else {
     strm.input = data;
@@ -7858,7 +7860,7 @@ class HTTPError extends Error {
     }
 }
 
-function slice(start, stop = undefined, step = null) {
+function slice$1(start, stop = undefined, step = null) {
     // tslint:disable-next-line: strict-type-predicates
     if (start === undefined) { // Not possible in typescript
         throw new InvalidSliceError(start, stop, step, "The first argument must not be undefined");
@@ -8008,7 +8010,7 @@ function normalizeArraySelection(selection, shape, convertIntegerSelectionToSlic
         const dimSelection = selection[i];
         if (typeof dimSelection === "number") {
             if (convertIntegerSelectionToSlices) {
-                selection[i] = slice(dimSelection, dimSelection + 1, 1);
+                selection[i] = slice$1(dimSelection, dimSelection + 1, 1);
             }
             else {
                 selection[i] = normalizeIntegerSelection(dimSelection, shape[i]);
@@ -8018,7 +8020,7 @@ function normalizeArraySelection(selection, shape, convertIntegerSelectionToSlic
             throw new TypeError("Integer array selections are not supported (yet)");
         }
         else if (dimSelection === ":" || dimSelection === null) {
-            selection[i] = slice(null, null, 1);
+            selection[i] = slice$1(null, null, 1);
         }
     }
     return selection;
@@ -8147,7 +8149,7 @@ class BasicIndexer {
             const dimLength = arrayShape[i];
             const dimChunkLength = array.chunks[i];
             if (dimSelection === null) {
-                dimSelection = slice(null);
+                dimSelection = slice$1(null);
             }
             if (isInteger(dimSelection)) {
                 this.dimIndexers.push(new IntDimIndexer(dimSelection, dimLength, dimChunkLength));
@@ -8261,9 +8263,9 @@ class SliceDimIndexer {
                 // Selection ends within current chunk
                 dimChunkSelStop = this.stop - dimOffset;
             }
-            const dimChunkSelection = slice(dimChunkSelStart, dimChunkSelStop, this.step);
+            const dimChunkSelection = slice$1(dimChunkSelStart, dimChunkSelStop, this.step);
             const dimChunkNumItems = Math.ceil((dimChunkSelStop - dimChunkSelStart) / this.step);
-            const dimOutSelection = slice(dimOutOffset, dimOutOffset + dimChunkNumItems);
+            const dimOutSelection = slice$1(dimOutOffset, dimOutOffset + dimChunkNumItems);
             yield {
                 dimChunkIndex,
                 dimChunkSelection,
@@ -8278,7 +8280,7 @@ class SliceDimIndexer {
  */
 const IS_NODE = typeof process !== "undefined" && process.versions && process.versions.node;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-function noop() { }
+function noop$1() { }
 // eslint-disable-next-line @typescript-eslint/ban-types
 function normalizeStoragePath(path) {
     if (path === null) {
@@ -8543,8 +8545,8 @@ function convertColMajorToRowMajorGeneric(src, out, shape) {
     }
 }
 const colMajorToRowMajorConverters = {
-    [0]: noop,
-    [1]: noop,
+    [0]: noop$1,
+    [1]: noop$1,
     [2]: convertColMajorToRowMajor2D,
     [3]: convertColMajorToRowMajor3D,
     [4]: convertColMajorToRowMajor4D,
@@ -9109,7 +9111,7 @@ class NestedArray {
     }
     set(selection = null, value) {
         if (selection === null) {
-            selection = [slice(null)];
+            selection = [slice$1(null)];
         }
         if (typeof value === "number") {
             if (this.shape.length === 0) {
@@ -9354,7 +9356,7 @@ class RawArray {
     }
     set(selection = null, value, chunkSelection) {
         if (selection === null) {
-            selection = [slice(null)];
+            selection = [slice$1(null)];
         }
         if (typeof value === "number") {
             if (this.shape.length === 0) {
@@ -10893,6 +10895,6428 @@ class HTTPStore {
     }
 }
 
+var bitUtils = {};
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} bitStart
+ * @param {number} bitLength
+ * @returns {number}
+ */
+
+function bitSequence$1 (bytes, bitStart, bitLength) {
+  // making an assumption that bytes is an Array-like that will give us one
+  // byte per element, so either an Array full of 8-bit integers or a
+  // Uint8Array or a Node.js Buffer, or something like that
+
+  const startOffset = bitStart % 8;
+  const byteCount = Math.ceil((startOffset + bitLength) / 8);
+  const byteStart = bitStart >> 3;
+  const endOffset = byteCount * 8 - bitLength - startOffset;
+
+  let result = 0;
+
+  for (let i = 0; i < byteCount; i++) {
+    let local = bytes[byteStart + i];
+    let shift = 0;
+    let localBitLength = 8; // how many bits of this byte we are extracting
+
+    if (i === 0) {
+      localBitLength -= startOffset;
+    }
+
+    if (i === byteCount - 1) {
+      localBitLength -= endOffset;
+      shift = endOffset;
+      local >>= shift; // take off the trailing bits
+    }
+
+    if (localBitLength < 8) {
+      const mask = (1 << localBitLength) - 1;
+      local &= mask; // mask off the leading bits
+    }
+
+    if (i < 3) {
+      if (shift < 8) {
+        result = result << (8 - shift);
+      }
+      result |= local;
+    } else {
+      // once we start shifting beyond the 24-bit range we get to signed integers
+      // and our bitwise operations break down, because JavaScript. But if we do
+      // it without bitwise operations then we can cheat into very large numbers
+      if (shift < 8) {
+        result = result * Math.pow(2, (8 - shift));
+      }
+      result += local;
+    }
+  }
+
+  return result
+}
+
+var bitSequence_1 = bitSequence$1;
+
+// Copyright Rod Vagg; Licensed under the Apache License, Version 2.0, see README.md for more information
+
+const bitSequence = bitSequence_1;
+
+/**
+ * @param {Uint8Array} hash
+ * @param {number} depth
+ * @param {number} nbits
+ * @returns {number}
+ */
+function mask$1 (hash, depth, nbits) {
+  return bitSequence(hash, depth * nbits, nbits)
+}
+
+/**
+ * set the `position` bit in the given `bitmap` to be `set` (truthy=1, falsey=0)
+ * @param {Uint8Array} bitmap
+ * @param {number} position
+ * @param {boolean|0|1} set
+ * @returns {Uint8Array}
+ */
+function setBit$1 (bitmap, position, set) {
+  // if we assume that `bitmap` is already the opposite of `set`, we could skip this check
+  const byte = Math.floor(position / 8);
+  const offset = position % 8;
+  const has = bitmapHas$1(bitmap, undefined, byte, offset);
+  if ((set && !has) || (!set && has)) {
+    const newBitmap = Uint8Array.from(bitmap);
+    let b = bitmap[byte];
+    if (set) {
+      b |= (1 << offset);
+    } else {
+      b ^= (1 << offset);
+    }
+    newBitmap[byte] = b;
+    return newBitmap
+  }
+  return bitmap
+}
+
+/**
+ * check whether `bitmap` has a `1` at the given `position` bit
+ * @param {Uint8Array} bitmap
+ * @param {number} [position]
+ * @param {number} [byte]
+ * @param {number} [offset]
+ * @returns {boolean}
+ */
+function bitmapHas$1 (bitmap, position, byte, offset) {
+  if (typeof byte !== 'number' || typeof offset !== 'number') {
+    /* c8 ignore next 3 */
+    if (position === undefined) {
+      throw new Error('`position` expected')
+    }
+    byte = Math.floor(position / 8);
+    offset = position % 8;
+  }
+  return ((bitmap[byte] >> offset) & 1) === 1
+}
+
+/**
+ * count how many `1` bits are in `bitmap up until `position`
+ * tells us where in the compacted element array an element should live
+ * TODO: optimize with a popcount on a `position` shifted bitmap?
+ * assumes bitmapHas(bitmap, position) == true, hence the i<position and +1 in the return
+ * @param {Uint8Array} bitmap
+ * @param {number} position
+ * @returns {number}
+ */
+function index$1 (bitmap, position) {
+  let t = 0;
+  for (let i = 0; i < position; i++) {
+    if (bitmapHas$1(bitmap, i)) {
+      t++;
+    }
+  }
+  return t
+}
+
+bitUtils.mask = mask$1;
+bitUtils.setBit = setBit$1;
+bitUtils.bitmapHas = bitmapHas$1;
+bitUtils.index = index$1;
+
+// Copyright Rod Vagg; Licensed under the Apache License, Version 2.0, see README.md for more information
+
+const { mask, setBit, bitmapHas, index } = bitUtils;
+
+const defaultBitWidth = 8; // 2^8 = 256 buckets or children per node
+const defaultBucketSize = 5; // array size for a bucket of values
+
+/**
+ * @template T
+ * @typedef {import('./interface').Store<T>} Store<T>
+ */
+/**
+ * @typedef {import('./interface').Config} Config
+ * @typedef {import('./interface').Options} Options
+ * @typedef {import('./interface').SerializedKV} SerializedKV
+ * @typedef {import('./interface').SerializedElement} SerializedElement
+ * @typedef {import('./interface').SerializedNode} SerializedNode
+ * @typedef {import('./interface').SerializedRoot} SerializedRoot
+ * @typedef {(inp:Uint8Array)=>(Uint8Array|Promise<Uint8Array>)} Hasher
+ * @typedef {{ hasher: Hasher, hashBytes: number }[]} Registry
+ * @typedef {(link:any)=>boolean} IsLink
+ * @typedef {readonly Element[]} ReadonlyElement
+ * @typedef {{data?: { found: boolean, elementAt: number, element: Element, bucketIndex?: number, bucketEntry?: KV }, link?: { elementAt: number, element: Element }}} FoundElement
+ */
+
+/**
+ * @type {Registry}
+ * @ignore
+ */
+const hasherRegistry = [];
+
+const textEncoder$1 = new TextEncoder();
+
+/**
+ * @ignore
+ * @param {boolean} condition
+ * @param {string} [message]
+ */
+function assert (condition, message) {
+  if (!condition) {
+    throw new Error(message || 'Unexpected error')
+  }
+}
+
+/**
+ * ```js
+ * let map = await iamap.create(store, options)
+ * ```
+ *
+ * Create a new IAMap instance with a backing store. This operation is asynchronous and returns a `Promise` that
+ * resolves to a `IAMap` instance.
+ *
+ * @name iamap.create
+ * @function
+ * @async
+ * @template T
+ * @param {Store<T>} store - A backing store for this Map. The store should be able to save and load a serialised
+ * form of a single node of a IAMap which is provided as a plain object representation. `store.save(node)` takes
+ * a serialisable node and should return a content address / ID for the node. `store.load(id)` serves the inverse
+ * purpose, taking a content address / ID as provided by a `save()` operation and returning the serialised form
+ * of a node which can be instantiated by IAMap. In addition, two identifier handling methods are needed:
+ * `store.isEqual(id1, id2)` is required to check the equality of the two content addresses / IDs
+ * (which may be custom for that data type). `store.isLink(obj)` is used to determine if an object is a link type
+ * that can be used for `load()` operations on the store. It is important that link types be different to standard
+ * JavaScript arrays and don't share properties used by the serialized form of an IAMap (e.g. such that a
+ * `typeof obj === 'object' && Array.isArray(obj.data)`) .This is because a node data element may either be a link to
+ * a child node, or an inlined child node, so `isLink()` should be able to determine if an object is a link, and if not,
+ * `Array.isArray(obj)` will determine if that data element is a bucket of elements, or the above object check be able
+ * to determine that an inline child node exists at the data element.
+ * The `store` object should take the following form:
+ * `{ async save(node):id, async load(id):node, isEqual(id,id):boolean, isLink(obj):boolean }`
+ * A `store` should throw an appropriately informative error when a node that is requested does not exist in the backing
+ * store.
+ *
+ * Options:
+ *   - hashAlg (number) - A [multicodec](https://github.com/multiformats/multicodec/blob/master/table.csv)
+ *     hash function identifier, e.g. `0x23` for `murmur3-32`. Hash functions must be registered with {@link iamap.registerHasher}.
+ *   - bitWidth (number, default 8) - The number of bits to extract from the hash to form a data element index at
+ *     each level of the Map, e.g. a bitWidth of 5 will extract 5 bits to be used as the data element index, since 2^5=32,
+ *     each node will store up to 32 data elements (child nodes and/or entry buckets). The maximum depth of the Map is
+ *     determined by `floor((hashBytes * 8) / bitWidth)` where `hashBytes` is the number of bytes the hash function
+ *     produces, e.g. `hashBytes=32` and `bitWidth=5` yields a maximum depth of 51 nodes. The maximum `bitWidth`
+ *     currently allowed is `8` which will store 256 data elements in each node.
+ *   - bucketSize (number, default  5) - The maximum number of collisions acceptable at each level of the Map. A
+ *     collision in the `bitWidth` index at a given depth will result in entries stored in a bucket (array). Once the
+ *     bucket exceeds `bucketSize`, a new child node is created for that index and all entries in the bucket are
+ *     pushed
+ *
+ * @param {Options} options - Options for this IAMap
+ * @param {Uint8Array} [map] - for internal use
+ * @param {number} [depth] - for internal use
+ * @param {Element[]} [data] - for internal use
+ */
+async function create$4 (store, options, map, depth, data) {
+  // map, depth and data are intended for internal use
+  const newNode = new IAMap(store, options, map, depth, data);
+  return save(store, newNode)
+}
+
+/**
+ * ```js
+ * let map = await iamap.load(store, id)
+ * ```
+ *
+ * Create a IAMap instance loaded from a serialised form in a backing store. See {@link iamap.create}.
+ *
+ * @name iamap.load
+ * @function
+ * @async
+ * @template T
+ * @param {Store<T>} store - A backing store for this Map. See {@link iamap.create}.
+ * @param {any} id - An content address / ID understood by the backing `store`.
+ * @param {number} [depth=0]
+ * @param {Options} [options]
+ */
+async function load$1 (store, id, depth = 0, options) {
+  // depth and options are internal arguments that the user doesn't need to interact with
+  if (depth !== 0 && typeof options !== 'object') {
+    throw new Error('Cannot load() without options at depth > 0')
+  }
+  const serialized = await store.load(id);
+  return fromSerializable(store, id, serialized, options, depth)
+}
+
+/**
+ * ```js
+ * iamap.registerHasher(hashAlg, hashBytes, hasher)
+ * ```
+ *
+ * Register a new hash function. IAMap has no hash functions by default, at least one is required to create a new
+ * IAMap.
+ *
+ * @name iamap.registerHasher
+ * @function
+ * @param {number} hashAlg - A [multicodec](https://github.com/multiformats/multicodec/blob/master/table.csv) hash
+ * function identifier **number**, e.g. `0x23` for `murmur3-32`.
+ * @param {number} hashBytes - The number of bytes to use from the result of the `hasher()` function (e.g. `32`)
+ * @param {Hasher} hasher - A hash function that takes a `Uint8Array` derived from the `key` values used for this
+ * Map and returns a `Uint8Array` (or a `Uint8Array`-like, such that each data element of the array contains a single byte value). The function
+ * may or may not be asynchronous but will be called with an `await`.
+ */
+function registerHasher (hashAlg, hashBytes, hasher) {
+  if (!Number.isInteger(hashAlg)) {
+    throw new Error('Invalid `hashAlg`')
+  }
+  if (!Number.isInteger(hashBytes)) {
+    throw new TypeError('Invalid `hashBytes`')
+  }
+  if (typeof hasher !== 'function') {
+    throw new TypeError('Invalid `hasher` function }')
+  }
+  hasherRegistry[hashAlg] = { hashBytes, hasher };
+}
+
+// simple stable key/value representation
+/**
+ * @ignore
+ */
+class KV {
+  /**
+   * @ignore
+   * @param {Uint8Array} key
+   * @param {any} value
+   */
+  constructor (key, value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  /**
+   * @ignore
+   * @returns {SerializedKV}
+   */
+  toSerializable () {
+    return [this.key, this.value]
+  }
+}
+
+/**
+ * @ignore
+ * @param {SerializedKV} obj
+ * @returns {KV}
+ */
+KV.fromSerializable = function (obj) {
+  assert(Array.isArray(obj));
+  assert(obj.length === 2);
+  return new KV(obj[0], obj[1])
+};
+
+// a element in the data array that each node holds, each element could be either a container of
+// an array (bucket) of KVs or a link to a child node
+class Element {
+  /**
+   * @ignore
+   * @param {KV[]} [bucket]
+   * @param {any} [link]
+   */
+  constructor (bucket, link) {
+    this.bucket = bucket || null;
+    this.link = link !== undefined ? link : null;
+    assert((this.bucket === null) === (this.link !== null));
+  }
+
+  /**
+   * @ignore
+   * @returns {SerializedElement}
+   */
+  toSerializable () {
+    if (this.bucket) {
+      return this.bucket.map((c) => {
+        return c.toSerializable()
+      })
+    } else {
+      assert(!IAMap.isIAMap(this.link)); // TODO: inline here
+      return this.link
+    }
+  }
+}
+
+/**
+ * @ignore
+ * @param {IsLink} isLink
+ * @param {any} obj
+ * @returns {Element}
+ */
+Element.fromSerializable = function (isLink, obj) {
+  if (isLink(obj)) {
+    return new Element(undefined, obj)
+  } else if (Array.isArray(obj)) {
+    return new Element(obj.map(KV.fromSerializable))
+  }
+  throw new Error('Unexpected error: badly formed data element')
+};
+
+/**
+ * Immutable Asynchronous Map
+ *
+ * The `IAMap` constructor should not be used directly. Use `iamap.create()` or `iamap.load()` to instantiate.
+ *
+ * @class
+ * @template T
+ * @property {any} id - A unique identifier for this `IAMap` instance. IDs are generated by the backing store and
+ * are returned on `save()` operations.
+ * @property {number} config.hashAlg - The hash function used by this `IAMap` instance. See {@link iamap.create} for more
+ * details.
+ * @property {number} config.bitWidth - The number of bits used at each level of this `IAMap`. See {@link iamap.create}
+ * for more details.
+ * @property {number} config.bucketSize - TThe maximum number of collisions acceptable at each level of the Map.
+ * @property {Uint8Array} [map=Uint8Array] - Bitmap indicating which slots are occupied by data entries or child node links,
+ * each data entry contains an bucket of entries. Must be the appropriate size for `config.bitWidth`
+ * (`2 ** config.bitWith / 8` bytes).
+ * @property {number} [depth=0] - Depth of the current node in the IAMap, `depth` is used to extract bits from the
+ * key hashes to locate slots
+ * @property {Array} [data=[]] - Array of data elements (an internal `Element` type), each of which contains a
+ * bucket of entries or an ID of a child node
+ * See {@link iamap.create} for more details.
+ */
+class IAMap {
+  /**
+   * @ignore
+   * @param {Store<T>} store
+   * @param {Options} [options]
+   * @param {Uint8Array} [map]
+   * @param {number} [depth]
+   * @param {Element[]} [data]
+   */
+  constructor (store, options, map, depth, data) {
+    if (!store || typeof store.save !== 'function' ||
+        typeof store.load !== 'function' ||
+        typeof store.isLink !== 'function' ||
+        typeof store.isEqual !== 'function') {
+      throw new TypeError('Invalid `store` option, must be of type: { save(node):id, load(id):node, isEqual(id,id):boolean, isLink(obj):boolean  }')
+    }
+    this.store = store;
+
+    /**
+     * @ignore
+     * @type {any|null}
+     */
+    this.id = null;
+    this.config = buildConfig(options);
+
+    const hashBytes = hasherRegistry[this.config.hashAlg].hashBytes;
+
+    if (map !== undefined && !(map instanceof Uint8Array)) {
+      throw new TypeError('`map` must be a Uint8Array')
+    }
+    const mapLength = Math.ceil(Math.pow(2, this.config.bitWidth) / 8);
+    if (map !== undefined && map.length !== mapLength) {
+      throw new Error('`map` must be a Uint8Array of length ' + mapLength)
+    }
+    this.map = map || new Uint8Array(mapLength);
+
+    if (depth !== undefined && (!Number.isInteger(depth) || depth < 0)) {
+      throw new TypeError('`depth` must be an integer >= 0')
+    }
+    this.depth = depth || 0;
+    if (this.depth > Math.floor((hashBytes * 8) / this.config.bitWidth)) {
+      // our hasher only has `hashBytes` to work with and we take off `bitWidth` bits with each level
+      // e.g. 32-byte hash gives us a maximum depth of 51 levels
+      throw new Error('Overflow: maximum tree depth reached')
+    }
+
+    /**
+     * @ignore
+     * @type {ReadonlyElement}
+     */
+    this.data = Object.freeze(data || []);
+    for (const e of this.data) {
+      if (!(e instanceof Element)) {
+        throw new TypeError('`data` array must contain only `Element` types')
+      }
+    }
+  }
+
+  /**
+   * Asynchronously create a new `IAMap` instance identical to this one but with `key` set to `value`.
+   *
+   * @param {(string|Uint8Array)} key - A key for the `value` being set whereby that same `value` may
+   * be retrieved with a `get()` operation with the same `key`. The type of the `key` object should either be a
+   * `Uint8Array` or be convertable to a `Uint8Array` via `TextEncoder.
+   * @param {any} value - Any value that can be stored in the backing store. A value could be a serialisable object
+   * or an address or content address or other kind of link to the actual value.
+   * @param {Uint8Array} [_cachedHash] - for internal use
+   * @returns {Promise<IAMap<T>>} A `Promise` containing a new `IAMap` that contains the new key/value pair.
+   * @async
+   */
+  async set (key, value, _cachedHash) {
+    if (!(key instanceof Uint8Array)) {
+      key = textEncoder$1.encode(key);
+    }
+    const hash = _cachedHash instanceof Uint8Array ? _cachedHash : await hasher(this)(key);
+    const bitpos = mask(hash, this.depth, this.config.bitWidth);
+
+    if (bitmapHas(this.map, bitpos)) { // should be in a bucket in this node
+      const { data, link } = findElement(this, bitpos, key);
+      if (data) {
+        if (data.found) {
+          /* c8 ignore next 3 */
+          if (data.bucketIndex === undefined || data.bucketEntry === undefined) {
+            throw new Error('Unexpected error')
+          }
+          if (data.bucketEntry.value === value) {
+            return this // no change, identical value
+          }
+          // replace entry for this key with a new value
+          // note that === will fail for two complex objects representing the same data so we may end up
+          // with a node of the same ID anyway
+          return updateBucket(this, data.elementAt, data.bucketIndex, key, value)
+        } else {
+          /* c8 ignore next 3 */
+          if (!data.element.bucket) {
+            throw new Error('Unexpected error')
+          }
+          if (data.element.bucket.length >= this.config.bucketSize) {
+            // too many collisions at this level, replace a bucket with a child node
+            return (await replaceBucketWithNode(this, data.elementAt)).set(key, value, hash)
+          }
+          // insert into the bucket and sort it
+          return updateBucket(this, data.elementAt, -1, key, value)
+        }
+      } else if (link) {
+        const child = await load$1(this.store, link.element.link, this.depth + 1, this.config);
+        assert(!!child);
+        const newChild = await child.set(key, value, hash);
+        return updateNode(this, link.elementAt, newChild)
+      /* c8 ignore next 3 */
+      } else {
+        throw new Error('Unexpected error')
+      }
+    } else { // we don't have an element for this hash portion, make one
+      return addNewElement(this, bitpos, key, value)
+    }
+  }
+
+  /**
+   * Asynchronously find and return a value for the given `key` if it exists within this `IAMap`.
+   *
+   * @param {string|Uint8Array} key - A key for the value being sought. See {@link IAMap#set} for
+   * details about acceptable `key` types.
+   * @param {Uint8Array} [_cachedHash] - for internal use
+   * @returns {Promise<any>} A `Promise` that resolves to the value being sought if that value exists within this `IAMap`. If the
+   * key is not found in this `IAMap`, the `Promise` will resolve to `undefined`.
+   * @async
+   */
+  async get (key, _cachedHash) {
+    if (!(key instanceof Uint8Array)) {
+      key = textEncoder$1.encode(key);
+    }
+    const hash = _cachedHash instanceof Uint8Array ? _cachedHash : await hasher(this)(key);
+    const bitpos = mask(hash, this.depth, this.config.bitWidth);
+    if (bitmapHas(this.map, bitpos)) { // should be in a bucket in this node
+      const { data, link } = findElement(this, bitpos, key);
+      if (data) {
+        if (data.found) {
+          /* c8 ignore next 3 */
+          if (data.bucketIndex === undefined || data.bucketEntry === undefined) {
+            throw new Error('Unexpected error')
+          }
+          return data.bucketEntry.value
+        }
+        return undefined // not found
+      } else if (link) {
+        const child = await load$1(this.store, link.element.link, this.depth + 1, this.config);
+        assert(!!child);
+        return await child.get(key, hash)
+        /* c8 ignore next 3 */
+      } else {
+        throw new Error('Unexpected error')
+      }
+    } else { // we don't have an element for this hash portion, not found
+      return undefined
+    }
+
+    /*
+    const traversal = traverseGet(this, key, this.store.isEqual, this.store.isLink, this.depth)
+    while (true) {
+      const nextId = traversal.traverse()
+      if (!nextId) {
+        return traversal.value()
+      }
+      const child = await this.store.load(nextId)
+      assert(!!child)
+      traversal.next(child)
+    }
+    */
+  }
+
+  /**
+   * Asynchronously find and return a boolean indicating whether the given `key` exists within this `IAMap`
+   *
+   * @param {string|Uint8Array} key - A key to check for existence within this `IAMap`. See
+   * {@link IAMap#set} for details about acceptable `key` types.
+   * @returns {Promise<boolean>} A `Promise` that resolves to either `true` or `false` depending on whether the `key` exists
+   * within this `IAMap`.
+   * @async
+   */
+  async has (key) {
+    return (await this.get(key)) !== undefined
+  }
+
+  /**
+   * Asynchronously create a new `IAMap` instance identical to this one but with `key` and its associated
+   * value removed. If the `key` does not exist within this `IAMap`, this instance of `IAMap` is returned.
+   *
+   * @param {string|Uint8Array} key - A key to remove. See {@link IAMap#set} for details about
+   * acceptable `key` types.
+   * @param {Uint8Array} [_cachedHash] - for internal use
+   * @returns {Promise<IAMap<T>>} A `Promise` that resolves to a new `IAMap` instance without the given `key` or the same `IAMap`
+   * instance if `key` does not exist within it.
+   * @async
+   */
+  async delete (key, _cachedHash) {
+    if (!(key instanceof Uint8Array)) {
+      key = textEncoder$1.encode(key);
+    }
+    const hash = _cachedHash instanceof Uint8Array ? _cachedHash : await hasher(this)(key);
+    assert(hash instanceof Uint8Array);
+    const bitpos = mask(hash, this.depth, this.config.bitWidth);
+
+    if (bitmapHas(this.map, bitpos)) { // should be in a bucket in this node
+      const { data, link } = findElement(this, bitpos, key);
+      if (data) {
+        if (data.found) {
+          /* c8 ignore next 3 */
+          if (data.bucketIndex === undefined) {
+            throw new Error('Unexpected error')
+          }
+          if (this.depth !== 0 && this.directNodeCount() === 0 && this.directEntryCount() === this.config.bucketSize + 1) {
+            // current node will only have this.config.bucketSize entries spread across its buckets
+            // and no child nodes, so wrap up the remaining nodes in a fresh IAMap at depth 0, it will
+            // bubble up to either become the new root node or be unpacked by a higher level
+            return collapseIntoSingleBucket(this, hash, data.elementAt, data.bucketIndex)
+          } else {
+            // we'll either have more entries left than this.config.bucketSize or we're at the root node
+            // so this is a simple bucket removal, no collapsing needed (root nodes can't be collapsed)
+            const lastInBucket = this.data.length === 1;
+            // we have at least one child node or too many entries in buckets to be collapsed
+            const newData = removeFromBucket(this.data, data.elementAt, lastInBucket, data.bucketIndex);
+            let newMap = this.map;
+            if (lastInBucket) {
+              newMap = setBit(newMap, bitpos, false);
+            }
+            return create$4(this.store, this.config, newMap, this.depth, newData)
+          }
+        } else {
+          // key would be located here according to hash, but we don't have it
+          return this
+        }
+      } else if (link) {
+        const child = await load$1(this.store, link.element.link, this.depth + 1, this.config);
+        assert(!!child);
+        const newChild = await child.delete(key, hash);
+        if (this.store.isEqual(newChild.id, link.element.link)) { // no modification
+          return this
+        }
+
+        assert(newChild.data.length > 0); // something probably went wrong in the map block above
+
+        if (newChild.directNodeCount() === 0 && newChild.directEntryCount() === this.config.bucketSize) {
+          // child got collapsed
+          if (this.directNodeCount() === 1 && this.directEntryCount() === 0) {
+            // we only had one node to collapse and the child was collapsible so end up acting the same
+            // as the child, bubble it up and it either becomes the new root or finds a parent to collapse
+            // in to (next section)
+            return newChild
+          } else {
+            // extract data elements from this returned node and merge them into ours
+            return collapseNodeInline(this, bitpos, newChild)
+          }
+        } else {
+          // simple node replacement with edited child
+          return updateNode(this, link.elementAt, newChild)
+        }
+        /* c8 ignore next 3 */
+      } else {
+        throw new Error('Unexpected error')
+      }
+    } else { // we don't have an element for this hash portion
+      return this
+    }
+  }
+
+  /**
+   * Asynchronously count the number of key/value pairs contained within this `IAMap`, including its children.
+   *
+   * @returns {Promise<number>} A `Promise` with a `number` indicating the number of key/value pairs within this `IAMap` instance.
+   * @async
+   */
+  async size () {
+    let c = 0;
+    for (const e of this.data) {
+      if (e.bucket) {
+        c += e.bucket.length;
+      } else {
+        const child = await load$1(this.store, e.link, this.depth + 1, this.config);
+        c += await child.size();
+      }
+    }
+    return c
+  }
+
+  /**
+   * Asynchronously emit all keys that exist within this `IAMap`, including its children. This will cause a full
+   * traversal of all nodes.
+   *
+   * @returns {AsyncGenerator<Uint8Array>} An async iterator that yields keys. All keys will be in `Uint8Array` format regardless of which
+   * format they were inserted via `set()`.
+   * @async
+   */
+  async * keys () {
+    for (const e of this.data) {
+      if (e.bucket) {
+        for (const kv of e.bucket) {
+          yield kv.key;
+        }
+      } else {
+        const child = await load$1(this.store, e.link, this.depth + 1, this.config);
+        yield * child.keys();
+      }
+    }
+
+    // yield * traverseKV(this, 'keys', this.store.isLink)
+  }
+
+  /**
+   * Asynchronously emit all values that exist within this `IAMap`, including its children. This will cause a full
+   * traversal of all nodes.
+   *
+   * @returns {AsyncGenerator<any>} An async iterator that yields values.
+   * @async
+   */
+  async * values () {
+    for (const e of this.data) {
+      if (e.bucket) {
+        for (const kv of e.bucket) {
+          yield kv.value;
+        }
+      } else {
+        const child = await load$1(this.store, e.link, this.depth + 1, this.config);
+        yield * child.values();
+      }
+    }
+
+    // yield * traverseKV(this, 'values', this.store.isLink)
+  }
+
+  /**
+   * Asynchronously emit all { key, value } pairs that exist within this `IAMap`, including its children. This will
+   * cause a full traversal of all nodes.
+   *
+   * @returns {AsyncGenerator<{ key: Uint8Array, value: any}>} An async iterator that yields objects with the properties `key` and `value`.
+   * @async
+   */
+  async * entries () {
+    for (const e of this.data) {
+      if (e.bucket) {
+        for (const kv of e.bucket) {
+          yield { key: kv.key, value: kv.value };
+        }
+      } else {
+        const child = await load$1(this.store, e.link, this.depth + 1, this.config);
+        yield * child.entries();
+      }
+    }
+
+    // yield * traverseKV(this, 'entries', this.store.isLink)
+  }
+
+  /**
+   * Asynchronously emit the IDs of this `IAMap` and all of its children.
+   *
+   * @returns {AsyncGenerator<any>} An async iterator that yields the ID of this `IAMap` and all of its children. The type of ID is
+   * determined by the backing store which is responsible for generating IDs upon `save()` operations.
+   */
+  async * ids () {
+    yield this.id;
+    for (const e of this.data) {
+      if (e.link) {
+        const child = await load$1(this.store, e.link, this.depth + 1, this.config);
+        yield * child.ids();
+      }
+    }
+  }
+
+  /**
+   * Returns a serialisable form of this `IAMap` node. The internal representation of this local node is copied into a plain
+   * JavaScript `Object` including a representation of its data array that the key/value pairs it contains as well as
+   * the identifiers of child nodes.
+   * Root nodes (depth==0) contain the full map configuration information, while intermediate and leaf nodes contain only
+   * data that cannot be inferred by traversal from a root node that already has this data (hashAlg and bucketSize -- bitWidth
+   * is inferred by the length of the `map` byte array).
+   * The backing store can use this representation to create a suitable serialised form. When loading from the backing store,
+   * `IAMap` expects to receive an object with the same layout from which it can instantiate a full `IAMap` object. Where
+   * root nodes contain the full set of data and intermediate and leaf nodes contain just the required data.
+   * For content addressable backing stores, it is expected that the same data in this serialisable form will always produce
+   * the same identifier.
+   * Note that the `map` property is a `Uint8Array` so will need special handling for some serialization forms (e.g. JSON).
+   *
+   * Root node form:
+   * ```
+   * {
+   *   hashAlg: number
+   *   bucketSize: number
+   *   hamt: [Uint8Array, Array]
+   * }
+   * ```
+   *
+   * Intermediate and leaf node form:
+   * ```
+   * [Uint8Array, Array]
+   * ```
+   *
+   * The `Uint8Array` in both forms is the 'map' used to identify the presence of an element in this node.
+   *
+   * The second element in the tuple in both forms, `Array`, is an elements array a mix of either buckets or links:
+   *
+   * * A bucket is an array of two elements, the first being a `key` of type `Uint8Array` and the second a `value`
+   *   or whatever type has been provided in `set()` operations for this `IAMap`.
+   * * A link is an object of the type that the backing store provides upon `save()` operations and can be identified
+   *   with `isLink()` calls.
+   *
+   * Buckets and links are differentiated by their "kind": a bucket is an array while a link is a "link" kind as dictated
+   * by the backing store. We use `Array.isArray()` and `store.isLink()` to perform this differentiation.
+   *
+   * @returns {SerializedNode|SerializedRoot} An object representing the internal state of this local `IAMap` node, including its links to child nodes
+   * if any.
+   */
+  toSerializable () {
+    const map = this.map;
+    const data = this.data.map((/** @type {Element} */ e) => {
+      return e.toSerializable()
+    });
+    /**
+     * @ignore
+     * @type {SerializedNode}
+     */
+    const hamt = [map, data];
+    if (this.depth !== 0) {
+      return hamt
+    }
+    /**
+     * @ignore
+     * @type {SerializedElement}
+     */
+    return {
+      hashAlg: this.config.hashAlg,
+      bucketSize: this.config.bucketSize,
+      hamt
+    }
+  }
+
+  /**
+   * Calculate the number of entries locally stored by this node. Performs a scan of local buckets and adds up
+   * their size.
+   *
+   * @returns {number} A number representing the number of local entries.
+   */
+  directEntryCount () {
+    return this.data.reduce((/** @type {number} */ p, /** @type {Element} */ c) => {
+      return p + (c.bucket ? c.bucket.length : 0)
+    }, 0)
+  }
+
+  /**
+   * Calculate the number of child nodes linked by this node. Performs a scan of the local entries and tallies up the
+   * ones containing links to child nodes.
+   *
+   * @returns {number} A number representing the number of direct child nodes
+   */
+  directNodeCount () {
+    return this.data.reduce((/** @type {number} */ p, /** @type {Element} */ c) => {
+      return p + (c.link ? 1 : 0)
+    }, 0)
+  }
+
+  /**
+   * Asynchronously perform a check on this node and its children that it is in canonical format for the current data.
+   * As this uses `size()` to calculate the total number of entries in this node and its children, it performs a full
+   * scan of nodes and therefore incurs a load and deserialisation cost for each child node.
+   * A `false` result from this method suggests a flaw in the implemetation.
+   *
+   * @async
+   * @returns {Promise<boolean>} A Promise with a boolean value indicating whether this IAMap is correctly formatted.
+   */
+  async isInvariant () {
+    const size = await this.size();
+    const entryArity = this.directEntryCount();
+    const nodeArity = this.directNodeCount();
+    const arity = entryArity + nodeArity;
+    let sizePredicate = 2; // 2 == 'more than one'
+    if (nodeArity === 0) {
+      sizePredicate = Math.min(2, entryArity); // 0, 1 or 2=='more than one'
+    }
+
+    const inv1 = size - entryArity >= 2 * (arity - entryArity);
+    const inv2 = arity === 0 ? sizePredicate === 0 : true;
+    const inv3 = (arity === 1 && entryArity === 1) ? sizePredicate === 1 : true;
+    const inv4 = arity >= 2 ? sizePredicate === 2 : true;
+    const inv5 = nodeArity >= 0 && entryArity >= 0 && ((entryArity + nodeArity) === arity);
+
+    return inv1 && inv2 && inv3 && inv4 && inv5
+  }
+
+  /**
+   * A convenience shortcut to {@link iamap.fromSerializable} that uses this IAMap node instance's backing `store` and
+   * configuration `options`. Intended to be used to instantiate child IAMap nodes from a root IAMap node.
+   *
+   * @param {any} id An optional ID for the instantiated IAMap node. See {@link iamap.fromSerializable}.
+   * @param {any} serializable The serializable form of an IAMap node to be instantiated.
+   * @param {number} [depth=0] The depth of the IAMap node. See {@link iamap.fromSerializable}.
+  */
+  fromChildSerializable (id, serializable, depth) {
+    return fromSerializable(this.store, id, serializable, this.config, depth)
+  }
+}
+
+/**
+ * store a new node and assign it an ID
+ * @ignore
+ * @template T
+ * @param {Store<T>} store
+ * @param {IAMap<T>} newNode
+ * @returns {Promise<IAMap<T>>}
+ */
+async function save (store, newNode) {
+  const id = await store.save(newNode.toSerializable());
+  newNode.id = id;
+  return newNode
+}
+
+/**
+ * // utility function to avoid duplication since it's used across get(), set() and delete()
+ * { bucket: { found: true, elementAt, element, bucketIndex, bucketEntry } }
+ * { bucket: { found: false, elementAt, element } }
+ * { link: { elementAt, element } }
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} bitpos
+ * @param {Uint8Array} key
+ * @returns {FoundElement}
+ */
+function findElement (node, bitpos, key) {
+  const elementAt = index(node.map, bitpos);
+  const element = node.data[elementAt];
+  assert(!!element);
+  if (element.bucket) { // data element
+    for (let bucketIndex = 0; bucketIndex < element.bucket.length; bucketIndex++) {
+      const bucketEntry = element.bucket[bucketIndex];
+      if (byteCompare(bucketEntry.key, key) === 0) {
+        return { data: { found: true, elementAt, element, bucketIndex, bucketEntry } }
+      }
+    }
+    return { data: { found: false, elementAt, element } }
+  }
+  assert(!!element.link);
+  return { link: { elementAt, element } }
+}
+
+/**
+ * new element for this node, i.e. first time this hash portion has been seen here
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} bitpos
+ * @param {Uint8Array} key
+ * @param {any} value
+ * @returns {Promise<IAMap<T>>}
+ */
+async function addNewElement (node, bitpos, key, value) {
+  const insertAt = index(node.map, bitpos);
+  const newData = node.data.slice();
+  newData.splice(insertAt, 0, new Element([new KV(key, value)]));
+  const newMap = setBit(node.map, bitpos, true);
+  return create$4(node.store, node.config, newMap, node.depth, newData)
+}
+
+/**
+ * update an existing bucket with a new k/v pair
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} elementAt
+ * @param {number} bucketAt
+ * @param {Uint8Array} key
+ * @param {any} value
+ * @returns {Promise<IAMap<T>>}
+ */
+async function updateBucket (node, elementAt, bucketAt, key, value) {
+  const oldElement = node.data[elementAt];
+  /* c8 ignore next 3 */
+  if (!oldElement.bucket) {
+    throw new Error('Unexpected error')
+  }
+  const newElement = new Element(oldElement.bucket.slice());
+  const newKv = new KV(key, value);
+  /* c8 ignore next 3 */
+  if (!newElement.bucket) {
+    throw new Error('Unexpected error')
+  }
+  if (bucketAt === -1) {
+    newElement.bucket.push(newKv);
+    // in-bucket sort is required to maintain a canonical state
+    newElement.bucket.sort((/** @type {KV} */ a, /** @type {KV} */ b) => byteCompare(a.key, b.key));
+  } else {
+    newElement.bucket[bucketAt] = newKv;
+  }
+  const newData = node.data.slice();
+  newData[elementAt] = newElement;
+  return create$4(node.store, node.config, node.map, node.depth, newData)
+}
+
+/**
+ * overflow of a bucket means it has to be replaced with a child node, tricky surgery
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} elementAt
+ * @returns {Promise<IAMap<T>>}
+ */
+async function replaceBucketWithNode (node, elementAt) {
+  let newNode = new IAMap(node.store, node.config, undefined, node.depth + 1);
+  const element = node.data[elementAt];
+  assert(!!element);
+  /* c8 ignore next 3 */
+  if (!element.bucket) {
+    throw new Error('Unexpected error')
+  }
+  for (const c of element.bucket) {
+    newNode = await newNode.set(c.key, c.value);
+  }
+  newNode = await save(node.store, newNode);
+  const newData = node.data.slice();
+  newData[elementAt] = new Element(undefined, newNode.id);
+  return create$4(node.store, node.config, node.map, node.depth, newData)
+}
+
+/**
+ * similar to addNewElement() but for new child nodes
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} elementAt
+ * @param {IAMap<T>} newChild
+ * @returns {Promise<IAMap<T>>}
+ */
+async function updateNode (node, elementAt, newChild) {
+  assert(!!newChild.id);
+  const newElement = new Element(undefined, newChild.id);
+  const newData = node.data.slice();
+  newData[elementAt] = newElement;
+  return create$4(node.store, node.config, node.map, node.depth, newData)
+}
+
+// take a node, extract all of its local entries and put them into a new node with a single
+// bucket; used for collapsing a node and sending it upward
+/**
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {Uint8Array} hash
+ * @param {number} elementAt
+ * @param {number} bucketIndex
+ * @returns {Promise<IAMap<T>>}
+ */
+function collapseIntoSingleBucket (node, hash, elementAt, bucketIndex) {
+  // pretend it's depth=0 (it may end up being) and only 1 bucket
+  const newMap = setBit(new Uint8Array(node.map.length), mask(hash, 0, node.config.bitWidth), true);
+  /**
+   * @ignore
+   * @type {KV[]}
+   */
+  const newBucket = node.data.reduce((/** @type {KV[]} */ p, /** @type {Element} */ c, /** @type {number} */ i) => {
+    if (i === elementAt) {
+      /* c8 ignore next 3 */
+      if (!c.bucket) {
+        throw new Error('Unexpected error')
+      }
+      if (c.bucket.length === 1) { // only element in bucket, skip it
+        return p
+      } else {
+        // there's more in this bucket, make a temporary one, remove it and concat it
+        const tmpBucket = c.bucket.slice();
+        tmpBucket.splice(bucketIndex, 1);
+        return p.concat(tmpBucket)
+      }
+    } else {
+      /* c8 ignore next 3 */
+      if (!c.bucket) {
+        throw new Error('Unexpected error')
+      }
+      return p.concat(c.bucket)
+    }
+  }, /** @type {KV[]} */ []);
+  newBucket.sort((a, b) => byteCompare(a.key, b.key));
+  const newElement = new Element(newBucket);
+  return create$4(node.store, node.config, newMap, 0, [newElement])
+}
+
+// simple delete from an existing bucket in this node
+/**
+ * @ignore
+ * @param {ReadonlyElement} data
+ * @param {number} elementAt
+ * @param {boolean} lastInBucket
+ * @param {number} bucketIndex
+ * @returns {Element[]}
+ */
+function removeFromBucket (data, elementAt, lastInBucket, bucketIndex) {
+  const newData = data.slice();
+  if (!lastInBucket) {
+    // bucket will not be empty, remove only the element from it
+    const oldElement = data[elementAt];
+    /* c8 ignore next 3 */
+    if (!oldElement.bucket) {
+      throw new Error('Unexpected error')
+    }
+    const newElement = new Element(oldElement.bucket.slice());
+    /* c8 ignore next 3 */
+    if (!newElement.bucket) {
+      throw new Error('Unexpected error')
+    }
+    newElement.bucket.splice(bucketIndex, 1);
+    newData.splice(elementAt, 1, newElement); // replace old bucket
+  } else {
+    // empty bucket, just remove it
+    newData.splice(elementAt, 1);
+  }
+  return newData
+}
+
+/**
+ * a node has bubbled up from a recursive delete() and we need to extract its
+ * contents and insert it into ours
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} node
+ * @param {number} bitpos
+ * @param {IAMap<T>} newNode
+ * @returns {Promise<IAMap<T>>}
+ */
+async function collapseNodeInline (node, bitpos, newNode) {
+  // assume the newNode has a single bucket and it's sorted and ready to replace the place
+  // it had in node's element array
+  assert(newNode.data.length === 1);
+  /* c8 ignore next 3 */
+  if (!newNode.data[0].bucket) {
+    throw new Error('Unexpected error')
+  }
+  const newBucket = newNode.data[0].bucket.slice();
+  const newElement = new Element(newBucket);
+  const elementIndex = index(node.map, bitpos);
+  const newData = node.data.slice();
+  newData[elementIndex] = newElement;
+
+  return create$4(node.store, node.config, node.map, node.depth, newData)
+}
+
+/**
+ * @ignore
+ * @param {Options} [options]
+ * @returns {Config}
+ */
+function buildConfig (options) {
+  /**
+   * @ignore
+   * @type {Config}
+   */
+  const config = {};
+
+  if (!options) {
+    throw new TypeError('Invalid `options` object')
+  }
+
+  if (!Number.isInteger(options.hashAlg)) {
+    throw new TypeError('Invalid `hashAlg` option')
+  }
+  if (!hasherRegistry[options.hashAlg]) {
+    throw new TypeError(`Unknown hashAlg: '${options.hashAlg}'`)
+  }
+  config.hashAlg = options.hashAlg;
+
+  if (options.bitWidth !== undefined) {
+    if (Number.isInteger(options.bitWidth)) {
+      if (options.bitWidth < 3 || options.bitWidth > 16) {
+        throw new TypeError('Invalid `bitWidth` option, must be between 3 and 16')
+      }
+      config.bitWidth = options.bitWidth;
+    } else {
+      throw new TypeError('Invalid `bitWidth` option')
+    }
+  } else {
+    config.bitWidth = defaultBitWidth;
+  }
+
+  if (options.bucketSize !== undefined) {
+    if (Number.isInteger(options.bucketSize)) {
+      if (options.bucketSize < 2) {
+        throw new TypeError('Invalid `bucketSize` option')
+      }
+      config.bucketSize = options.bucketSize;
+    } else {
+      throw new TypeError('Invalid `bucketSize` option')
+    }
+  } else {
+    config.bucketSize = defaultBucketSize;
+  }
+
+  return config
+}
+
+/**
+ * Determine if a serializable object is an IAMap root type, can be used to assert whether a data block is
+ * an IAMap before trying to instantiate it.
+ *
+ * @name iamap.isRootSerializable
+ * @function
+ * @param {any} serializable An object that may be a serialisable form of an IAMap root node
+ * @returns {boolean} An indication that the serialisable form is or is not an IAMap root node
+ */
+function isRootSerializable (serializable) {
+  return typeof serializable === 'object' &&
+    Number.isInteger(serializable.hashAlg) &&
+    Number.isInteger(serializable.bucketSize) &&
+    Array.isArray(serializable.hamt) &&
+    isSerializable(serializable.hamt)
+}
+
+/**
+ * Determine if a serializable object is an IAMap node type, can be used to assert whether a data block is
+ * an IAMap node before trying to instantiate it.
+ * This should pass for both root nodes as well as child nodes
+ *
+ * @name iamap.isSerializable
+ * @function
+ * @param {any} serializable An object that may be a serialisable form of an IAMap node
+ * @returns {boolean} An indication that the serialisable form is or is not an IAMap node
+ */
+function isSerializable (serializable) {
+  if (Array.isArray(serializable)) {
+    return serializable.length === 2 && serializable[0] instanceof Uint8Array && Array.isArray(serializable[1])
+  }
+  return isRootSerializable(serializable)
+}
+
+/**
+ * Instantiate an IAMap from a valid serialisable form of an IAMap node. The serializable should be the same as
+ * produced by {@link IAMap#toSerializable}.
+ * Serialised forms of root nodes must satisfy both {@link iamap.isRootSerializable} and {@link iamap.isSerializable}. For
+ * root nodes, the `options` parameter will be ignored and the `depth` parameter must be the default value of `0`.
+ * Serialised forms of non-root nodes must satisfy {@link iamap.isSerializable} and have a valid `options` parameter and
+ * a non-`0` `depth` parameter.
+ *
+ * @name iamap.fromSerializable
+ * @function
+ * @template T
+ * @param {Store<T>} store A backing store for this Map. See {@link iamap.create}.
+ * @param {any} id An optional ID for the instantiated IAMap node. Unlike {@link iamap.create},
+ * `fromSerializable()` does not `save()` a newly created IAMap node so an ID is not generated for it. If one is
+ * required for downstream purposes it should be provided, if the value is `null` or `undefined`, `node.id` will
+ * be `null` but will remain writable.
+ * @param {any} serializable The serializable form of an IAMap node to be instantiated
+ * @param {Options} [options=null] An options object for IAMap child node instantiation. Will be ignored for root
+ * node instantiation (where `depth` = `0`) See {@link iamap.create}.
+ * @param {number} [depth=0] The depth of the IAMap node. Where `0` is the root node and any `>0` number is a child
+ * node.
+ * @returns {IAMap<T>}
+ */
+function fromSerializable (store, id, serializable, options, depth = 0) {
+  /**
+   * @ignore
+   * @type {SerializedNode}
+   */
+  let hamt;
+  if (depth === 0) { // even if options were supplied, ignore them and use what's in the serializable
+    if (!isRootSerializable(serializable)) {
+      throw new Error('Loaded object does not appear to be an IAMap root (depth==0)')
+    }
+    // don't use passed-in options
+    options = serializableToOptions(serializable);
+    hamt = serializable.hamt;
+  } else {
+    if (!isSerializable(serializable)) {
+      throw new Error('Loaded object does not appear to be an IAMap node (depth>0)')
+    }
+    hamt = serializable;
+  }
+  const data = hamt[1].map(Element.fromSerializable.bind(null, store.isLink));
+  const node = new IAMap(store, options, hamt[0], depth, data);
+  if (id != null) {
+    node.id = id;
+  }
+  return node
+}
+
+/**
+ * @ignore
+ * @param {any} serializable
+ * @returns {Config}
+ */
+function serializableToOptions (serializable) {
+  return {
+    hashAlg: serializable.hashAlg,
+    bitWidth: Math.log2(serializable.hamt[0].length * 8), // inverse of (2**bitWidth) / 8
+    bucketSize: serializable.bucketSize
+  }
+}
+
+/**
+ * @template T
+ * @param {IAMap<T> | any} node
+ * @returns {boolean}
+ */
+IAMap.isIAMap = function isIAMap (node) {
+  return node instanceof IAMap
+};
+
+/**
+ * internal utility to fetch a map instance's hash function
+ *
+ * @ignore
+ * @template T
+ * @param {IAMap<T>} map
+ * @returns {Hasher}
+ */
+function hasher (map) {
+  return hasherRegistry[map.config.hashAlg].hasher
+}
+
+/**
+ * @ignore
+ * @param {Uint8Array} b1
+ * @param {Uint8Array} b2
+ * @returns {number}
+ */
+function byteCompare (b1, b2) {
+  let x = b1.length;
+  let y = b2.length;
+
+  for (let i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (b1[i] !== b2[i]) {
+      x = b1[i];
+      y = b2[i];
+      break
+    }
+  }
+  if (x < y) {
+    return -1
+  }
+  if (y < x) {
+    return 1
+  }
+  return 0
+}
+
+var create_1 = create$4;
+var load_1 = load$1;
+var registerHasher_1 = registerHasher;
+
+var encode_1$1 = encode$6;
+
+var MSB$2 = 0x80
+  , REST$2 = 0x7F
+  , MSBALL$1 = ~REST$2
+  , INT$1 = Math.pow(2, 31);
+
+function encode$6(num, out, offset) {
+  out = out || [];
+  offset = offset || 0;
+  var oldOffset = offset;
+
+  while(num >= INT$1) {
+    out[offset++] = (num & 0xFF) | MSB$2;
+    num /= 128;
+  }
+  while(num & MSBALL$1) {
+    out[offset++] = (num & 0xFF) | MSB$2;
+    num >>>= 7;
+  }
+  out[offset] = num | 0;
+  
+  encode$6.bytes = offset - oldOffset + 1;
+  
+  return out
+}
+
+var decode$9 = read$1;
+
+var MSB$1$1 = 0x80
+  , REST$1$1 = 0x7F;
+
+function read$1(buf, offset) {
+  var res    = 0
+    , offset = offset || 0
+    , shift  = 0
+    , counter = offset
+    , b
+    , l = buf.length;
+
+  do {
+    if (counter >= l) {
+      read$1.bytes = 0;
+      throw new RangeError('Could not decode varint')
+    }
+    b = buf[counter++];
+    res += shift < 28
+      ? (b & REST$1$1) << shift
+      : (b & REST$1$1) * Math.pow(2, shift);
+    shift += 7;
+  } while (b >= MSB$1$1)
+
+  read$1.bytes = counter - offset;
+
+  return res
+}
+
+var N1$1 = Math.pow(2,  7);
+var N2$1 = Math.pow(2, 14);
+var N3$1 = Math.pow(2, 21);
+var N4$1 = Math.pow(2, 28);
+var N5$1 = Math.pow(2, 35);
+var N6$1 = Math.pow(2, 42);
+var N7$1 = Math.pow(2, 49);
+var N8$1 = Math.pow(2, 56);
+var N9$1 = Math.pow(2, 63);
+
+var length$1 = function (value) {
+  return (
+    value < N1$1 ? 1
+  : value < N2$1 ? 2
+  : value < N3$1 ? 3
+  : value < N4$1 ? 4
+  : value < N5$1 ? 5
+  : value < N6$1 ? 6
+  : value < N7$1 ? 7
+  : value < N8$1 ? 8
+  : value < N9$1 ? 9
+  :              10
+  )
+};
+
+var varint$1 = {
+    encode: encode_1$1
+  , decode: decode$9
+  , encodingLength: length$1
+};
+
+var _brrp_varint$1 = varint$1;
+
+/**
+ * @param {Uint8Array} data
+ * @param {number} [offset=0]
+ * @returns {[number, number]}
+ */
+const decode$8 = (data, offset = 0) => {
+  const code = _brrp_varint$1.decode(data, offset);
+  return [code, _brrp_varint$1.decode.bytes]
+};
+
+/**
+ * @param {number} int
+ * @param {Uint8Array} target
+ * @param {number} [offset=0]
+ */
+const encodeTo$1 = (int, target, offset = 0) => {
+  _brrp_varint$1.encode(int, target, offset);
+  return target
+};
+
+/**
+ * @param {number} int
+ * @returns {number}
+ */
+const encodingLength$1 = (int) => {
+  return _brrp_varint$1.encodingLength(int)
+};
+
+/**
+ * @param {Uint8Array} aa
+ * @param {Uint8Array} bb
+ */
+const equals$3 = (aa, bb) => {
+  if (aa === bb) return true
+  if (aa.byteLength !== bb.byteLength) {
+    return false
+  }
+
+  for (let ii = 0; ii < aa.byteLength; ii++) {
+    if (aa[ii] !== bb[ii]) {
+      return false
+    }
+  }
+
+  return true
+};
+
+/**
+ * @param {ArrayBufferView|ArrayBuffer|Uint8Array} o
+ * @returns {Uint8Array}
+ */
+const coerce$1 = o => {
+  if (o instanceof Uint8Array && o.constructor.name === 'Uint8Array') return o
+  if (o instanceof ArrayBuffer) return new Uint8Array(o)
+  if (ArrayBuffer.isView(o)) {
+    return new Uint8Array(o.buffer, o.byteOffset, o.byteLength)
+  }
+  throw new Error('Unknown type, must be binary type')
+};
+
+/**
+ * Creates a multihash digest.
+ *
+ * @template {number} Code
+ * @param {Code} code
+ * @param {Uint8Array} digest
+ */
+const create$3 = (code, digest) => {
+  const size = digest.byteLength;
+  const sizeOffset = encodingLength$1(code);
+  const digestOffset = sizeOffset + encodingLength$1(size);
+
+  const bytes = new Uint8Array(digestOffset + size);
+  encodeTo$1(code, bytes, 0);
+  encodeTo$1(size, bytes, sizeOffset);
+  bytes.set(digest, digestOffset);
+
+  return new Digest$1(code, size, digest, bytes)
+};
+
+/**
+ * Turns bytes representation of multihash digest into an instance.
+ *
+ * @param {Uint8Array} multihash
+ * @returns {MultihashDigest}
+ */
+const decode$7 = (multihash) => {
+  const bytes = coerce$1(multihash);
+  const [code, sizeOffset] = decode$8(bytes);
+  const [size, digestOffset] = decode$8(bytes.subarray(sizeOffset));
+  const digest = bytes.subarray(sizeOffset + digestOffset);
+
+  if (digest.byteLength !== size) {
+    throw new Error('Incorrect length')
+  }
+
+  return new Digest$1(code, size, digest, bytes)
+};
+
+/**
+ * @param {MultihashDigest} a
+ * @param {unknown} b
+ * @returns {b is MultihashDigest}
+ */
+const equals$2 = (a, b) => {
+  if (a === b) {
+    return true
+  } else {
+    const data = /** @type {{code?:unknown, size?:unknown, bytes?:unknown}} */(b);
+
+    return (
+      a.code === data.code &&
+      a.size === data.size &&
+      data.bytes instanceof Uint8Array &&
+      equals$3(a.bytes, data.bytes)
+    )
+  }
+};
+
+/**
+ * @typedef {import('./interface.js').MultihashDigest} MultihashDigest
+ */
+
+/**
+ * Represents a multihash digest which carries information about the
+ * hashing algorithm and an actual hash digest.
+ *
+ * @template {number} Code
+ * @template {number} Size
+ * @class
+ * @implements {MultihashDigest}
+ */
+class Digest$1 {
+  /**
+   * Creates a multihash digest.
+   *
+   * @param {Code} code
+   * @param {Size} size
+   * @param {Uint8Array} digest
+   * @param {Uint8Array} bytes
+   */
+  constructor (code, size, digest, bytes) {
+    this.code = code;
+    this.size = size;
+    this.digest = digest;
+    this.bytes = bytes;
+  }
+}
+
+// base-x encoding / decoding
+// Copyright (c) 2018 base-x contributors
+// Copyright (c) 2014-2018 The Bitcoin Core developers (base58.cpp)
+// Distributed under the MIT software license, see the accompanying
+// file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+function base$1 (ALPHABET, name) {
+  if (ALPHABET.length >= 255) { throw new TypeError('Alphabet too long') }
+  var BASE_MAP = new Uint8Array(256);
+  for (var j = 0; j < BASE_MAP.length; j++) {
+    BASE_MAP[j] = 255;
+  }
+  for (var i = 0; i < ALPHABET.length; i++) {
+    var x = ALPHABET.charAt(i);
+    var xc = x.charCodeAt(0);
+    if (BASE_MAP[xc] !== 255) { throw new TypeError(x + ' is ambiguous') }
+    BASE_MAP[xc] = i;
+  }
+  var BASE = ALPHABET.length;
+  var LEADER = ALPHABET.charAt(0);
+  var FACTOR = Math.log(BASE) / Math.log(256); // log(BASE) / log(256), rounded up
+  var iFACTOR = Math.log(256) / Math.log(BASE); // log(256) / log(BASE), rounded up
+  function encode (source) {
+    if (source instanceof Uint8Array) ; else if (ArrayBuffer.isView(source)) {
+      source = new Uint8Array(source.buffer, source.byteOffset, source.byteLength);
+    } else if (Array.isArray(source)) {
+      source = Uint8Array.from(source);
+    }
+    if (!(source instanceof Uint8Array)) { throw new TypeError('Expected Uint8Array') }
+    if (source.length === 0) { return '' }
+        // Skip & count leading zeroes.
+    var zeroes = 0;
+    var length = 0;
+    var pbegin = 0;
+    var pend = source.length;
+    while (pbegin !== pend && source[pbegin] === 0) {
+      pbegin++;
+      zeroes++;
+    }
+        // Allocate enough space in big-endian base58 representation.
+    var size = ((pend - pbegin) * iFACTOR + 1) >>> 0;
+    var b58 = new Uint8Array(size);
+        // Process the bytes.
+    while (pbegin !== pend) {
+      var carry = source[pbegin];
+            // Apply "b58 = b58 * 256 + ch".
+      var i = 0;
+      for (var it1 = size - 1; (carry !== 0 || i < length) && (it1 !== -1); it1--, i++) {
+        carry += (256 * b58[it1]) >>> 0;
+        b58[it1] = (carry % BASE) >>> 0;
+        carry = (carry / BASE) >>> 0;
+      }
+      if (carry !== 0) { throw new Error('Non-zero carry') }
+      length = i;
+      pbegin++;
+    }
+        // Skip leading zeroes in base58 result.
+    var it2 = size - length;
+    while (it2 !== size && b58[it2] === 0) {
+      it2++;
+    }
+        // Translate the result into a string.
+    var str = LEADER.repeat(zeroes);
+    for (; it2 < size; ++it2) { str += ALPHABET.charAt(b58[it2]); }
+    return str
+  }
+  function decodeUnsafe (source) {
+    if (typeof source !== 'string') { throw new TypeError('Expected String') }
+    if (source.length === 0) { return new Uint8Array() }
+    var psz = 0;
+        // Skip leading spaces.
+    if (source[psz] === ' ') { return }
+        // Skip and count leading '1's.
+    var zeroes = 0;
+    var length = 0;
+    while (source[psz] === LEADER) {
+      zeroes++;
+      psz++;
+    }
+        // Allocate enough space in big-endian base256 representation.
+    var size = (((source.length - psz) * FACTOR) + 1) >>> 0; // log(58) / log(256), rounded up.
+    var b256 = new Uint8Array(size);
+        // Process the characters.
+    while (source[psz]) {
+            // Decode character
+      var carry = BASE_MAP[source.charCodeAt(psz)];
+            // Invalid character
+      if (carry === 255) { return }
+      var i = 0;
+      for (var it3 = size - 1; (carry !== 0 || i < length) && (it3 !== -1); it3--, i++) {
+        carry += (BASE * b256[it3]) >>> 0;
+        b256[it3] = (carry % 256) >>> 0;
+        carry = (carry / 256) >>> 0;
+      }
+      if (carry !== 0) { throw new Error('Non-zero carry') }
+      length = i;
+      psz++;
+    }
+        // Skip trailing spaces.
+    if (source[psz] === ' ') { return }
+        // Skip leading zeroes in b256.
+    var it4 = size - length;
+    while (it4 !== size && b256[it4] === 0) {
+      it4++;
+    }
+    var vch = new Uint8Array(zeroes + (size - it4));
+    var j = zeroes;
+    while (it4 !== size) {
+      vch[j++] = b256[it4++];
+    }
+    return vch
+  }
+  function decode (string) {
+    var buffer = decodeUnsafe(string);
+    if (buffer) { return buffer }
+    throw new Error(`Non-${name} character`)
+  }
+  return {
+    encode: encode,
+    decodeUnsafe: decodeUnsafe,
+    decode: decode
+  }
+}
+var src$1 = base$1;
+
+var _brrp__multiformats_scope_baseX$1 = src$1;
+
+/**
+ * Class represents both BaseEncoder and MultibaseEncoder meaning it
+ * can be used to encode to multibase or base encode without multibase
+ * prefix.
+ *
+ * @class
+ * @template {string} Base
+ * @template {string} Prefix
+ * @implements {API.MultibaseEncoder<Prefix>}
+ * @implements {API.BaseEncoder}
+ */
+class Encoder$1 {
+  /**
+   * @param {Base} name
+   * @param {Prefix} prefix
+   * @param {(bytes:Uint8Array) => string} baseEncode
+   */
+  constructor (name, prefix, baseEncode) {
+    this.name = name;
+    this.prefix = prefix;
+    this.baseEncode = baseEncode;
+  }
+
+  /**
+   * @param {Uint8Array} bytes
+   * @returns {API.Multibase<Prefix>}
+   */
+  encode (bytes) {
+    if (bytes instanceof Uint8Array) {
+      return `${this.prefix}${this.baseEncode(bytes)}`
+    } else {
+      throw Error('Unknown type, must be binary type')
+    }
+  }
+}
+
+/**
+ * @template {string} Prefix
+ */
+/**
+ * Class represents both BaseDecoder and MultibaseDecoder so it could be used
+ * to decode multibases (with matching prefix) or just base decode strings
+ * with corresponding base encoding.
+ *
+ * @class
+ * @template {string} Base
+ * @template {string} Prefix
+ * @implements {API.MultibaseDecoder<Prefix>}
+ * @implements {API.UnibaseDecoder<Prefix>}
+ * @implements {API.BaseDecoder}
+ */
+class Decoder$1 {
+  /**
+   * @param {Base} name
+   * @param {Prefix} prefix
+   * @param {(text:string) => Uint8Array} baseDecode
+   */
+  constructor (name, prefix, baseDecode) {
+    this.name = name;
+    this.prefix = prefix;
+    /* c8 ignore next 3 */
+    if (prefix.codePointAt(0) === undefined) {
+      throw new Error('Invalid prefix character')
+    }
+    /** @private */
+    this.prefixCodePoint = /** @type {number} */ (prefix.codePointAt(0));
+    this.baseDecode = baseDecode;
+  }
+
+  /**
+   * @param {string} text
+   */
+  decode (text) {
+    if (typeof text === 'string') {
+      if (text.codePointAt(0) !== this.prefixCodePoint) {
+        throw Error(`Unable to decode multibase string ${JSON.stringify(text)}, ${this.name} decoder only supports inputs prefixed with ${this.prefix}`)
+      }
+      return this.baseDecode(text.slice(this.prefix.length))
+    } else {
+      throw Error('Can only multibase decode strings')
+    }
+  }
+
+  /**
+   * @template {string} OtherPrefix
+   * @param {API.UnibaseDecoder<OtherPrefix>|ComposedDecoder<OtherPrefix>} decoder
+   * @returns {ComposedDecoder<Prefix|OtherPrefix>}
+   */
+  or (decoder) {
+    return or$1(this, decoder)
+  }
+}
+
+/**
+ * @template {string} Prefix
+ * @typedef {Record<Prefix, API.UnibaseDecoder<Prefix>>} Decoders
+ */
+
+/**
+ * @template {string} Prefix
+ * @implements {API.MultibaseDecoder<Prefix>}
+ * @implements {API.CombobaseDecoder<Prefix>}
+ */
+class ComposedDecoder$1 {
+  /**
+   * @param {Decoders<Prefix>} decoders
+   */
+  constructor (decoders) {
+    this.decoders = decoders;
+  }
+
+  /**
+   * @template {string} OtherPrefix
+   * @param {API.UnibaseDecoder<OtherPrefix>|ComposedDecoder<OtherPrefix>} decoder
+   * @returns {ComposedDecoder<Prefix|OtherPrefix>}
+   */
+  or (decoder) {
+    return or$1(this, decoder)
+  }
+
+  /**
+   * @param {string} input
+   * @returns {Uint8Array}
+   */
+  decode (input) {
+    const prefix = /** @type {Prefix} */ (input[0]);
+    const decoder = this.decoders[prefix];
+    if (decoder) {
+      return decoder.decode(input)
+    } else {
+      throw RangeError(`Unable to decode multibase string ${JSON.stringify(input)}, only inputs prefixed with ${Object.keys(this.decoders)} are supported`)
+    }
+  }
+}
+
+/**
+ * @template {string} L
+ * @template {string} R
+ * @param {API.UnibaseDecoder<L>|API.CombobaseDecoder<L>} left
+ * @param {API.UnibaseDecoder<R>|API.CombobaseDecoder<R>} right
+ * @returns {ComposedDecoder<L|R>}
+ */
+const or$1 = (left, right) => new ComposedDecoder$1(/** @type {Decoders<L|R>} */({
+  ...(left.decoders || { [/** @type API.UnibaseDecoder<L> */(left).prefix]: left }),
+  ...(right.decoders || { [/** @type API.UnibaseDecoder<R> */(right).prefix]: right })
+}));
+
+/**
+ * @class
+ * @template {string} Base
+ * @template {string} Prefix
+ * @implements {API.MultibaseCodec<Prefix>}
+ * @implements {API.MultibaseEncoder<Prefix>}
+ * @implements {API.MultibaseDecoder<Prefix>}
+ * @implements {API.BaseCodec}
+ * @implements {API.BaseEncoder}
+ * @implements {API.BaseDecoder}
+ */
+class Codec$1 {
+  /**
+   * @param {Base} name
+   * @param {Prefix} prefix
+   * @param {(bytes:Uint8Array) => string} baseEncode
+   * @param {(text:string) => Uint8Array} baseDecode
+   */
+  constructor (name, prefix, baseEncode, baseDecode) {
+    this.name = name;
+    this.prefix = prefix;
+    this.baseEncode = baseEncode;
+    this.baseDecode = baseDecode;
+    this.encoder = new Encoder$1(name, prefix, baseEncode);
+    this.decoder = new Decoder$1(name, prefix, baseDecode);
+  }
+
+  /**
+   * @param {Uint8Array} input
+   */
+  encode (input) {
+    return this.encoder.encode(input)
+  }
+
+  /**
+   * @param {string} input
+   */
+  decode (input) {
+    return this.decoder.decode(input)
+  }
+}
+
+/**
+ * @template {string} Base
+ * @template {string} Prefix
+ * @param {object} options
+ * @param {Base} options.name
+ * @param {Prefix} options.prefix
+ * @param {(bytes:Uint8Array) => string} options.encode
+ * @param {(input:string) => Uint8Array} options.decode
+ * @returns {Codec<Base, Prefix>}
+ */
+const from$2 = ({ name, prefix, encode, decode }) =>
+  new Codec$1(name, prefix, encode, decode);
+
+/**
+ * @template {string} Base
+ * @template {string} Prefix
+ * @param {object} options
+ * @param {Base} options.name
+ * @param {Prefix} options.prefix
+ * @param {string} options.alphabet
+ * @returns {Codec<Base, Prefix>}
+ */
+const baseX$1 = ({ prefix, name, alphabet }) => {
+  const { encode, decode } = _brrp__multiformats_scope_baseX$1(alphabet, name);
+  return from$2({
+    prefix,
+    name,
+    encode,
+    /**
+     * @param {string} text
+     */
+    decode: text => coerce$1(decode(text))
+  })
+};
+
+/**
+ * @param {string} string
+ * @param {string} alphabet
+ * @param {number} bitsPerChar
+ * @param {string} name
+ * @returns {Uint8Array}
+ */
+const decode$6 = (string, alphabet, bitsPerChar, name) => {
+  // Build the character lookup table:
+  /** @type {Record<string, number>} */
+  const codes = {};
+  for (let i = 0; i < alphabet.length; ++i) {
+    codes[alphabet[i]] = i;
+  }
+
+  // Count the padding bytes:
+  let end = string.length;
+  while (string[end - 1] === '=') {
+    --end;
+  }
+
+  // Allocate the output:
+  const out = new Uint8Array((end * bitsPerChar / 8) | 0);
+
+  // Parse the data:
+  let bits = 0; // Number of bits currently in the buffer
+  let buffer = 0; // Bits waiting to be written out, MSB first
+  let written = 0; // Next byte to write
+  for (let i = 0; i < end; ++i) {
+    // Read one character from the string:
+    const value = codes[string[i]];
+    if (value === undefined) {
+      throw new SyntaxError(`Non-${name} character`)
+    }
+
+    // Append the bits to the buffer:
+    buffer = (buffer << bitsPerChar) | value;
+    bits += bitsPerChar;
+
+    // Write out some bits if the buffer has a byte's worth:
+    if (bits >= 8) {
+      bits -= 8;
+      out[written++] = 0xff & (buffer >> bits);
+    }
+  }
+
+  // Verify that we have received just enough bits:
+  if (bits >= bitsPerChar || 0xff & (buffer << (8 - bits))) {
+    throw new SyntaxError('Unexpected end of data')
+  }
+
+  return out
+};
+
+/**
+ * @param {Uint8Array} data
+ * @param {string} alphabet
+ * @param {number} bitsPerChar
+ * @returns {string}
+ */
+const encode$5 = (data, alphabet, bitsPerChar) => {
+  const pad = alphabet[alphabet.length - 1] === '=';
+  const mask = (1 << bitsPerChar) - 1;
+  let out = '';
+
+  let bits = 0; // Number of bits currently in the buffer
+  let buffer = 0; // Bits waiting to be written out, MSB first
+  for (let i = 0; i < data.length; ++i) {
+    // Slurp data into the buffer:
+    buffer = (buffer << 8) | data[i];
+    bits += 8;
+
+    // Write out as much as we can:
+    while (bits > bitsPerChar) {
+      bits -= bitsPerChar;
+      out += alphabet[mask & (buffer >> bits)];
+    }
+  }
+
+  // Partial character:
+  if (bits) {
+    out += alphabet[mask & (buffer << (bitsPerChar - bits))];
+  }
+
+  // Add padding characters until we hit a byte boundary:
+  if (pad) {
+    while ((out.length * bitsPerChar) & 7) {
+      out += '=';
+    }
+  }
+
+  return out
+};
+
+/**
+ * RFC4648 Factory
+ *
+ * @template {string} Base
+ * @template {string} Prefix
+ * @param {object} options
+ * @param {Base} options.name
+ * @param {Prefix} options.prefix
+ * @param {string} options.alphabet
+ * @param {number} options.bitsPerChar
+ */
+const rfc4648$1 = ({ name, prefix, bitsPerChar, alphabet }) => {
+  return from$2({
+    prefix,
+    name,
+    encode (input) {
+      return encode$5(input, alphabet, bitsPerChar)
+    },
+    decode (input) {
+      return decode$6(input, alphabet, bitsPerChar, name)
+    }
+  })
+};
+
+const base58btc$1 = baseX$1({
+  name: 'base58btc',
+  prefix: 'z',
+  alphabet: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+});
+
+baseX$1({
+  name: 'base58flickr',
+  prefix: 'Z',
+  alphabet: '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
+});
+
+const base32$1 = rfc4648$1({
+  prefix: 'b',
+  name: 'base32',
+  alphabet: 'abcdefghijklmnopqrstuvwxyz234567',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'B',
+  name: 'base32upper',
+  alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'c',
+  name: 'base32pad',
+  alphabet: 'abcdefghijklmnopqrstuvwxyz234567=',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'C',
+  name: 'base32padupper',
+  alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'v',
+  name: 'base32hex',
+  alphabet: '0123456789abcdefghijklmnopqrstuv',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'V',
+  name: 'base32hexupper',
+  alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 't',
+  name: 'base32hexpad',
+  alphabet: '0123456789abcdefghijklmnopqrstuv=',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'T',
+  name: 'base32hexpadupper',
+  alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUV=',
+  bitsPerChar: 5
+});
+
+rfc4648$1({
+  prefix: 'h',
+  name: 'base32z',
+  alphabet: 'ybndrfg8ejkmcpqxot1uwisza345h769',
+  bitsPerChar: 5
+});
+
+/**
+ * @template {API.Link<unknown, number, number, API.Version>} T
+ * @template {string} Prefix
+ * @param {T} link
+ * @param {API.MultibaseEncoder<Prefix>} [base]
+ * @returns {API.ToString<T, Prefix>}
+ */
+const format = (link, base) => {
+  const { bytes, version } = link;
+  switch (version) {
+    case 0:
+      return toStringV0$1(
+        bytes,
+        baseCache(link),
+        /** @type {API.MultibaseEncoder<"z">} */ (base) || base58btc$1.encoder
+      )
+    default:
+      return toStringV1$1(
+        bytes,
+        baseCache(link),
+        /** @type {API.MultibaseEncoder<Prefix>} */ (base || base32$1.encoder)
+      )
+  }
+};
+
+/** @type {WeakMap<API.UnknownLink, Map<string, string>>} */
+const cache = new WeakMap();
+
+/**
+ * @param {API.UnknownLink} cid
+ * @returns {Map<string, string>}
+ */
+const baseCache = cid => {
+  const baseCache = cache.get(cid);
+  if (baseCache == null) {
+    const baseCache = new Map();
+    cache.set(cid, baseCache);
+    return baseCache
+  }
+  return baseCache
+};
+
+/**
+ * @template {unknown} [Data=unknown]
+ * @template {number} [Format=number]
+ * @template {number} [Alg=number]
+ * @template {API.Version} [Version=API.Version]
+ * @implements {API.Link<Data, Format, Alg, Version>}
+ */
+
+class CID$1 {
+  /**
+   * @param {Version} version - Version of the CID
+   * @param {Format} code - Code of the codec content is encoded in, see https://github.com/multiformats/multicodec/blob/master/table.csv
+   * @param {API.MultihashDigest<Alg>} multihash - (Multi)hash of the of the content.
+   * @param {Uint8Array} bytes
+   *
+   */
+  constructor (version, code, multihash, bytes) {
+    /** @readonly */
+    this.code = code;
+    /** @readonly */
+    this.version = version;
+    /** @readonly */
+    this.multihash = multihash;
+    /** @readonly */
+    this.bytes = bytes;
+
+    // flag to serializers that this is a CID and
+    // should be treated specially
+    /** @readonly */
+    this['/'] = bytes;
+  }
+
+  /**
+   * Signalling `cid.asCID === cid` has been replaced with `cid['/'] === cid.bytes`
+   * please either use `CID.asCID(cid)` or switch to new signalling mechanism
+   *
+   * @deprecated
+   */
+  get asCID () {
+    return this
+  }
+
+  // ArrayBufferView
+  get byteOffset () {
+    return this.bytes.byteOffset
+  }
+
+  // ArrayBufferView
+  get byteLength () {
+    return this.bytes.byteLength
+  }
+
+  /**
+   * @returns {CID<Data, API.DAG_PB, API.SHA_256, 0>}
+   */
+  toV0 () {
+    switch (this.version) {
+      case 0: {
+        return /** @type {CID<Data, API.DAG_PB, API.SHA_256, 0>} */ (this)
+      }
+      case 1: {
+        const { code, multihash } = this;
+
+        if (code !== DAG_PB_CODE$1) {
+          throw new Error('Cannot convert a non dag-pb CID to CIDv0')
+        }
+
+        // sha2-256
+        if (multihash.code !== SHA_256_CODE$1) {
+          throw new Error('Cannot convert non sha2-256 multihash CID to CIDv0')
+        }
+
+        return /** @type {CID<Data, API.DAG_PB, API.SHA_256, 0>} */ (
+          CID$1.createV0(
+            /** @type {API.MultihashDigest<API.SHA_256>} */ (multihash)
+          )
+        )
+      }
+      default: {
+        throw Error(
+          `Can not convert CID version ${this.version} to version 0. This is a bug please report`
+        )
+      }
+    }
+  }
+
+  /**
+   * @returns {CID<Data, Format, Alg, 1>}
+   */
+  toV1 () {
+    switch (this.version) {
+      case 0: {
+        const { code, digest } = this.multihash;
+        const multihash = create$3(code, digest);
+        return /** @type {CID<Data, Format, Alg, 1>} */ (
+          CID$1.createV1(this.code, multihash)
+        )
+      }
+      case 1: {
+        return /** @type {CID<Data, Format, Alg, 1>} */ (this)
+      }
+      default: {
+        throw Error(
+          `Can not convert CID version ${this.version} to version 1. This is a bug please report`
+        )
+      }
+    }
+  }
+
+  /**
+   * @param {unknown} other
+   * @returns {other is CID<Data, Format, Alg, Version>}
+   */
+  equals (other) {
+    return CID$1.equals(this, other)
+  }
+
+  /**
+   * @template {unknown} Data
+   * @template {number} Format
+   * @template {number} Alg
+   * @template {API.Version} Version
+   * @param {API.Link<Data, Format, Alg, Version>} self
+   * @param {unknown} other
+   * @returns {other is CID}
+   */
+  static equals (self, other) {
+    const unknown =
+      /** @type {{code?:unknown, version?:unknown, multihash?:unknown}} */ (
+        other
+      );
+    return (
+      unknown &&
+      self.code === unknown.code &&
+      self.version === unknown.version &&
+      equals$2(self.multihash, unknown.multihash)
+    )
+  }
+
+  /**
+   * @param {API.MultibaseEncoder<string>} [base]
+   * @returns {string}
+   */
+  toString (base) {
+    return format(this, base)
+  }
+
+  toJSON () {
+    return { '/': format(this) }
+  }
+
+  link () {
+    return this
+  }
+
+  get [Symbol.toStringTag] () {
+    return 'CID'
+  }
+
+  // Legacy
+
+  [Symbol.for('nodejs.util.inspect.custom')] () {
+    return `CID(${this.toString()})`
+  }
+
+  /**
+   * Takes any input `value` and returns a `CID` instance if it was
+   * a `CID` otherwise returns `null`. If `value` is instanceof `CID`
+   * it will return value back. If `value` is not instance of this CID
+   * class, but is compatible CID it will return new instance of this
+   * `CID` class. Otherwise returns null.
+   *
+   * This allows two different incompatible versions of CID library to
+   * co-exist and interop as long as binary interface is compatible.
+   *
+   * @template {unknown} Data
+   * @template {number} Format
+   * @template {number} Alg
+   * @template {API.Version} Version
+   * @template {unknown} U
+   * @param {API.Link<Data, Format, Alg, Version>|U} input
+   * @returns {CID<Data, Format, Alg, Version>|null}
+   */
+  static asCID (input) {
+    if (input == null) {
+      return null
+    }
+
+    const value = /** @type {any} */ (input);
+    if (value instanceof CID$1) {
+      // If value is instance of CID then we're all set.
+      return value
+    } else if ((value['/'] != null && value['/'] === value.bytes) || value.asCID === value) {
+      // If value isn't instance of this CID class but `this.asCID === this` or
+      // `value['/'] === value.bytes` is true it is CID instance coming from a
+      // different implementation (diff version or duplicate). In that case we
+      // rebase it to this `CID` implementation so caller is guaranteed to get
+      // instance with expected API.
+      const { version, code, multihash, bytes } = value;
+      return new CID$1(
+        version,
+        code,
+        /** @type {API.MultihashDigest<Alg>} */ (multihash),
+        bytes || encodeCID$1(version, code, multihash.bytes)
+      )
+    } else if (value[cidSymbol$1] === true) {
+      // If value is a CID from older implementation that used to be tagged via
+      // symbol we still rebase it to the this `CID` implementation by
+      // delegating that to a constructor.
+      const { version, multihash, code } = value;
+      const digest =
+        /** @type {API.MultihashDigest<Alg>} */
+        (decode$7(multihash));
+      return CID$1.create(version, code, digest)
+    } else {
+      // Otherwise value is not a CID (or an incompatible version of it) in
+      // which case we return `null`.
+      return null
+    }
+  }
+
+  /**
+   *
+   * @template {unknown} Data
+   * @template {number} Format
+   * @template {number} Alg
+   * @template {API.Version} Version
+   * @param {Version} version - Version of the CID
+   * @param {Format} code - Code of the codec content is encoded in, see https://github.com/multiformats/multicodec/blob/master/table.csv
+   * @param {API.MultihashDigest<Alg>} digest - (Multi)hash of the of the content.
+   * @returns {CID<Data, Format, Alg, Version>}
+   */
+  static create (version, code, digest) {
+    if (typeof code !== 'number') {
+      throw new Error('String codecs are no longer supported')
+    }
+
+    if (!(digest.bytes instanceof Uint8Array)) {
+      throw new Error('Invalid digest')
+    }
+
+    switch (version) {
+      case 0: {
+        if (code !== DAG_PB_CODE$1) {
+          throw new Error(
+            `Version 0 CID must use dag-pb (code: ${DAG_PB_CODE$1}) block encoding`
+          )
+        } else {
+          return new CID$1(version, code, digest, digest.bytes)
+        }
+      }
+      case 1: {
+        const bytes = encodeCID$1(version, code, digest.bytes);
+        return new CID$1(version, code, digest, bytes)
+      }
+      default: {
+        throw new Error('Invalid version')
+      }
+    }
+  }
+
+  /**
+   * Simplified version of `create` for CIDv0.
+   *
+   * @template {unknown} [T=unknown]
+   * @param {API.MultihashDigest<typeof SHA_256_CODE>} digest - Multihash.
+   * @returns {CID<T, typeof DAG_PB_CODE, typeof SHA_256_CODE, 0>}
+   */
+  static createV0 (digest) {
+    return CID$1.create(0, DAG_PB_CODE$1, digest)
+  }
+
+  /**
+   * Simplified version of `create` for CIDv1.
+   *
+   * @template {unknown} Data
+   * @template {number} Code
+   * @template {number} Alg
+   * @param {Code} code - Content encoding format code.
+   * @param {API.MultihashDigest<Alg>} digest - Miltihash of the content.
+   * @returns {CID<Data, Code, Alg, 1>}
+   */
+  static createV1 (code, digest) {
+    return CID$1.create(1, code, digest)
+  }
+
+  /**
+   * Decoded a CID from its binary representation. The byte array must contain
+   * only the CID with no additional bytes.
+   *
+   * An error will be thrown if the bytes provided do not contain a valid
+   * binary representation of a CID.
+   *
+   * @template {unknown} Data
+   * @template {number} Code
+   * @template {number} Alg
+   * @template {API.Version} Ver
+   * @param {API.ByteView<API.Link<Data, Code, Alg, Ver>>} bytes
+   * @returns {CID<Data, Code, Alg, Ver>}
+   */
+  static decode (bytes) {
+    const [cid, remainder] = CID$1.decodeFirst(bytes);
+    if (remainder.length) {
+      throw new Error('Incorrect length')
+    }
+    return cid
+  }
+
+  /**
+   * Decoded a CID from its binary representation at the beginning of a byte
+   * array.
+   *
+   * Returns an array with the first element containing the CID and the second
+   * element containing the remainder of the original byte array. The remainder
+   * will be a zero-length byte array if the provided bytes only contained a
+   * binary CID representation.
+   *
+   * @template {unknown} T
+   * @template {number} C
+   * @template {number} A
+   * @template {API.Version} V
+   * @param {API.ByteView<API.Link<T, C, A, V>>} bytes
+   * @returns {[CID<T, C, A, V>, Uint8Array]}
+   */
+  static decodeFirst (bytes) {
+    const specs = CID$1.inspectBytes(bytes);
+    const prefixSize = specs.size - specs.multihashSize;
+    const multihashBytes = coerce$1(
+      bytes.subarray(prefixSize, prefixSize + specs.multihashSize)
+    );
+    if (multihashBytes.byteLength !== specs.multihashSize) {
+      throw new Error('Incorrect length')
+    }
+    const digestBytes = multihashBytes.subarray(
+      specs.multihashSize - specs.digestSize
+    );
+    const digest = new Digest$1(
+      specs.multihashCode,
+      specs.digestSize,
+      digestBytes,
+      multihashBytes
+    );
+    const cid =
+      specs.version === 0
+        ? CID$1.createV0(/** @type {API.MultihashDigest<API.SHA_256>} */ (digest))
+        : CID$1.createV1(specs.codec, digest);
+    return [/** @type {CID<T, C, A, V>} */(cid), bytes.subarray(specs.size)]
+  }
+
+  /**
+   * Inspect the initial bytes of a CID to determine its properties.
+   *
+   * Involves decoding up to 4 varints. Typically this will require only 4 to 6
+   * bytes but for larger multicodec code values and larger multihash digest
+   * lengths these varints can be quite large. It is recommended that at least
+   * 10 bytes be made available in the `initialBytes` argument for a complete
+   * inspection.
+   *
+   * @template {unknown} T
+   * @template {number} C
+   * @template {number} A
+   * @template {API.Version} V
+   * @param {API.ByteView<API.Link<T, C, A, V>>} initialBytes
+   * @returns {{ version:V, codec:C, multihashCode:A, digestSize:number, multihashSize:number, size:number }}
+   */
+  static inspectBytes (initialBytes) {
+    let offset = 0;
+    const next = () => {
+      const [i, length] = decode$8(initialBytes.subarray(offset));
+      offset += length;
+      return i
+    };
+
+    let version = /** @type {V} */ (next());
+    let codec = /** @type {C} */ (DAG_PB_CODE$1);
+    if (/** @type {number} */(version) === 18) {
+      // CIDv0
+      version = /** @type {V} */ (0);
+      offset = 0;
+    } else {
+      codec = /** @type {C} */ (next());
+    }
+
+    if (version !== 0 && version !== 1) {
+      throw new RangeError(`Invalid CID version ${version}`)
+    }
+
+    const prefixSize = offset;
+    const multihashCode = /** @type {A} */ (next()); // multihash code
+    const digestSize = next(); // multihash length
+    const size = offset + digestSize;
+    const multihashSize = size - prefixSize;
+
+    return { version, codec, multihashCode, digestSize, multihashSize, size }
+  }
+
+  /**
+   * Takes cid in a string representation and creates an instance. If `base`
+   * decoder is not provided will use a default from the configuration. It will
+   * throw an error if encoding of the CID is not compatible with supplied (or
+   * a default decoder).
+   *
+   * @template {string} Prefix
+   * @template {unknown} Data
+   * @template {number} Code
+   * @template {number} Alg
+   * @template {API.Version} Ver
+   * @param {API.ToString<API.Link<Data, Code, Alg, Ver>, Prefix>} source
+   * @param {API.MultibaseDecoder<Prefix>} [base]
+   * @returns {CID<Data, Code, Alg, Ver>}
+   */
+  static parse (source, base) {
+    const [prefix, bytes] = parseCIDtoBytes$1(source, base);
+
+    const cid = CID$1.decode(bytes);
+
+    if (cid.version === 0 && source[0] !== 'Q') {
+      throw Error('Version 0 CID string must not include multibase prefix')
+    }
+
+    // Cache string representation to avoid computing it on `this.toString()`
+    baseCache(cid).set(prefix, source);
+
+    return cid
+  }
+}
+
+/**
+ * @template {string} Prefix
+ * @template {unknown} Data
+ * @template {number} Code
+ * @template {number} Alg
+ * @template {API.Version} Ver
+ * @param {API.ToString<API.Link<Data, Code, Alg, Ver>, Prefix>} source
+ * @param {API.MultibaseDecoder<Prefix>} [base]
+ * @returns {[Prefix, API.ByteView<API.Link<Data, Code, Alg, Ver>>]}
+ */
+const parseCIDtoBytes$1 = (source, base) => {
+  switch (source[0]) {
+    // CIDv0 is parsed differently
+    case 'Q': {
+      const decoder = base || base58btc$1;
+      return [
+        /** @type {Prefix} */ (base58btc$1.prefix),
+        decoder.decode(`${base58btc$1.prefix}${source}`)
+      ]
+    }
+    case base58btc$1.prefix: {
+      const decoder = base || base58btc$1;
+      return [/** @type {Prefix} */(base58btc$1.prefix), decoder.decode(source)]
+    }
+    case base32$1.prefix: {
+      const decoder = base || base32$1;
+      return [/** @type {Prefix} */(base32$1.prefix), decoder.decode(source)]
+    }
+    default: {
+      if (base == null) {
+        throw Error(
+          'To parse non base32 or base58btc encoded CID multibase decoder must be provided'
+        )
+      }
+      return [/** @type {Prefix} */(source[0]), base.decode(source)]
+    }
+  }
+};
+
+/**
+ *
+ * @param {Uint8Array} bytes
+ * @param {Map<string, string>} cache
+ * @param {API.MultibaseEncoder<'z'>} base
+ */
+const toStringV0$1 = (bytes, cache, base) => {
+  const { prefix } = base;
+  if (prefix !== base58btc$1.prefix) {
+    throw Error(`Cannot string encode V0 in ${base.name} encoding`)
+  }
+
+  const cid = cache.get(prefix);
+  if (cid == null) {
+    const cid = base.encode(bytes).slice(1);
+    cache.set(prefix, cid);
+    return cid
+  } else {
+    return cid
+  }
+};
+
+/**
+ * @template {string} Prefix
+ * @param {Uint8Array} bytes
+ * @param {Map<string, string>} cache
+ * @param {API.MultibaseEncoder<Prefix>} base
+ */
+const toStringV1$1 = (bytes, cache, base) => {
+  const { prefix } = base;
+  const cid = cache.get(prefix);
+  if (cid == null) {
+    const cid = base.encode(bytes);
+    cache.set(prefix, cid);
+    return cid
+  } else {
+    return cid
+  }
+};
+
+const DAG_PB_CODE$1 = 0x70;
+const SHA_256_CODE$1 = 0x12;
+
+/**
+ * @param {API.Version} version
+ * @param {number} code
+ * @param {Uint8Array} multihash
+ * @returns {Uint8Array}
+ */
+const encodeCID$1 = (version, code, multihash) => {
+  const codeOffset = encodingLength$1(version);
+  const hashOffset = codeOffset + encodingLength$1(code);
+  const bytes = new Uint8Array(hashOffset + multihash.byteLength);
+  encodeTo$1(version, bytes, 0);
+  encodeTo$1(code, bytes, codeOffset);
+  bytes.set(multihash, hashOffset);
+  return bytes
+};
+
+const cidSymbol$1 = Symbol.for('@ipld/js-cid/CID');
+
+/**
+ * @template {string} Name
+ * @template {number} Code
+ * @param {object} options
+ * @param {Name} options.name
+ * @param {Code} options.code
+ * @param {(input: Uint8Array) => Await<Uint8Array>} options.encode
+ */
+const from$1 = ({ name, code, encode }) => new Hasher(name, code, encode);
+
+/**
+ * Hasher represents a hashing algorithm implementation that produces as
+ * `MultihashDigest`.
+ *
+ * @template {string} Name
+ * @template {number} Code
+ * @class
+ * @implements {MultihashHasher<Code>}
+ */
+class Hasher {
+  /**
+   *
+   * @param {Name} name
+   * @param {Code} code
+   * @param {(input: Uint8Array) => Await<Uint8Array>} encode
+   */
+  constructor (name, code, encode) {
+    this.name = name;
+    this.code = code;
+    this.encode = encode;
+  }
+
+  /**
+   * @param {Uint8Array} input
+   * @returns {Await<Digest.Digest<Code, number>>}
+   */
+  digest (input) {
+    if (input instanceof Uint8Array) {
+      const result = this.encode(input);
+      return result instanceof Uint8Array
+        ? create$3(this.code, result)
+        /* c8 ignore next 1 */
+        : result.then(digest => create$3(this.code, digest))
+    } else {
+      throw Error('Unknown type, must be binary type')
+      /* c8 ignore next 1 */
+    }
+  }
+}
+
+/**
+ * @template {number} Alg
+ * @typedef {import('./interface.js').MultihashHasher} MultihashHasher
+ */
+
+/**
+ * @template T
+ * @typedef {Promise<T>|T} Await
+ */
+
+function readonly$1 ({ enumerable = true, configurable = false } = {}) {
+  return { enumerable, configurable, writable: false }
+}
+
+/**
+ * @param {[string|number, string]} path
+ * @param {any} value
+ * @returns {Iterable<[string, CID]>}
+ */
+function * linksWithin (path, value) {
+  if (value != null && typeof value === 'object') {
+    if (Array.isArray(value)) {
+      for (const [index, element] of value.entries()) {
+        const elementPath = [...path, index];
+        const cid = CID$1.asCID(element);
+        if (cid) {
+          yield [elementPath.join('/'), cid];
+        } else if (typeof element === 'object') {
+          yield * links(element, elementPath);
+        }
+      }
+    } else {
+      const cid = CID$1.asCID(value);
+      if (cid) {
+        yield [path.join('/'), cid];
+      } else {
+        yield * links(value, path);
+      }
+    }
+  }
+}
+
+/**
+ * @template T
+ * @param {T} source
+ * @param {Array<string|number>} base
+ * @returns {Iterable<[string, CID]>}
+ */
+function * links (source, base) {
+  if (source == null || source instanceof Uint8Array) {
+    return
+  }
+  const cid = CID$1.asCID(source);
+  if (cid) {
+    yield [base.join('/'), cid];
+  }
+  for (const [key, value] of Object.entries(source)) {
+    const path = /** @type {[string|number, string]} */ ([...base, key]);
+    yield * linksWithin(path, value);
+  }
+}
+
+/**
+ * @param {[string|number, string]} path
+ * @param {any} value
+ * @returns {Iterable<string>}
+ */
+function * treeWithin (path, value) {
+  if (Array.isArray(value)) {
+    for (const [index, element] of value.entries()) {
+      const elementPath = [...path, index];
+      yield elementPath.join('/');
+      if (typeof element === 'object' && !CID$1.asCID(element)) {
+        yield * tree(element, elementPath);
+      }
+    }
+  } else {
+    yield * tree(value, path);
+  }
+}
+
+/**
+ * @template T
+ * @param {T} source
+ * @param {Array<string|number>} base
+ * @returns {Iterable<string>}
+ */
+function * tree (source, base) {
+  if (source == null || typeof source !== 'object') {
+    return
+  }
+  for (const [key, value] of Object.entries(source)) {
+    const path = /** @type {[string|number, string]} */ ([...base, key]);
+    yield path.join('/');
+    if (value != null && !(value instanceof Uint8Array) && typeof value === 'object' && !CID$1.asCID(value)) {
+      yield * treeWithin(path, value);
+    }
+  }
+}
+
+/**
+ *
+ * @template T
+ * @param {T} source
+ * @param {string[]} path
+ * @returns {API.BlockCursorView<unknown>}
+ */
+function get (source, path) {
+  let node = /** @type {Record<string, any>} */(source);
+  for (const [index, key] of path.entries()) {
+    node = node[key];
+    if (node == null) {
+      throw new Error(`Object has no property at ${path.slice(0, index + 1).map(part => `[${JSON.stringify(part)}]`).join('')}`)
+    }
+    const cid = CID$1.asCID(node);
+    if (cid) {
+      return { value: cid, remaining: path.slice(index + 1).join('/') }
+    }
+  }
+  return { value: node }
+}
+
+/**
+ * @template {unknown} T - Logical type of the data encoded in the block
+ * @template {number} C - multicodec code corresponding to codec used to encode the block
+ * @template {number} A - multicodec code corresponding to the hashing algorithm used in CID creation.
+ * @template {API.Version} V - CID version
+ * @implements {API.BlockView<T, C, A, V>}
+ */
+class Block {
+  /**
+   * @param {object} options
+   * @param {CID<T, C, A, V>} options.cid
+   * @param {API.ByteView<T>} options.bytes
+   * @param {T} options.value
+   */
+  constructor ({ cid, bytes, value }) {
+    if (!cid || !bytes || typeof value === 'undefined') { throw new Error('Missing required argument') }
+
+    this.cid = cid;
+    this.bytes = bytes;
+    this.value = value;
+    this.asBlock = this;
+
+    // Mark all the properties immutable
+    Object.defineProperties(this, {
+      cid: readonly$1(),
+      bytes: readonly$1(),
+      value: readonly$1(),
+      asBlock: readonly$1()
+    });
+  }
+
+  links () {
+    return links(this.value, [])
+  }
+
+  tree () {
+    return tree(this.value, [])
+  }
+
+  /**
+   *
+   * @param {string} [path]
+   * @returns {API.BlockCursorView<unknown>}
+   */
+  get (path = '/') {
+    return get(this.value, path.split('/').filter(Boolean))
+  }
+}
+
+/**
+ * @template {unknown} T - Logical type of the data encoded in the block
+ * @template {number} Code - multicodec code corresponding to codec used to encode the block
+ * @template {number} Alg - multicodec code corresponding to the hashing algorithm used in CID creation.
+ * @param {object} options
+ * @param {T} options.value
+ * @param {API.BlockEncoder<Code, T>} options.codec
+ * @param {API.MultihashHasher<Alg>} options.hasher
+ * @returns {Promise<API.BlockView<T, Code, Alg>>}
+ */
+async function encode$4 ({ value, codec, hasher }) {
+  if (typeof value === 'undefined') throw new Error('Missing required argument "value"')
+  if (!codec || !hasher) throw new Error('Missing required argument: codec or hasher')
+
+  const bytes = codec.encode(value);
+  const hash = await hasher.digest(bytes);
+  /** @type {CID<T, Code, Alg, 1>} */
+  const cid = CID$1.create(
+    1,
+    codec.code,
+    hash
+  );
+
+  return new Block({ value, bytes, cid })
+}
+
+/**
+ * @typedef {object} RequiredCreateOptions
+ * @property {CID} options.cid
+ */
+
+/**
+ * @template {unknown} T - Logical type of the data encoded in the block
+ * @template {number} Code - multicodec code corresponding to codec used to encode the block
+ * @template {number} Alg - multicodec code corresponding to the hashing algorithm used in CID creation.
+ * @template {API.Version} V - CID version
+ * @param {{ cid: API.Link<T, Code, Alg, V>, value:T, codec?: API.BlockDecoder<Code, T>, bytes: API.ByteView<T> }|{cid:API.Link<T, Code, Alg, V>, bytes:API.ByteView<T>, value?:void, codec:API.BlockDecoder<Code, T>}} options
+ * @returns {API.BlockView<T, Code, Alg, V>}
+ */
+function createUnsafe ({ bytes, cid, value: maybeValue, codec }) {
+  const value = maybeValue !== undefined
+    ? maybeValue
+    : (codec && codec.decode(bytes));
+
+  if (value === undefined) throw new Error('Missing required argument, must either provide "value" or "codec"')
+
+  return new Block({
+    // eslint-disable-next-line object-shorthand
+    cid: /** @type {CID<T, Code, Alg, V>} */ (cid),
+    bytes,
+    value
+  })
+}
+
+/**
+ * @template {unknown} T - Logical type of the data encoded in the block
+ * @template {number} Code - multicodec code corresponding to codec used to encode the block
+ * @template {number} Alg - multicodec code corresponding to the hashing algorithm used in CID creation.
+ * @template {API.Version} V - CID version
+ * @param {object} options
+ * @param {API.Link<T, Code, Alg, V>} options.cid
+ * @param {API.ByteView<T>} options.bytes
+ * @param {API.BlockDecoder<Code, T>} options.codec
+ * @param {API.MultihashHasher<Alg>} options.hasher
+ * @returns {Promise<API.BlockView<T, Code, Alg, V>>}
+ */
+async function create$2 ({ bytes, cid, hasher, codec }) {
+  if (!bytes) throw new Error('Missing required argument "bytes"')
+  if (!hasher) throw new Error('Missing required argument "hasher"')
+  const value = codec.decode(bytes);
+  const hash = await hasher.digest(bytes);
+  if (!equals$3(cid.multihash.bytes, hash.bytes)) {
+    throw new Error('CID hash does not match bytes')
+  }
+
+  return createUnsafe({
+    bytes,
+    cid,
+    value,
+    codec
+  })
+}
+
+// @ts-check
+
+const sha256 = from$1({
+  name: 'sha2-256',
+  code: 0x12,
+  encode: (input) => coerce$1(crypto.createHash('sha256').update(input).digest())
+});
+
+from$1({
+  name: 'sha2-512',
+  code: 0x13,
+  encode: input => coerce$1(crypto.createHash('sha512').update(input).digest())
+});
+
+/** Auto-generated with ipld-schema-validator@1.0.1 at Tue Aug 16 2022 from IPLD Schema:
+ *
+ * # Root node layout
+ * type HashMapRoot struct {
+ *   hashAlg Int
+ *   bucketSize Int
+ *   hamt HashMapNode
+ * }
+ *
+ * # Non-root node layout
+ * type HashMapNode struct {
+ *   map Bytes
+ *   data [ Element ]
+ * } representation tuple
+ *
+ * type Element union {
+ *   | &HashMapNode link
+ *   | Bucket list
+ * } representation kinded
+ *
+ * type Bucket [ BucketEntry ]
+ *
+ * type BucketEntry struct {
+ *   key Bytes
+ *   value Any
+ * } representation tuple
+ *
+ */
+
+const Kinds = {
+  Null: /** @returns {boolean} */ (/** @type {any} */ obj) => obj === null,
+  Int: /** @returns {boolean} */ (/** @type {any} */ obj) => Number.isInteger(obj),
+  Float: /** @returns {boolean} */ (/** @type {any} */ obj) => typeof obj === 'number' && Number.isFinite(obj),
+  String: /** @returns {boolean} */ (/** @type {any} */ obj) => typeof obj === 'string',
+  Bool: /** @returns {boolean} */ (/** @type {any} */ obj) => typeof obj === 'boolean',
+  Bytes: /** @returns {boolean} */ (/** @type {any} */ obj) => obj instanceof Uint8Array,
+  Link: /** @returns {boolean} */ (/** @type {any} */ obj) => !Kinds.Null(obj) && typeof obj === 'object' && obj.asCID === obj,
+  List: /** @returns {boolean} */ (/** @type {any} */ obj) => Array.isArray(obj),
+  Map: /** @returns {boolean} */ (/** @type {any} */ obj) => !Kinds.Null(obj) && typeof obj === 'object' && obj.asCID !== obj && !Kinds.List(obj) && !Kinds.Bytes(obj)
+};
+/** @type {{ [k in string]: (obj:any)=>boolean}} */
+const Types = {
+  Int: Kinds.Int,
+  'HashMapRoot > hashAlg': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.Int(obj),
+  'HashMapRoot > bucketSize': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.Int(obj),
+  Bytes: Kinds.Bytes,
+  'HashMapNode > map': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.Bytes(obj),
+  'Element > HashMapNode (anon)': Kinds.Link,
+  'BucketEntry > key': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.Bytes(obj),
+  Any: /** @returns {boolean} */ (/** @type {any} */ obj) => (Kinds.Bool(obj) && Types.Bool(obj)) || (Kinds.String(obj) && Types.String(obj)) || (Kinds.Bytes(obj) && Types.Bytes(obj)) || (Kinds.Int(obj) && Types.Int(obj)) || (Kinds.Float(obj) && Types.Float(obj)) || (Kinds.Null(obj) && Types.Null(obj)) || (Kinds.Link(obj) && Types.Link(obj)) || (Kinds.Map(obj) && Types.AnyMap(obj)) || (Kinds.List(obj) && Types.AnyList(obj)),
+  Bool: Kinds.Bool,
+  String: Kinds.String,
+  Float: Kinds.Float,
+  Null: Kinds.Null,
+  Link: Kinds.Link,
+  AnyMap: /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.Map(obj) && Array.prototype.every.call(Object.values(obj), Types.Any),
+  AnyList: /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.List(obj) && Array.prototype.every.call(obj, Types.Any),
+  'BucketEntry > value': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.Any(obj),
+  BucketEntry: /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.List(obj) && obj.length === 2 && Types['BucketEntry > key'](obj[0]) && Types['BucketEntry > value'](obj[1]),
+  Bucket: /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.List(obj) && Array.prototype.every.call(obj, Types.BucketEntry),
+  Element: /** @returns {boolean} */ (/** @type {any} */ obj) => (Kinds.Link(obj) && Types['Element > HashMapNode (anon)'](obj)) || (Kinds.List(obj) && Types.Bucket(obj)),
+  'HashMapNode > data (anon)': /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.List(obj) && Array.prototype.every.call(obj, Types.Element),
+  'HashMapNode > data': /** @returns {boolean} */ (/** @type {any} */ obj) => Types['HashMapNode > data (anon)'](obj),
+  HashMapNode: /** @returns {boolean} */ (/** @type {any} */ obj) => Kinds.List(obj) && obj.length === 2 && Types['HashMapNode > map'](obj[0]) && Types['HashMapNode > data'](obj[1]),
+  'HashMapRoot > hamt': /** @returns {boolean} */ (/** @type {any} */ obj) => Types.HashMapNode(obj),
+  HashMapRoot: /** @returns {boolean} */ (/** @type {any} */ obj) => { const keys = obj && Object.keys(obj); return Kinds.Map(obj) && ['hashAlg', 'bucketSize', 'hamt'].every((k) => keys.includes(k)) && Object.entries(obj).every(([name, value]) => Types['HashMapRoot > ' + name] && Types['HashMapRoot > ' + name](value)) }
+};
+
+const HashMapRoot = Types.HashMapRoot;
+const HashMapNode = Types.HashMapNode;
+Types.Element;
+Types.Bucket;
+Types.BucketEntry;
+
+/**
+ * @typedef {'bool'|'string'|'bytes'|'int'|'float'|'list'|'map'|'null'|'link'} RepresentationKindString
+ */
+
+/**
+ * @param {any} obj
+ * @returns {RepresentationKindString}
+ */
+function kind (obj) {
+  if (typeof obj === 'number') {
+    if (Number.isInteger(obj)) {
+      return 'int'
+    }
+    return 'float'
+  }
+  if (typeof obj === 'string') {
+    return 'string'
+  }
+  if (obj === null) {
+    return 'null'
+  }
+  if (typeof obj === 'boolean') {
+    return 'bool'
+  }
+  if (typeof obj === 'object' && obj.asCID === obj) {
+    return 'link'
+  }
+  if (obj instanceof Uint8Array) {
+    return 'bytes'
+  }
+  if (Array.isArray(obj)) {
+    return 'list'
+  }
+  if (typeof obj === 'object') {
+    return 'map'
+  }
+  throw new TypeError(`Unknown IPLD kind for value: ${JSON.stringify(obj)}`)
+}
+
+/**
+ * @typedef {import('ipld-schema/schema-schema').Schema} Schema
+ * @typedef {import('ipld-schema/schema-schema').TypeDefnLink} TypeDefnLink
+ * @typedef {import('ipld-schema/schema-schema').TypeDefnList} TypeDefnList
+ * @typedef {import('ipld-schema/schema-schema').TypeDefnMap} TypeDefnMap
+ */
+
+/**
+ * @param {any} obj
+ * @returns {{ schema: Schema, root: string }}
+ */
+function describe (obj) {
+  const description = describeObject(obj, { types: {} });
+  if (!Object.keys(description.schema.types).length) {
+    // when `obj` is a terminal type, make up a typedef for that kind so we have
+    // something to point to for our root rather than the plain typed kind
+
+    // special case for links
+    if (typeof description.root === 'object' && typeof description.root.link === 'object') {
+      const name = 'Link';
+      description.schema.types[name] = { link: {} };
+      description.root = name;
+    } else if (typeof description.root === 'string') {
+      const name = `${description.root}`;
+      // @ts-ignore
+      description.schema.types[name] = { [description.root.toLowerCase()]: {} };
+      description.root = name;
+      /* c8 ignore next 3 */
+    } else {
+      throw new Error('internal error')
+    }
+  }
+  /* c8 ignore next 3 */
+  if (typeof description.root !== 'string') {
+    throw new Error('internal error')
+  }
+  return { schema: description.schema, root: description.root }
+}
+
+/**
+ * @param {any} obj
+ * @param {Schema} schema
+ * @returns {{ schema: Schema, root: string|{ link: TypeDefnLink } }}
+ */
+function describeObject (obj, schema) {
+  const objKind = kind(obj);
+  let name = `${objKind.charAt(0).toUpperCase()}${objKind.substring(1)}`;
+
+  // terminals
+  if (objKind === 'null' ||
+      objKind === 'int' ||
+      objKind === 'bool' ||
+      objKind === 'float' ||
+      objKind === 'string' ||
+      objKind === 'bytes') {
+    return { schema, root: name }
+  }
+
+  if (objKind === 'link') {
+    return { schema, root: { link: {} } }
+  }
+
+  // 'map' || 'list'
+
+  /** @type {{ fieldName: string, root: string|{ link: TypeDefnLink }}[]} */
+  const fieldNames = [];
+  const entries = objKind === 'map'
+    ? Object.entries(obj)
+    : obj.map((/** @type {any} */ e, /** @type {number} */ i) => [`f${i}`, e]);
+  for (const [fieldName, value] of entries) {
+    fieldNames.push({ fieldName, root: describeObject(value, schema).root });
+  }
+  let unique = true;
+  for (let i = 1; i < fieldNames.length; i++) {
+    // this is a shallow assumption - that the name tells us the uniqueness, it doesn't
+    // and this will have to be improved
+    if (fieldNames[i].root !== fieldNames[i - 1].root) {
+      unique = false;
+      break
+    }
+  }
+
+  name = `${name}_1`;
+  /** @type {{ map: { keyType?: string, valueType?: string|{ link: TypeDefnLink } } }|{ list: { valueType?: string|{ link: TypeDefnLink } } }|{ struct: { fields: { [ k in string]: { type: string | { link: TypeDefnLink } } }, representation?: { tuple: {} } } } } */
+  let type;
+
+  if (unique) { // a pure map or list
+    const valueType = fieldNames.length ? fieldNames[0].root : 'Any';
+    if (objKind === 'map') {
+      type = { map: { keyType: 'String', valueType } };
+    } else if (objKind === 'list') {
+      type = { list: { valueType } };
+      /* c8 ignore next 4 */
+    } else {
+      throw new Error(`Unexpected object kind: ${objKind}`)
+    }
+  } else { // a struct with varying types
+    name = 'Struct_1';
+    type = {
+      struct: { fields: {} }
+    };
+    for (const field of fieldNames) {
+      type.struct.fields[field.fieldName] = { type: field.root };
+    }
+    if (objKind === 'list') {
+      type.struct.representation = { tuple: {} };
+    }
+  }
+
+  while (schema.types[name]) {
+    if (deepEqual(schema.types[name], type)) {
+      break
+    }
+    name = name.split('_').map((s, i) => i ? parseInt(s, 10) + 1 : s).join('_');
+  }
+  // too hard
+  // @ts-ignore
+  schema.types[name] = type;
+
+  return { schema, root: name }
+}
+
+/**
+ * @param {any} o1
+ * @param {any} o2
+ * @returns {boolean}
+ */
+function deepEqual (o1, o2) {
+  const k1 = kind(o1);
+  const k2 = kind(o2);
+  /* c8 ignore next 3 */
+  if (k1 !== k2) {
+    return false
+  }
+  switch (k1) {
+    /* c8 ignore next 1 */
+    case 'bool':
+    case 'string':
+    case 'int':
+    case 'float':
+    case 'null':
+      return o1 === o2
+    case 'map':
+      return deepEqual(Object.entries(o1), Object.entries(o2))
+    case 'list':
+      if (o1.length !== o2.length) {
+        return false
+      }
+      for (let i = 0; i < o1.length; i++) {
+        if (!deepEqual(o1[i], o2[i])) {
+          return false
+        }
+      }
+  }
+  return true
+}
+
+const noop = (s) => s;
+
+// based on prism.js syntax categories, except 'class-name' -> className
+const noopHighlighter = {
+  keyword: noop,
+  builtin: noop,
+  operator: noop,
+  number: noop,
+  string: noop,
+  // comment: noop,
+  className: noop,
+  punctuation: noop
+};
+
+function print (schema, indent = '  ', highlighter = {}) {
+  if (!schema || typeof schema.types !== 'object') {
+    throw new Error('Invalid schema')
+  }
+
+  highlighter = Object.assign({}, noopHighlighter, highlighter);
+
+  let str = '';
+
+  str += printAdvanced(schema, indent, highlighter);
+  str += printTypes(schema, indent, highlighter);
+
+  return str
+}
+
+function printAdvanced (schema, indent, highlighter) {
+  let str = '';
+
+  if (typeof schema.advanced === 'object') {
+    for (const advanced of Object.keys(schema.advanced)) {
+      str += `${highlighter.keyword('advanced')} ${highlighter.className(advanced)}\n\n`;
+    }
+  }
+
+  return str
+}
+
+function printTypes (schema, indent, highlighter) {
+  let str = '';
+
+  for (const [type, defn] of Object.entries(schema.types)) {
+    str += `${highlighter.keyword('type')} ${highlighter.className(type)} ${printType(defn, indent, highlighter)}\n\n`;
+  }
+
+  return str.replace(/\n\n$/m, '')
+}
+
+function kindFromDefinition (defn) {
+  const [kind, more] = Object.keys(defn);
+  if (!kind) {
+    throw new Error('Invalid schema, missing kind')
+  }
+  if (more !== undefined) {
+    throw new Error('Invalid schema more than one kind')
+  }
+  return kind
+}
+
+function printType (defn, indent, highlighter) {
+  const kind = kindFromDefinition(defn);
+
+  if (['map', 'list', 'link', 'copy'].includes(kind)) {
+    return printTypeTerm(defn, indent, highlighter)
+  }
+
+  if (['struct', 'union', 'enum'].includes(kind)) {
+    return `${highlighter.builtin(kind)} ${printTypeTerm(defn, indent, highlighter)}`
+  }
+
+  if ((kind === 'bytes' || kind === 'string') && defn[kind].representation && typeof defn[kind].representation.advanced === 'string') {
+    return `${kind} ${highlighter.builtin('representation')} advanced ${defn[kind].representation.advanced}`
+  }
+
+  return kind
+}
+
+function printTypeTerm (defn, indent, highlighter) {
+  if (typeof defn === 'string') {
+    return defn
+  }
+
+  const kind = kindFromDefinition(defn);
+
+  if (typeof printTypeTerm[kind] !== 'function') {
+    throw new Error(`Invalid schema unsupported kind (${kind})`)
+  }
+
+  return printTypeTerm[kind](defn[kind], indent, highlighter)
+}
+
+printTypeTerm.link = function link (defn, indent, highlighter) {
+  return `${highlighter.punctuation('&')}${printTypeTerm(defn.expectedType || 'Any', indent, highlighter)}`
+};
+
+printTypeTerm.copy = function copy (defn, indent, highlighter) {
+  return `${highlighter.operator('=')} ${defn.fromType}`
+};
+
+printTypeTerm.map = function map (defn, indent, highlighter) {
+  if (typeof defn.keyType !== 'string') {
+    throw new Error('Invalid schema, map definition needs a "keyType"')
+  }
+  if (!defn.valueType) {
+    throw new Error('Invalid schema, map definition needs a "keyType"')
+  }
+
+  const nullable = defn.valueNullable === true ? 'nullable ' : '';
+  let str = `${highlighter.punctuation('{')}${printTypeTerm(defn.keyType, indent, highlighter)}:${nullable}${printTypeTerm(defn.valueType, indent, highlighter)}${highlighter.punctuation('}')}`;
+  if (defn.representation) {
+    const repr = reprStrategy(defn);
+    if (repr === 'listpairs') {
+      str += ` ${highlighter.builtin('representation')} listpairs`;
+    } else if (repr === 'stringpairs') {
+      str += stringpairs(indent, 'map', defn.representation.stringpairs, highlighter);
+    } else if (repr === 'advanced') {
+      str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`;
+    }
+  }
+  return str
+};
+
+printTypeTerm.list = function list (defn, indent, highlighter) {
+  if (!defn.valueType) {
+    throw new Error('Invalid schema, list definition needs a "keyType"')
+  }
+
+  const nullable = defn.valueNullable === true ? 'nullable ' : '';
+  let str = `${highlighter.punctuation('[')}${nullable}${printTypeTerm(defn.valueType, indent, highlighter)}${highlighter.punctuation(']')}`;
+
+  if (defn.representation) {
+    if (reprStrategy(defn) === 'advanced') {
+      str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`;
+    }
+  }
+
+  return str
+};
+
+printTypeTerm.struct = function struct (defn, indent, highlighter) {
+  if (typeof defn.fields !== 'object') {
+    throw new Error('Invalid schema, struct requires a "fields" map')
+  }
+
+  let str = highlighter.punctuation('{');
+
+  for (const [name, fieldDefn] of Object.entries(defn.fields)) {
+    const optional = fieldDefn.optional === true ? highlighter.keyword('optional') + ' ' : '';
+    const nullable = fieldDefn.nullable === true ? highlighter.keyword('nullable') + ' ' : '';
+    let fieldRepr = '';
+    if (defn.representation && defn.representation.map && typeof defn.representation.map.fields === 'object') {
+      const fr = defn.representation.map.fields[name];
+      if (typeof fr === 'object') {
+        const hasRename = typeof fr.rename === 'string';
+        const hasImplicit = fr.implicit !== undefined;
+        if (hasRename || hasImplicit) {
+          fieldRepr = ` ${highlighter.punctuation('(')}`;
+          if (hasRename) {
+            fieldRepr += `${highlighter.keyword('rename')} ${highlighter.string(`"${fr.rename}"`)}`;
+            if (hasImplicit) {
+              fieldRepr += ' ';
+            }
+          }
+          if (hasImplicit) {
+            const impl = typeof fr.implicit === 'string'
+              ? highlighter.string(`"${fr.implicit}"`)
+              : typeof fr.implicit === 'number'
+                ? highlighter.number(fr.implicit)
+                : highlighter.keyword(fr.implicit);
+            fieldRepr += `${highlighter.keyword('implicit')} ${impl}`;
+          }
+          fieldRepr += highlighter.punctuation(')');
+        }
+      }
+    }
+
+    const fieldType = typeof fieldDefn.type === 'string' ? fieldDefn.type : printTypeTerm(fieldDefn.type, indent, highlighter);
+    str += `\n${indent}${name} ${optional}${nullable}${fieldType}${fieldRepr}`;
+  }
+
+  if (str[str.length - 1] !== highlighter.punctuation('{')) {
+    str += '\n';
+  }
+  str += highlighter.punctuation('}');
+
+  if (defn.representation) {
+    const repr = reprStrategy(defn);
+    if (repr === 'listpairs') {
+      str += ` ${highlighter.builtin('representation')} listpairs`;
+    } else if (repr === 'stringjoin') {
+      if (typeof defn.representation.stringjoin.join !== 'string') {
+        throw new Error('Invalid schema, struct stringjoin representations require an join string')
+      }
+      str += ` ${highlighter.builtin('representation')} stringjoin ${highlighter.punctuation('{')}\n`;
+      str += `${indent}join ${highlighter.string(`"${defn.representation.stringjoin.join}"`)}\n`;
+      str += fieldOrder(indent, defn.representation.stringjoin.fieldOrder, highlighter);
+      str += highlighter.punctuation('}');
+    } else if (repr === 'stringpairs') {
+      str += stringpairs(indent, 'struct', defn.representation.stringpairs, highlighter);
+    } else if (repr === 'tuple') {
+      str += ` ${highlighter.builtin('representation')} tuple`;
+      if (Array.isArray(defn.representation.tuple.fieldOrder)) {
+        str += ` ${highlighter.punctuation('{')}\n`;
+        str += fieldOrder(indent, defn.representation.tuple.fieldOrder, highlighter);
+        str += highlighter.punctuation('}');
+      }
+    } else if (repr === 'advanced') {
+      str += ` ${highlighter.builtin('representation')} advanced ${defn.representation.advanced}`;
+    }
+  }
+
+  return str
+};
+
+function fieldOrder (indent, fieldOrder, highlighter) {
+  let str = '';
+  if (Array.isArray(fieldOrder)) {
+    const fo = fieldOrder.map((f) => highlighter.string(`"${f}"`)).join(', ');
+    str += `${indent}fieldOrder ${highlighter.punctuation('[')}${fo}${highlighter.punctuation(']')}\n`;
+  }
+  return str
+}
+
+function stringpairs (indent, kind, stringpairs, highlighter) {
+  let str = '';
+  if (typeof stringpairs.innerDelim !== 'string') {
+    throw new Error(`Invalid schema, ${kind} stringpairs representations require an innerDelim string`)
+  }
+  if (typeof stringpairs.entryDelim !== 'string') {
+    throw new Error(`Invalid schema, ${kind} stringpairs representations require an entryDelim string`)
+  }
+  str += ` ${highlighter.builtin('representation')} stringpairs ${highlighter.punctuation('{')}\n`;
+  str += `${indent}innerDelim ${highlighter.string(`"${stringpairs.innerDelim}"`)}\n`;
+  str += `${indent}entryDelim ${highlighter.string(`"${stringpairs.entryDelim}"`)}\n`;
+  str += highlighter.punctuation('}');
+  return str
+}
+
+function reprStrategy (defn) {
+  if (typeof defn.representation !== 'object') {
+    throw new Error('Expected \'representation\' property of definition')
+  }
+  const keys = Object.keys(defn.representation);
+  if (keys.length !== 1) {
+    throw new Error('Expected exactly one \'representation\' field')
+  }
+  const repr = keys[0];
+  if (repr === 'advanced') {
+    if (typeof defn.representation[repr] !== 'string') {
+      throw new Error('Expected representation \'advanced\' to be an string')
+    }
+  } else {
+    if (typeof defn.representation[repr] !== 'object') {
+      throw new Error(`Expected representation '${repr}' to be an object`)
+    }
+  }
+  return repr
+}
+
+printTypeTerm.union = function union (defn, indent, highlighter) {
+  if (typeof defn.representation !== 'object') {
+    throw new Error('Invalid schema, unions require a representation')
+  }
+
+  let str = highlighter.punctuation('{');
+  const repr = reprStrategy(defn);
+
+  if (repr === 'kinded') {
+    for (const [kind, type] of Object.entries(defn.representation.kinded)) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${kind}`;
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} kinded`;
+  } else if (repr === 'stringprefix' || repr === 'bytesprefix') {
+    if (typeof defn.representation[repr].prefixes !== 'object') {
+      throw new Error(`Invalid schema, ${repr} unions require a representation prefixes map`)
+    }
+    for (const [key, type] of Object.entries(defn.representation[repr].prefixes)) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`;
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} ${repr}`;
+  } else if (repr === 'keyed') {
+    if (typeof defn.representation[repr] !== 'object') {
+      throw new Error(`Invalid schema, ${repr} unions require a representation keyed map`)
+    }
+    for (const [key, type] of Object.entries(defn.representation[repr])) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`;
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} ${repr}`;
+  } else if (repr === 'inline') {
+    if (typeof defn.representation.inline.discriminantTable !== 'object') {
+      throw new Error('Invalid schema, inline unions require a discriminantTable map')
+    }
+    if (typeof defn.representation.inline.discriminantKey !== 'string') {
+      throw new Error('Invalid schema, inline unions require a discriminantKey string')
+    }
+    for (const [key, type] of Object.entries(defn.representation.inline.discriminantTable)) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`;
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} inline ${highlighter.punctuation('{')}\n${indent}discriminantKey ${highlighter.string(`"${defn.representation.inline.discriminantKey}"`)}\n${highlighter.punctuation('}')}`;
+  } else if (repr === 'envelope') {
+    if (typeof defn.representation.envelope.discriminantTable !== 'object') {
+      throw new Error('Invalid schema, envelope unions require a discriminantTable map')
+    }
+    if (typeof defn.representation.envelope.discriminantKey !== 'string') {
+      throw new Error('Invalid schema, envelope unions require a discriminantKey string')
+    }
+    if (typeof defn.representation.envelope.contentKey !== 'string') {
+      throw new Error('Invalid schema, envelope unions require a contentKey string')
+    }
+    for (const [key, type] of Object.entries(defn.representation.envelope.discriminantTable)) {
+      str += `\n${indent}${highlighter.punctuation('|')} ${printTypeTerm(type, indent, highlighter)} ${highlighter.string(`"${key}"`)}`;
+    }
+    str += `\n${highlighter.punctuation('}')} ${highlighter.builtin('representation')} envelope ${highlighter.punctuation('{')}`;
+    str += `\n${indent}discriminantKey ${highlighter.string(`"${defn.representation.envelope.discriminantKey}"`)}`;
+    str += `\n${indent}contentKey ${highlighter.string(`"${defn.representation.envelope.contentKey}"`)}`;
+    str += `\n${highlighter.punctuation('}')}`;
+  } else {
+    throw new Error(`Invalid schema, unknown union representation type ${Object.keys(defn.representation)[0]}`)
+  }
+
+  return str
+};
+
+printTypeTerm.enum = function _enum (defn, indent, highlighter) {
+  if (typeof defn.representation !== 'object') {
+    throw new Error('Invalid schema, enum requires a "representation" map')
+  }
+  const repr = reprStrategy(defn);
+  if (repr !== 'string' && repr !== 'int') {
+    throw new Error('Invalid schema, enum requires a "string" or "int" representation map')
+  }
+
+  let str = highlighter.punctuation('{');
+
+  for (const ev of defn.members) {
+    str += `\n${indent}${highlighter.punctuation('|')} ${ev}`;
+    const sv = (defn.representation.string && defn.representation.string[ev]) ||
+      (defn.representation.int && defn.representation.int[ev]);
+    if (sv !== undefined) {
+      str += ` ${highlighter.punctuation('(')}${highlighter.string(`"${sv}"`)}${highlighter.punctuation(')')}`;
+    }
+  }
+
+  str += `\n${highlighter.punctuation('}')}`;
+  if (defn.representation.int) {
+    str += ` ${highlighter.builtin('representation')} int`;
+  }
+  return str
+};
+
+const DEFAULT_HASHER = sha256;
+const DEFAULT_HASH_BYTES = 32;
+// 5/3 seems to offer best perf characteristics in terms of raw speed
+// (Filecoin found this too for their HAMT usage)
+// but amount and size of garbage will change with different parameters
+const DEFAULT_BITWIDTH = 5;
+const DEFAULT_BUCKET_SIZE = 3;
+
+const textDecoder$1 = new TextDecoder();
+
+/**
+ * @template V
+ * @typedef {import('iamap').IAMap<V>} IAMap<V>
+ */
+/**
+ * @template V
+ * @typedef {import('iamap').Store<V>} Store<V>
+ */
+/**
+ * @typedef {import('multiformats/hashes/interface').MultihashHasher} MultihashHasher
+ */
+/**
+ * @template V
+ * @typedef {import('./interface').HashMap<V>} HashMap<V>
+ */
+/**
+ * @template {number} Codec
+ * @template V
+ * @typedef {import('./interface').CreateOptions<Codec,V>} CreateOptions<Codec,V>
+ */
+/**
+ * @typedef {import('./interface').Loader} Loader<V>
+ */
+
+/**
+ * @classdesc
+ * An IPLD HashMap object. Create a new HashMap or load an existing one with the asynchronous
+ * {@link HashMap.create} factory method.
+ *
+ * This class serves mostly as a IPLD usability wrapper for
+ * [IAMap](https://github.com/rvagg/iamap) which implements the majority of the logic behind the
+ * IPLD HashMap specification, without being IPLD-specific. IAMap is immutable, in that each
+ * mutation (delete or set) returns a new IAMap instance. `HashMap`, however, is immutable, and
+ * mutation operations may be performed on the same object but its `cid` property will change
+ * with mutations.
+ *
+ * If consumed with TypeScript typings, `HashMap` is generic over value template type `V`, where various
+ * operations will accept or return template type `V`.
+ *
+ * @name HashMap
+ * @template V
+ * @implements {HashMap<V>}
+ * @class
+ * @hideconstructor
+ * @property {CID} cid - The _current_ CID of this HashMap. It is important to note that this CID
+ * will change when successfully performing mutation operations `set()` or
+ * `delete()`. Where a `set()` does not change an existing value (because
+ * a key already exists with that value) or `delete()` does not delete an existing
+ * key/value pair (because it doesn't already exist in this HashMap), the `cid` will not change.
+ */
+class HashMapImpl {
+  /**
+   * @ignore
+   * @param {IAMap<V>} iamap
+   */
+  constructor (iamap) {
+    // IAMap is immutable, so mutation operations return a new instance so
+    // we use `this._iamap` as the _current_ instance and wrap around that,
+    // switching it out as we mutate
+    this._iamap = iamap;
+  }
+
+  /**
+   * @name HashMap#get
+   * @description
+   * Fetches the value of the provided `key` stored in this HashMap, if it exists.
+   * @function
+   * @async
+   * @memberof HashMap
+   * @param {string|Uint8Array} key - The key of the key/value pair entry to look up in this HashMap.
+   * @return {Promise<V|undefined>}
+   * The value (of template type `V`) stored for the given `key` which may be any type serializable
+   * by IPLD, or a CID to an existing IPLD object. This should match what was provided by
+   * {@link HashMap#set} as the `value` for this `key`. If the `key` is not stored in this HashMap,
+   * `undefined` will be returned.
+   */
+  async get (key) {
+    return this._iamap.get(key)
+  }
+
+  /**
+   * @name HashMap#has
+   * @description
+   * Check whether the provided `key` exists in this HashMap. The equivalent of performing
+   * `map.get(key) !== undefined`.
+   * @function
+   * @async
+   * @memberof HashMap
+   * @param {string|Uint8Array} key - The key of the key/value pair entry to look up in this HashMap.
+   * @return {Promise<boolean>}
+   * `true` if the `key` exists in this HashMap, `false` otherwise.
+   */
+  async has (key) {
+    return this._iamap.has(key)
+  }
+
+  /**
+   * @name HashMap#size
+   * @description
+   * Count the number of key/value pairs stored in this HashMap.
+   * @function
+   * @async
+   * @memberof HashMap
+   * @return {Promise<number>}
+   * An integer greater than or equal to zero indicating the number of key/value pairse stored
+   * in this HashMap.
+   */
+  async size () {
+    return this._iamap.size()
+  }
+
+  /**
+   * @name HashMap#set
+   * @description
+   * Add a key/value pair to this HashMap. The value may be any object that can be serialized by
+   * IPLD, or a CID to a more complex (or larger) object. {@link HashMap#get} operations on the
+   * same `key` will retreve the `value` as it was set as long as serialization and deserialization
+   * results in the same object.
+   *
+   * If the `key` already exists in this HashMap, the existing entry will have the `value` replaced
+   * with the new one provided. If the `value` is the same, the HashMap will remain unchanged.
+   *
+   * As a mutation operation, performing a successful `set()` where a new key/value pair or new
+   * `value` for a given `key` is set, a new root node will be generated so `map.cid` will be a
+   * different CID. This CID should be used to refer to this collection in the backing store where
+   * persistence is required.
+   * @function
+   * @async
+   * @memberof HashMap
+   * @param {string|Uint8Array} key - The key of the new key/value pair entry to store in this HashMap.
+   * @param {V} value - The value (of template type `V`) to store, either an object that can be
+   * serialized inline via IPLD or a CID pointing to another object.
+   * @returns {Promise<void>}
+   */
+  async set (key, value) {
+    this._iamap = await this._iamap.set(key, value);
+  }
+
+  /**
+   * @name HashMap#delete
+   * @description
+   * Remove a key/value pair to this HashMap.
+   *
+   * If the `key` exists in this HashMap, its entry will be entirely removed. If the `key` does not
+   * exist in this HashMap, no changes will occur.
+   *
+   * As a mutation operation, performing a successful `delete()` where an existing key/value pair
+   * is removed from the collection, a new root node will be generated so `map.cid` will be a
+   * different CID. This CID should be used to refer to this collection in the backing store where
+   * persistence is required.
+   * @function
+   * @async
+   * @memberof HashMap
+   * @param {string|Uint8Array} key - The key of the key/value pair entry to remove from this HashMap.
+   * @returns {Promise<void>}
+   */
+  async delete (key) {
+    this._iamap = await this._iamap.delete(key);
+  }
+
+  /**
+   * @name HashMap#values
+   * @description
+   * Asynchronously emit all values that exist within this HashMap collection.
+   *
+   * This will cause a full traversal of all nodes that make up this collection so may result in
+   * many block loads from the backing store if the collection is large.
+   * @function
+   * @async
+   * @returns {AsyncIterable<V>}
+   * An async iterator that yields values (of template type `V`) of the type stored in this
+   * collection, either inlined objects or CIDs.
+   */
+  async * values () {
+    yield * this._iamap.values();
+  }
+
+  /**
+   * @name HashMap#keys
+   * @description
+   * Asynchronously emit all keys that exist within this HashMap collection **as strings** rather
+   * than the stored bytes.
+   *
+   * This will cause a full traversal of all nodes that make up this
+   * collection so may result in many block loads from the backing store if the collection is large.
+   * @function
+   * @async
+   * @returns {AsyncIterable<string>}
+   * An async iterator that yields string keys stored in this collection.
+   */
+  async * keys () {
+    for await (const key of this._iamap.keys()) {
+      // IAMap keys are Uint8Arrays, make them strings
+      yield textDecoder$1.decode(key);
+    }
+  }
+
+  /**
+   * @name HashMap#keysRaw
+   * @description
+   * Asynchronously emit all keys that exist within this HashMap collection **as their raw bytes**
+   * rather than being converted to a string.
+   *
+   * This will cause a full traversal of all nodes that make up this collection so may result in
+   * many block loads from the backing store if the collection is large.
+   * @function
+   * @async
+   * @returns {AsyncIterable<Uint8Array>}
+   * An async iterator that yields string keys stored in this collection.
+   */
+  async * keysRaw () {
+    yield * this._iamap.keys();
+  }
+
+  /**
+   * @name HashMap#entries
+   * @description
+   * Asynchronously emit all key/value pairs that exist within this HashMap collection. Keys will be
+   * given **as strings** rather than their raw byte form as stored.
+   *
+   * This will cause a full traversal of all nodes that make up this collection so may result in
+   * many block loads from the backing store if the collection is large.
+   *
+   * Entries are returned in tuple form like
+   * [Map#entries()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries),
+   * an array of key/value pairs where element `0` is the key and `1` is the value.
+   * @function
+   * @async
+   * @returns {AsyncIterable<[string, V]>}
+   * An async iterator that yields key/value pair tuples.
+   */
+  async * entries () {
+    for await (const { key, value } of this._iamap.entries()) {
+      // IAMap keys are Uint8Arrays, make them strings
+      yield [textDecoder$1.decode(key), value];
+    }
+  }
+
+  /**
+   * @name HashMap#entriesRaw
+   * @description
+   * Asynchronously emit all key/value pairs that exist within this HashMap collection. Keys will be
+   * given **as raw bytes** as stored rather than being converted to strings.
+   *
+   * This will cause a full traversal of all nodes that make up this collection so may result in
+   * many block loads from the backing store if the collection is large.
+   *
+   * Entries are returned in tuple form like
+   * [Map#entries()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries),
+   * an array of key/value pairs where element `0` is the key and `1` is the value.
+   * @function
+   * @async
+   * @returns {AsyncIterable<[Uint8Array, V]>}
+   * An async iterator that yields key/value pair tuples.
+   */
+  async * entriesRaw () {
+    for await (const { key, value } of this._iamap.entries()) {
+      yield [key, value];
+    }
+  }
+
+  /**
+   * @name HashMap#cids
+   * @description
+   * Asynchronously emit all CIDs for blocks that make up this HashMap.
+   *
+   * This will cause a full traversal of all nodes that make up this collection so may result in
+   * many block loads from the backing store if the collection is large.
+   * @function
+   * @async
+   * @returns {AsyncIterable<CID>}
+   * An async iterator that yields CIDs for the blocks that comprise this HashMap.
+   */
+  async * cids () {
+    yield * this._iamap.ids();
+  }
+
+  get cid () {
+    return this._iamap.id
+  }
+
+  /**
+   * Create a new {@link HashMap} instance, beginning empty, or loading from existing data in a
+   * backing store.
+   *
+   * A backing store must be provided to make use of a HashMap, an interface to the store is given
+   * through the mandatory `loader` parameter. The backing store stores IPLD blocks, referenced by
+   * CIDs. `loader` must have two functions: `get(cid)` which should return the raw bytes (`Buffer`
+   * or `Uint8Array`) of a block matching the given CID, and `put(cid, block)` that will store the
+   * provided raw bytes of a block (`block`) and store it with the associated CID.
+   *
+   * @async
+   * @template V
+   * @template {number} Codec
+   * @param {Loader} loader - A loader with `get(cid):block` and `put(cid, block)` functions for
+   * loading an storing block data by CID.
+   * @param {CreateOptions<Codec, V>} options - Options for the HashMap. Defaults are provided but you can tweak
+   * behavior according to your needs with these options.
+   * @return {Promise<HashMap<V>>} - A HashMap instance, either loaded from an existing root block CID, or a new,
+   * empty HashMap if no CID is provided.
+   */
+  static async create (loader, options) {
+    return _load(loader, null, options)
+  }
+
+  /**
+   * @template V
+   * @template {number} Codec
+   * @param {Loader} loader
+   * @param {CID} root - A root of an existing HashMap. Provide a CID if you want to load existing
+   * data.
+   * @param {CreateOptions<Codec, V>} options
+   * @returns {Promise<HashMap<V>>}
+   */
+  static async load (loader, root, options) {
+    return _load(loader, root, options)
+  }
+}
+
+/**
+ * @ignore
+ * @template V
+ * @template {number} Codec
+ * @param {Loader} loader
+ * @param {CID|null} root
+ * @param {CreateOptions<Codec, V>} options
+ * @returns {Promise<HashMap<V>>}
+ */
+async function _load (loader, root, options) {
+  const cid = CID$1.asCID(root);
+
+  if (!loader || typeof loader.get !== 'function' || typeof loader.put !== 'function') {
+    throw new TypeError('\'loader\' object with get() and put() methods is required')
+  }
+
+  if (typeof options !== 'object') {
+    throw new TypeError('An \'options\' argument is required')
+  }
+
+  if (!('blockCodec' in options) ||
+      typeof options.blockCodec !== 'object' ||
+      typeof options.blockCodec.code !== 'number' ||
+      typeof options.blockCodec.encode !== 'function' ||
+      typeof options.blockCodec.decode !== 'function') {
+    throw new TypeError('A valid \'blockCodec\' option is required')
+  }
+  const codec = options.blockCodec;
+  if (!('blockHasher' in options) ||
+      typeof options.blockHasher !== 'object' ||
+      typeof options.blockHasher.digest !== 'function' ||
+      typeof options.blockHasher.code !== 'number') {
+    throw new TypeError('A valid \'blockHasher\' option is required')
+  }
+  const hasher = options.blockHasher;
+
+  /**
+   * @ignore
+   * @type {MultihashHasher}
+   */
+  const hamtHasher = (() => {
+    if ('hasher' in options) {
+      if (typeof options.hasher !== 'object' ||
+          typeof options.hasher.digest !== 'function' ||
+          typeof options.hasher.code !== 'number') {
+        throw new TypeError('\'hasher\' option must be a Multihasher')
+      }
+      return options.hasher
+    }
+    return DEFAULT_HASHER
+  })();
+  const hashBytes = (() => {
+    if ('hashBytes' in options) {
+      if (typeof options.hashBytes !== 'number') {
+        throw new TypeError('\'hashBytes\' option must be a number')
+      }
+      /* c8 ignore next 2 */
+      return options.hashBytes
+    }
+    return DEFAULT_HASH_BYTES
+  })();
+  /**
+   * @ignore
+   * @param {Uint8Array} bytes
+   */
+  const hashFn = async (bytes) => {
+    const hash = await sha256.digest(bytes);
+    return hash.digest
+  };
+  registerHasher_1(hamtHasher.code, hashBytes, hashFn);
+
+  const bitWidth = (() => {
+    if ('bitWidth' in options) {
+      if (typeof options.bitWidth !== 'number') {
+        throw new TypeError('\'bitWidth\' option must be a number')
+      }
+      return options.bitWidth
+    }
+    return DEFAULT_BITWIDTH
+  })();
+
+  const bucketSize = (() => {
+    if ('bucketSize' in options) {
+      if (typeof options.bucketSize !== 'number') {
+        throw new TypeError('\'bucketSize\' option must be a number')
+      }
+      return options.bucketSize
+    }
+    return DEFAULT_BUCKET_SIZE
+  })();
+
+  const iamapOptions = { hashAlg: hamtHasher.code, bitWidth, bucketSize };
+
+  const store = {
+    /**
+     * @ignore
+     * @param {CID} cid
+     * @returns {Promise<V>}
+     */
+    async load (cid) {
+      const bytes = await loader.get(cid);
+      if (!bytes) {
+        throw new Error(`Could not load block for: ${cid}`)
+      }
+      // create() validates the block for us
+      const block = await create$2({ bytes, cid, hasher, codec });
+      validateBlock(block.value);
+      return block.value
+    },
+
+    /**
+     * @ignore
+     * @param {V} value
+     * @returns {Promise<CID>}
+     */
+    async save (value) {
+      validateBlock(value);
+      const block = await encode$4({ value, codec, hasher });
+      await loader.put(block.cid, block.bytes);
+      return block.cid
+    },
+
+    /**
+     * @ignore
+     * @param {CID} cid1
+     * @param {CID} cid2
+     * @returns {boolean}
+     */
+    isEqual (cid1, cid2) {
+      return cid1.equals(cid2)
+    },
+
+    /**
+     * @ignore
+     * @param {any} obj
+     * @returns {boolean}
+     */
+    isLink (obj) {
+      return CID$1.asCID(obj) != null
+    }
+  };
+
+  let iamap;
+  if (cid) {
+    // load existing, ignoring bitWidth & bucketSize, they are loaded from the existing root
+    iamap = await load_1(store, cid);
+  } else {
+    // create new
+    iamap = await create_1(store, iamapOptions);
+  }
+
+  return new HashMapImpl(iamap)
+}
+
+/**
+ * @ignore
+ * @param {any} block
+ */
+function validateBlock (block) {
+  if (!HashMapNode(block) && !HashMapRoot(block)) {
+    const description = print(describe(block).schema);
+    throw new Error(`Internal error: unexpected layout for HashMap block does not match schema, got:\n${description}`)
+  }
+}
+const load = HashMapImpl.load;
+
+const typeofs = [
+  'string',
+  'number',
+  'bigint',
+  'symbol'
+];
+const objectTypeNames = [
+  'Function',
+  'Generator',
+  'AsyncGenerator',
+  'GeneratorFunction',
+  'AsyncGeneratorFunction',
+  'AsyncFunction',
+  'Observable',
+  'Array',
+  'Buffer',
+  'Object',
+  'RegExp',
+  'Date',
+  'Error',
+  'Map',
+  'Set',
+  'WeakMap',
+  'WeakSet',
+  'ArrayBuffer',
+  'SharedArrayBuffer',
+  'DataView',
+  'Promise',
+  'URL',
+  'HTMLElement',
+  'Int8Array',
+  'Uint8Array',
+  'Uint8ClampedArray',
+  'Int16Array',
+  'Uint16Array',
+  'Int32Array',
+  'Uint32Array',
+  'Float32Array',
+  'Float64Array',
+  'BigInt64Array',
+  'BigUint64Array'
+];
+function is(value) {
+  if (value === null) {
+    return 'null';
+  }
+  if (value === undefined) {
+    return 'undefined';
+  }
+  if (value === true || value === false) {
+    return 'boolean';
+  }
+  const typeOf = typeof value;
+  if (typeofs.includes(typeOf)) {
+    return typeOf;
+  }
+  if (typeOf === 'function') {
+    return 'Function';
+  }
+  if (Array.isArray(value)) {
+    return 'Array';
+  }
+  if (isBuffer$1(value)) {
+    return 'Buffer';
+  }
+  const objectType = getObjectType(value);
+  if (objectType) {
+    return objectType;
+  }
+  return 'Object';
+}
+function isBuffer$1(value) {
+  return value && value.constructor && value.constructor.isBuffer && value.constructor.isBuffer.call(null, value);
+}
+function getObjectType(value) {
+  const objectTypeName = Object.prototype.toString.call(value).slice(8, -1);
+  if (objectTypeNames.includes(objectTypeName)) {
+    return objectTypeName;
+  }
+  return undefined;
+}
+
+class Type {
+  constructor(major, name, terminal) {
+    this.major = major;
+    this.majorEncoded = major << 5;
+    this.name = name;
+    this.terminal = terminal;
+  }
+  toString() {
+    return `Type[${ this.major }].${ this.name }`;
+  }
+  compare(typ) {
+    return this.major < typ.major ? -1 : this.major > typ.major ? 1 : 0;
+  }
+}
+Type.uint = new Type(0, 'uint', true);
+Type.negint = new Type(1, 'negint', true);
+Type.bytes = new Type(2, 'bytes', true);
+Type.string = new Type(3, 'string', true);
+Type.array = new Type(4, 'array', false);
+Type.map = new Type(5, 'map', false);
+Type.tag = new Type(6, 'tag', false);
+Type.float = new Type(7, 'float', true);
+Type.false = new Type(7, 'false', true);
+Type.true = new Type(7, 'true', true);
+Type.null = new Type(7, 'null', true);
+Type.undefined = new Type(7, 'undefined', true);
+Type.break = new Type(7, 'break', true);
+class Token {
+  constructor(type, value, encodedLength) {
+    this.type = type;
+    this.value = value;
+    this.encodedLength = encodedLength;
+    this.encodedBytes = undefined;
+    this.byteValue = undefined;
+  }
+  toString() {
+    return `Token[${ this.type }].${ this.value }`;
+  }
+}
+
+const useBuffer = globalThis.process && !globalThis.process.browser && globalThis.Buffer && typeof globalThis.Buffer.isBuffer === 'function';
+const textDecoder = new TextDecoder();
+const textEncoder = new TextEncoder();
+function isBuffer(buf) {
+  return useBuffer && globalThis.Buffer.isBuffer(buf);
+}
+function asU8A(buf) {
+  if (!(buf instanceof Uint8Array)) {
+    return Uint8Array.from(buf);
+  }
+  return isBuffer(buf) ? new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength) : buf;
+}
+const toString = useBuffer ? (bytes, start, end) => {
+  return end - start > 64 ? globalThis.Buffer.from(bytes.subarray(start, end)).toString('utf8') : utf8Slice(bytes, start, end);
+} : (bytes, start, end) => {
+  return end - start > 64 ? textDecoder.decode(bytes.subarray(start, end)) : utf8Slice(bytes, start, end);
+};
+const fromString = useBuffer ? string => {
+  return string.length > 64 ? globalThis.Buffer.from(string) : utf8ToBytes(string);
+} : string => {
+  return string.length > 64 ? textEncoder.encode(string) : utf8ToBytes(string);
+};
+const fromArray = arr => {
+  return Uint8Array.from(arr);
+};
+const slice = useBuffer ? (bytes, start, end) => {
+  if (isBuffer(bytes)) {
+    return new Uint8Array(bytes.subarray(start, end));
+  }
+  return bytes.slice(start, end);
+} : (bytes, start, end) => {
+  return bytes.slice(start, end);
+};
+const concat$1 = useBuffer ? (chunks, length) => {
+  chunks = chunks.map(c => c instanceof Uint8Array ? c : globalThis.Buffer.from(c));
+  return asU8A(globalThis.Buffer.concat(chunks, length));
+} : (chunks, length) => {
+  const out = new Uint8Array(length);
+  let off = 0;
+  for (let b of chunks) {
+    if (off + b.length > out.length) {
+      b = b.subarray(0, out.length - off);
+    }
+    out.set(b, off);
+    off += b.length;
+  }
+  return out;
+};
+const alloc = useBuffer ? size => {
+  return globalThis.Buffer.allocUnsafe(size);
+} : size => {
+  return new Uint8Array(size);
+};
+function compare(b1, b2) {
+  if (isBuffer(b1) && isBuffer(b2)) {
+    return b1.compare(b2);
+  }
+  for (let i = 0; i < b1.length; i++) {
+    if (b1[i] === b2[i]) {
+      continue;
+    }
+    return b1[i] < b2[i] ? -1 : 1;
+  }
+  return 0;
+}
+function utf8ToBytes(string, units = Infinity) {
+  let codePoint;
+  const length = string.length;
+  let leadSurrogate = null;
+  const bytes = [];
+  for (let i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i);
+    if (codePoint > 55295 && codePoint < 57344) {
+      if (!leadSurrogate) {
+        if (codePoint > 56319) {
+          if ((units -= 3) > -1)
+            bytes.push(239, 191, 189);
+          continue;
+        } else if (i + 1 === length) {
+          if ((units -= 3) > -1)
+            bytes.push(239, 191, 189);
+          continue;
+        }
+        leadSurrogate = codePoint;
+        continue;
+      }
+      if (codePoint < 56320) {
+        if ((units -= 3) > -1)
+          bytes.push(239, 191, 189);
+        leadSurrogate = codePoint;
+        continue;
+      }
+      codePoint = (leadSurrogate - 55296 << 10 | codePoint - 56320) + 65536;
+    } else if (leadSurrogate) {
+      if ((units -= 3) > -1)
+        bytes.push(239, 191, 189);
+    }
+    leadSurrogate = null;
+    if (codePoint < 128) {
+      if ((units -= 1) < 0)
+        break;
+      bytes.push(codePoint);
+    } else if (codePoint < 2048) {
+      if ((units -= 2) < 0)
+        break;
+      bytes.push(codePoint >> 6 | 192, codePoint & 63 | 128);
+    } else if (codePoint < 65536) {
+      if ((units -= 3) < 0)
+        break;
+      bytes.push(codePoint >> 12 | 224, codePoint >> 6 & 63 | 128, codePoint & 63 | 128);
+    } else if (codePoint < 1114112) {
+      if ((units -= 4) < 0)
+        break;
+      bytes.push(codePoint >> 18 | 240, codePoint >> 12 & 63 | 128, codePoint >> 6 & 63 | 128, codePoint & 63 | 128);
+    } else {
+      throw new Error('Invalid code point');
+    }
+  }
+  return bytes;
+}
+function utf8Slice(buf, offset, end) {
+  const res = [];
+  while (offset < end) {
+    const firstByte = buf[offset];
+    let codePoint = null;
+    let bytesPerSequence = firstByte > 239 ? 4 : firstByte > 223 ? 3 : firstByte > 191 ? 2 : 1;
+    if (offset + bytesPerSequence <= end) {
+      let secondByte, thirdByte, fourthByte, tempCodePoint;
+      switch (bytesPerSequence) {
+      case 1:
+        if (firstByte < 128) {
+          codePoint = firstByte;
+        }
+        break;
+      case 2:
+        secondByte = buf[offset + 1];
+        if ((secondByte & 192) === 128) {
+          tempCodePoint = (firstByte & 31) << 6 | secondByte & 63;
+          if (tempCodePoint > 127) {
+            codePoint = tempCodePoint;
+          }
+        }
+        break;
+      case 3:
+        secondByte = buf[offset + 1];
+        thirdByte = buf[offset + 2];
+        if ((secondByte & 192) === 128 && (thirdByte & 192) === 128) {
+          tempCodePoint = (firstByte & 15) << 12 | (secondByte & 63) << 6 | thirdByte & 63;
+          if (tempCodePoint > 2047 && (tempCodePoint < 55296 || tempCodePoint > 57343)) {
+            codePoint = tempCodePoint;
+          }
+        }
+        break;
+      case 4:
+        secondByte = buf[offset + 1];
+        thirdByte = buf[offset + 2];
+        fourthByte = buf[offset + 3];
+        if ((secondByte & 192) === 128 && (thirdByte & 192) === 128 && (fourthByte & 192) === 128) {
+          tempCodePoint = (firstByte & 15) << 18 | (secondByte & 63) << 12 | (thirdByte & 63) << 6 | fourthByte & 63;
+          if (tempCodePoint > 65535 && tempCodePoint < 1114112) {
+            codePoint = tempCodePoint;
+          }
+        }
+      }
+    }
+    if (codePoint === null) {
+      codePoint = 65533;
+      bytesPerSequence = 1;
+    } else if (codePoint > 65535) {
+      codePoint -= 65536;
+      res.push(codePoint >>> 10 & 1023 | 55296);
+      codePoint = 56320 | codePoint & 1023;
+    }
+    res.push(codePoint);
+    offset += bytesPerSequence;
+  }
+  return decodeCodePointsArray(res);
+}
+const MAX_ARGUMENTS_LENGTH = 4096;
+function decodeCodePointsArray(codePoints) {
+  const len = codePoints.length;
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints);
+  }
+  let res = '';
+  let i = 0;
+  while (i < len) {
+    res += String.fromCharCode.apply(String, codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH));
+  }
+  return res;
+}
+
+const defaultChunkSize = 256;
+class Bl {
+  constructor(chunkSize = defaultChunkSize) {
+    this.chunkSize = chunkSize;
+    this.cursor = 0;
+    this.maxCursor = -1;
+    this.chunks = [];
+    this._initReuseChunk = null;
+  }
+  reset() {
+    this.cursor = 0;
+    this.maxCursor = -1;
+    if (this.chunks.length) {
+      this.chunks = [];
+    }
+    if (this._initReuseChunk !== null) {
+      this.chunks.push(this._initReuseChunk);
+      this.maxCursor = this._initReuseChunk.length - 1;
+    }
+  }
+  push(bytes) {
+    let topChunk = this.chunks[this.chunks.length - 1];
+    const newMax = this.cursor + bytes.length;
+    if (newMax <= this.maxCursor + 1) {
+      const chunkPos = topChunk.length - (this.maxCursor - this.cursor) - 1;
+      topChunk.set(bytes, chunkPos);
+    } else {
+      if (topChunk) {
+        const chunkPos = topChunk.length - (this.maxCursor - this.cursor) - 1;
+        if (chunkPos < topChunk.length) {
+          this.chunks[this.chunks.length - 1] = topChunk.subarray(0, chunkPos);
+          this.maxCursor = this.cursor - 1;
+        }
+      }
+      if (bytes.length < 64 && bytes.length < this.chunkSize) {
+        topChunk = alloc(this.chunkSize);
+        this.chunks.push(topChunk);
+        this.maxCursor += topChunk.length;
+        if (this._initReuseChunk === null) {
+          this._initReuseChunk = topChunk;
+        }
+        topChunk.set(bytes, 0);
+      } else {
+        this.chunks.push(bytes);
+        this.maxCursor += bytes.length;
+      }
+    }
+    this.cursor += bytes.length;
+  }
+  toBytes(reset = false) {
+    let byts;
+    if (this.chunks.length === 1) {
+      const chunk = this.chunks[0];
+      if (reset && this.cursor > chunk.length / 2) {
+        byts = this.cursor === chunk.length ? chunk : chunk.subarray(0, this.cursor);
+        this._initReuseChunk = null;
+        this.chunks = [];
+      } else {
+        byts = slice(chunk, 0, this.cursor);
+      }
+    } else {
+      byts = concat$1(this.chunks, this.cursor);
+    }
+    if (reset) {
+      this.reset();
+    }
+    return byts;
+  }
+}
+
+const decodeErrPrefix = 'CBOR decode error:';
+const encodeErrPrefix = 'CBOR encode error:';
+function assertEnoughData(data, pos, need) {
+  if (data.length - pos < need) {
+    throw new Error(`${ decodeErrPrefix } not enough data for type`);
+  }
+}
+
+const uintBoundaries = [
+  24,
+  256,
+  65536,
+  4294967296,
+  BigInt('18446744073709551616')
+];
+function readUint8(data, offset, options) {
+  assertEnoughData(data, offset, 1);
+  const value = data[offset];
+  if (options.strict === true && value < uintBoundaries[0]) {
+    throw new Error(`${ decodeErrPrefix } integer encoded in more bytes than necessary (strict decode)`);
+  }
+  return value;
+}
+function readUint16(data, offset, options) {
+  assertEnoughData(data, offset, 2);
+  const value = data[offset] << 8 | data[offset + 1];
+  if (options.strict === true && value < uintBoundaries[1]) {
+    throw new Error(`${ decodeErrPrefix } integer encoded in more bytes than necessary (strict decode)`);
+  }
+  return value;
+}
+function readUint32(data, offset, options) {
+  assertEnoughData(data, offset, 4);
+  const value = data[offset] * 16777216 + (data[offset + 1] << 16) + (data[offset + 2] << 8) + data[offset + 3];
+  if (options.strict === true && value < uintBoundaries[2]) {
+    throw new Error(`${ decodeErrPrefix } integer encoded in more bytes than necessary (strict decode)`);
+  }
+  return value;
+}
+function readUint64(data, offset, options) {
+  assertEnoughData(data, offset, 8);
+  const hi = data[offset] * 16777216 + (data[offset + 1] << 16) + (data[offset + 2] << 8) + data[offset + 3];
+  const lo = data[offset + 4] * 16777216 + (data[offset + 5] << 16) + (data[offset + 6] << 8) + data[offset + 7];
+  const value = (BigInt(hi) << BigInt(32)) + BigInt(lo);
+  if (options.strict === true && value < uintBoundaries[3]) {
+    throw new Error(`${ decodeErrPrefix } integer encoded in more bytes than necessary (strict decode)`);
+  }
+  if (value <= Number.MAX_SAFE_INTEGER) {
+    return Number(value);
+  }
+  if (options.allowBigInt === true) {
+    return value;
+  }
+  throw new Error(`${ decodeErrPrefix } integers outside of the safe integer range are not supported`);
+}
+function decodeUint8(data, pos, _minor, options) {
+  return new Token(Type.uint, readUint8(data, pos + 1, options), 2);
+}
+function decodeUint16(data, pos, _minor, options) {
+  return new Token(Type.uint, readUint16(data, pos + 1, options), 3);
+}
+function decodeUint32(data, pos, _minor, options) {
+  return new Token(Type.uint, readUint32(data, pos + 1, options), 5);
+}
+function decodeUint64(data, pos, _minor, options) {
+  return new Token(Type.uint, readUint64(data, pos + 1, options), 9);
+}
+function encodeUint(buf, token) {
+  return encodeUintValue(buf, 0, token.value);
+}
+function encodeUintValue(buf, major, uint) {
+  if (uint < uintBoundaries[0]) {
+    const nuint = Number(uint);
+    buf.push([major | nuint]);
+  } else if (uint < uintBoundaries[1]) {
+    const nuint = Number(uint);
+    buf.push([
+      major | 24,
+      nuint
+    ]);
+  } else if (uint < uintBoundaries[2]) {
+    const nuint = Number(uint);
+    buf.push([
+      major | 25,
+      nuint >>> 8,
+      nuint & 255
+    ]);
+  } else if (uint < uintBoundaries[3]) {
+    const nuint = Number(uint);
+    buf.push([
+      major | 26,
+      nuint >>> 24 & 255,
+      nuint >>> 16 & 255,
+      nuint >>> 8 & 255,
+      nuint & 255
+    ]);
+  } else {
+    const buint = BigInt(uint);
+    if (buint < uintBoundaries[4]) {
+      const set = [
+        major | 27,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ];
+      let lo = Number(buint & BigInt(4294967295));
+      let hi = Number(buint >> BigInt(32) & BigInt(4294967295));
+      set[8] = lo & 255;
+      lo = lo >> 8;
+      set[7] = lo & 255;
+      lo = lo >> 8;
+      set[6] = lo & 255;
+      lo = lo >> 8;
+      set[5] = lo & 255;
+      set[4] = hi & 255;
+      hi = hi >> 8;
+      set[3] = hi & 255;
+      hi = hi >> 8;
+      set[2] = hi & 255;
+      hi = hi >> 8;
+      set[1] = hi & 255;
+      buf.push(set);
+    } else {
+      throw new Error(`${ decodeErrPrefix } encountered BigInt larger than allowable range`);
+    }
+  }
+}
+encodeUint.encodedSize = function encodedSize(token) {
+  return encodeUintValue.encodedSize(token.value);
+};
+encodeUintValue.encodedSize = function encodedSize(uint) {
+  if (uint < uintBoundaries[0]) {
+    return 1;
+  }
+  if (uint < uintBoundaries[1]) {
+    return 2;
+  }
+  if (uint < uintBoundaries[2]) {
+    return 3;
+  }
+  if (uint < uintBoundaries[3]) {
+    return 5;
+  }
+  return 9;
+};
+encodeUint.compareTokens = function compareTokens(tok1, tok2) {
+  return tok1.value < tok2.value ? -1 : tok1.value > tok2.value ? 1 : 0;
+};
+
+function decodeNegint8(data, pos, _minor, options) {
+  return new Token(Type.negint, -1 - readUint8(data, pos + 1, options), 2);
+}
+function decodeNegint16(data, pos, _minor, options) {
+  return new Token(Type.negint, -1 - readUint16(data, pos + 1, options), 3);
+}
+function decodeNegint32(data, pos, _minor, options) {
+  return new Token(Type.negint, -1 - readUint32(data, pos + 1, options), 5);
+}
+const neg1b = BigInt(-1);
+const pos1b = BigInt(1);
+function decodeNegint64(data, pos, _minor, options) {
+  const int = readUint64(data, pos + 1, options);
+  if (typeof int !== 'bigint') {
+    const value = -1 - int;
+    if (value >= Number.MIN_SAFE_INTEGER) {
+      return new Token(Type.negint, value, 9);
+    }
+  }
+  if (options.allowBigInt !== true) {
+    throw new Error(`${ decodeErrPrefix } integers outside of the safe integer range are not supported`);
+  }
+  return new Token(Type.negint, neg1b - BigInt(int), 9);
+}
+function encodeNegint(buf, token) {
+  const negint = token.value;
+  const unsigned = typeof negint === 'bigint' ? negint * neg1b - pos1b : negint * -1 - 1;
+  encodeUintValue(buf, token.type.majorEncoded, unsigned);
+}
+encodeNegint.encodedSize = function encodedSize(token) {
+  const negint = token.value;
+  const unsigned = typeof negint === 'bigint' ? negint * neg1b - pos1b : negint * -1 - 1;
+  if (unsigned < uintBoundaries[0]) {
+    return 1;
+  }
+  if (unsigned < uintBoundaries[1]) {
+    return 2;
+  }
+  if (unsigned < uintBoundaries[2]) {
+    return 3;
+  }
+  if (unsigned < uintBoundaries[3]) {
+    return 5;
+  }
+  return 9;
+};
+encodeNegint.compareTokens = function compareTokens(tok1, tok2) {
+  return tok1.value < tok2.value ? 1 : tok1.value > tok2.value ? -1 : 0;
+};
+
+function toToken$3(data, pos, prefix, length) {
+  assertEnoughData(data, pos, prefix + length);
+  const buf = slice(data, pos + prefix, pos + prefix + length);
+  return new Token(Type.bytes, buf, prefix + length);
+}
+function decodeBytesCompact(data, pos, minor, _options) {
+  return toToken$3(data, pos, 1, minor);
+}
+function decodeBytes8(data, pos, _minor, options) {
+  return toToken$3(data, pos, 2, readUint8(data, pos + 1, options));
+}
+function decodeBytes16(data, pos, _minor, options) {
+  return toToken$3(data, pos, 3, readUint16(data, pos + 1, options));
+}
+function decodeBytes32(data, pos, _minor, options) {
+  return toToken$3(data, pos, 5, readUint32(data, pos + 1, options));
+}
+function decodeBytes64(data, pos, _minor, options) {
+  const l = readUint64(data, pos + 1, options);
+  if (typeof l === 'bigint') {
+    throw new Error(`${ decodeErrPrefix } 64-bit integer bytes lengths not supported`);
+  }
+  return toToken$3(data, pos, 9, l);
+}
+function tokenBytes(token) {
+  if (token.encodedBytes === undefined) {
+    token.encodedBytes = token.type === Type.string ? fromString(token.value) : token.value;
+  }
+  return token.encodedBytes;
+}
+function encodeBytes(buf, token) {
+  const bytes = tokenBytes(token);
+  encodeUintValue(buf, token.type.majorEncoded, bytes.length);
+  buf.push(bytes);
+}
+encodeBytes.encodedSize = function encodedSize(token) {
+  const bytes = tokenBytes(token);
+  return encodeUintValue.encodedSize(bytes.length) + bytes.length;
+};
+encodeBytes.compareTokens = function compareTokens(tok1, tok2) {
+  return compareBytes(tokenBytes(tok1), tokenBytes(tok2));
+};
+function compareBytes(b1, b2) {
+  return b1.length < b2.length ? -1 : b1.length > b2.length ? 1 : compare(b1, b2);
+}
+
+function toToken$2(data, pos, prefix, length, options) {
+  const totLength = prefix + length;
+  assertEnoughData(data, pos, totLength);
+  const tok = new Token(Type.string, toString(data, pos + prefix, pos + totLength), totLength);
+  if (options.retainStringBytes === true) {
+    tok.byteValue = slice(data, pos + prefix, pos + totLength);
+  }
+  return tok;
+}
+function decodeStringCompact(data, pos, minor, options) {
+  return toToken$2(data, pos, 1, minor, options);
+}
+function decodeString8(data, pos, _minor, options) {
+  return toToken$2(data, pos, 2, readUint8(data, pos + 1, options), options);
+}
+function decodeString16(data, pos, _minor, options) {
+  return toToken$2(data, pos, 3, readUint16(data, pos + 1, options), options);
+}
+function decodeString32(data, pos, _minor, options) {
+  return toToken$2(data, pos, 5, readUint32(data, pos + 1, options), options);
+}
+function decodeString64(data, pos, _minor, options) {
+  const l = readUint64(data, pos + 1, options);
+  if (typeof l === 'bigint') {
+    throw new Error(`${ decodeErrPrefix } 64-bit integer string lengths not supported`);
+  }
+  return toToken$2(data, pos, 9, l, options);
+}
+const encodeString = encodeBytes;
+
+function toToken$1(_data, _pos, prefix, length) {
+  return new Token(Type.array, length, prefix);
+}
+function decodeArrayCompact(data, pos, minor, _options) {
+  return toToken$1(data, pos, 1, minor);
+}
+function decodeArray8(data, pos, _minor, options) {
+  return toToken$1(data, pos, 2, readUint8(data, pos + 1, options));
+}
+function decodeArray16(data, pos, _minor, options) {
+  return toToken$1(data, pos, 3, readUint16(data, pos + 1, options));
+}
+function decodeArray32(data, pos, _minor, options) {
+  return toToken$1(data, pos, 5, readUint32(data, pos + 1, options));
+}
+function decodeArray64(data, pos, _minor, options) {
+  const l = readUint64(data, pos + 1, options);
+  if (typeof l === 'bigint') {
+    throw new Error(`${ decodeErrPrefix } 64-bit integer array lengths not supported`);
+  }
+  return toToken$1(data, pos, 9, l);
+}
+function decodeArrayIndefinite(data, pos, _minor, options) {
+  if (options.allowIndefinite === false) {
+    throw new Error(`${ decodeErrPrefix } indefinite length items not allowed`);
+  }
+  return toToken$1(data, pos, 1, Infinity);
+}
+function encodeArray(buf, token) {
+  encodeUintValue(buf, Type.array.majorEncoded, token.value);
+}
+encodeArray.compareTokens = encodeUint.compareTokens;
+encodeArray.encodedSize = function encodedSize(token) {
+  return encodeUintValue.encodedSize(token.value);
+};
+
+function toToken(_data, _pos, prefix, length) {
+  return new Token(Type.map, length, prefix);
+}
+function decodeMapCompact(data, pos, minor, _options) {
+  return toToken(data, pos, 1, minor);
+}
+function decodeMap8(data, pos, _minor, options) {
+  return toToken(data, pos, 2, readUint8(data, pos + 1, options));
+}
+function decodeMap16(data, pos, _minor, options) {
+  return toToken(data, pos, 3, readUint16(data, pos + 1, options));
+}
+function decodeMap32(data, pos, _minor, options) {
+  return toToken(data, pos, 5, readUint32(data, pos + 1, options));
+}
+function decodeMap64(data, pos, _minor, options) {
+  const l = readUint64(data, pos + 1, options);
+  if (typeof l === 'bigint') {
+    throw new Error(`${ decodeErrPrefix } 64-bit integer map lengths not supported`);
+  }
+  return toToken(data, pos, 9, l);
+}
+function decodeMapIndefinite(data, pos, _minor, options) {
+  if (options.allowIndefinite === false) {
+    throw new Error(`${ decodeErrPrefix } indefinite length items not allowed`);
+  }
+  return toToken(data, pos, 1, Infinity);
+}
+function encodeMap(buf, token) {
+  encodeUintValue(buf, Type.map.majorEncoded, token.value);
+}
+encodeMap.compareTokens = encodeUint.compareTokens;
+encodeMap.encodedSize = function encodedSize(token) {
+  return encodeUintValue.encodedSize(token.value);
+};
+
+function decodeTagCompact(_data, _pos, minor, _options) {
+  return new Token(Type.tag, minor, 1);
+}
+function decodeTag8(data, pos, _minor, options) {
+  return new Token(Type.tag, readUint8(data, pos + 1, options), 2);
+}
+function decodeTag16(data, pos, _minor, options) {
+  return new Token(Type.tag, readUint16(data, pos + 1, options), 3);
+}
+function decodeTag32(data, pos, _minor, options) {
+  return new Token(Type.tag, readUint32(data, pos + 1, options), 5);
+}
+function decodeTag64(data, pos, _minor, options) {
+  return new Token(Type.tag, readUint64(data, pos + 1, options), 9);
+}
+function encodeTag(buf, token) {
+  encodeUintValue(buf, Type.tag.majorEncoded, token.value);
+}
+encodeTag.compareTokens = encodeUint.compareTokens;
+encodeTag.encodedSize = function encodedSize(token) {
+  return encodeUintValue.encodedSize(token.value);
+};
+
+const MINOR_FALSE = 20;
+const MINOR_TRUE = 21;
+const MINOR_NULL = 22;
+const MINOR_UNDEFINED = 23;
+function decodeUndefined(_data, _pos, _minor, options) {
+  if (options.allowUndefined === false) {
+    throw new Error(`${ decodeErrPrefix } undefined values are not supported`);
+  } else if (options.coerceUndefinedToNull === true) {
+    return new Token(Type.null, null, 1);
+  }
+  return new Token(Type.undefined, undefined, 1);
+}
+function decodeBreak(_data, _pos, _minor, options) {
+  if (options.allowIndefinite === false) {
+    throw new Error(`${ decodeErrPrefix } indefinite length items not allowed`);
+  }
+  return new Token(Type.break, undefined, 1);
+}
+function createToken(value, bytes, options) {
+  if (options) {
+    if (options.allowNaN === false && Number.isNaN(value)) {
+      throw new Error(`${ decodeErrPrefix } NaN values are not supported`);
+    }
+    if (options.allowInfinity === false && (value === Infinity || value === -Infinity)) {
+      throw new Error(`${ decodeErrPrefix } Infinity values are not supported`);
+    }
+  }
+  return new Token(Type.float, value, bytes);
+}
+function decodeFloat16(data, pos, _minor, options) {
+  return createToken(readFloat16(data, pos + 1), 3, options);
+}
+function decodeFloat32(data, pos, _minor, options) {
+  return createToken(readFloat32(data, pos + 1), 5, options);
+}
+function decodeFloat64(data, pos, _minor, options) {
+  return createToken(readFloat64(data, pos + 1), 9, options);
+}
+function encodeFloat(buf, token, options) {
+  const float = token.value;
+  if (float === false) {
+    buf.push([Type.float.majorEncoded | MINOR_FALSE]);
+  } else if (float === true) {
+    buf.push([Type.float.majorEncoded | MINOR_TRUE]);
+  } else if (float === null) {
+    buf.push([Type.float.majorEncoded | MINOR_NULL]);
+  } else if (float === undefined) {
+    buf.push([Type.float.majorEncoded | MINOR_UNDEFINED]);
+  } else {
+    let decoded;
+    let success = false;
+    if (!options || options.float64 !== true) {
+      encodeFloat16(float);
+      decoded = readFloat16(ui8a, 1);
+      if (float === decoded || Number.isNaN(float)) {
+        ui8a[0] = 249;
+        buf.push(ui8a.slice(0, 3));
+        success = true;
+      } else {
+        encodeFloat32(float);
+        decoded = readFloat32(ui8a, 1);
+        if (float === decoded) {
+          ui8a[0] = 250;
+          buf.push(ui8a.slice(0, 5));
+          success = true;
+        }
+      }
+    }
+    if (!success) {
+      encodeFloat64(float);
+      decoded = readFloat64(ui8a, 1);
+      ui8a[0] = 251;
+      buf.push(ui8a.slice(0, 9));
+    }
+  }
+}
+encodeFloat.encodedSize = function encodedSize(token, options) {
+  const float = token.value;
+  if (float === false || float === true || float === null || float === undefined) {
+    return 1;
+  }
+  if (!options || options.float64 !== true) {
+    encodeFloat16(float);
+    let decoded = readFloat16(ui8a, 1);
+    if (float === decoded || Number.isNaN(float)) {
+      return 3;
+    }
+    encodeFloat32(float);
+    decoded = readFloat32(ui8a, 1);
+    if (float === decoded) {
+      return 5;
+    }
+  }
+  return 9;
+};
+const buffer = new ArrayBuffer(9);
+const dataView = new DataView(buffer, 1);
+const ui8a = new Uint8Array(buffer, 0);
+function encodeFloat16(inp) {
+  if (inp === Infinity) {
+    dataView.setUint16(0, 31744, false);
+  } else if (inp === -Infinity) {
+    dataView.setUint16(0, 64512, false);
+  } else if (Number.isNaN(inp)) {
+    dataView.setUint16(0, 32256, false);
+  } else {
+    dataView.setFloat32(0, inp);
+    const valu32 = dataView.getUint32(0);
+    const exponent = (valu32 & 2139095040) >> 23;
+    const mantissa = valu32 & 8388607;
+    if (exponent === 255) {
+      dataView.setUint16(0, 31744, false);
+    } else if (exponent === 0) {
+      dataView.setUint16(0, (inp & 2147483648) >> 16 | mantissa >> 13, false);
+    } else {
+      const logicalExponent = exponent - 127;
+      if (logicalExponent < -24) {
+        dataView.setUint16(0, 0);
+      } else if (logicalExponent < -14) {
+        dataView.setUint16(0, (valu32 & 2147483648) >> 16 | 1 << 24 + logicalExponent, false);
+      } else {
+        dataView.setUint16(0, (valu32 & 2147483648) >> 16 | logicalExponent + 15 << 10 | mantissa >> 13, false);
+      }
+    }
+  }
+}
+function readFloat16(ui8a, pos) {
+  if (ui8a.length - pos < 2) {
+    throw new Error(`${ decodeErrPrefix } not enough data for float16`);
+  }
+  const half = (ui8a[pos] << 8) + ui8a[pos + 1];
+  if (half === 31744) {
+    return Infinity;
+  }
+  if (half === 64512) {
+    return -Infinity;
+  }
+  if (half === 32256) {
+    return NaN;
+  }
+  const exp = half >> 10 & 31;
+  const mant = half & 1023;
+  let val;
+  if (exp === 0) {
+    val = mant * 2 ** -24;
+  } else if (exp !== 31) {
+    val = (mant + 1024) * 2 ** (exp - 25);
+  } else {
+    val = mant === 0 ? Infinity : NaN;
+  }
+  return half & 32768 ? -val : val;
+}
+function encodeFloat32(inp) {
+  dataView.setFloat32(0, inp, false);
+}
+function readFloat32(ui8a, pos) {
+  if (ui8a.length - pos < 4) {
+    throw new Error(`${ decodeErrPrefix } not enough data for float32`);
+  }
+  const offset = (ui8a.byteOffset || 0) + pos;
+  return new DataView(ui8a.buffer, offset, 4).getFloat32(0, false);
+}
+function encodeFloat64(inp) {
+  dataView.setFloat64(0, inp, false);
+}
+function readFloat64(ui8a, pos) {
+  if (ui8a.length - pos < 8) {
+    throw new Error(`${ decodeErrPrefix } not enough data for float64`);
+  }
+  const offset = (ui8a.byteOffset || 0) + pos;
+  return new DataView(ui8a.buffer, offset, 8).getFloat64(0, false);
+}
+encodeFloat.compareTokens = encodeUint.compareTokens;
+
+function invalidMinor(data, pos, minor) {
+  throw new Error(`${ decodeErrPrefix } encountered invalid minor (${ minor }) for major ${ data[pos] >>> 5 }`);
+}
+function errorer(msg) {
+  return () => {
+    throw new Error(`${ decodeErrPrefix } ${ msg }`);
+  };
+}
+const jump = [];
+for (let i = 0; i <= 23; i++) {
+  jump[i] = invalidMinor;
+}
+jump[24] = decodeUint8;
+jump[25] = decodeUint16;
+jump[26] = decodeUint32;
+jump[27] = decodeUint64;
+jump[28] = invalidMinor;
+jump[29] = invalidMinor;
+jump[30] = invalidMinor;
+jump[31] = invalidMinor;
+for (let i = 32; i <= 55; i++) {
+  jump[i] = invalidMinor;
+}
+jump[56] = decodeNegint8;
+jump[57] = decodeNegint16;
+jump[58] = decodeNegint32;
+jump[59] = decodeNegint64;
+jump[60] = invalidMinor;
+jump[61] = invalidMinor;
+jump[62] = invalidMinor;
+jump[63] = invalidMinor;
+for (let i = 64; i <= 87; i++) {
+  jump[i] = decodeBytesCompact;
+}
+jump[88] = decodeBytes8;
+jump[89] = decodeBytes16;
+jump[90] = decodeBytes32;
+jump[91] = decodeBytes64;
+jump[92] = invalidMinor;
+jump[93] = invalidMinor;
+jump[94] = invalidMinor;
+jump[95] = errorer('indefinite length bytes/strings are not supported');
+for (let i = 96; i <= 119; i++) {
+  jump[i] = decodeStringCompact;
+}
+jump[120] = decodeString8;
+jump[121] = decodeString16;
+jump[122] = decodeString32;
+jump[123] = decodeString64;
+jump[124] = invalidMinor;
+jump[125] = invalidMinor;
+jump[126] = invalidMinor;
+jump[127] = errorer('indefinite length bytes/strings are not supported');
+for (let i = 128; i <= 151; i++) {
+  jump[i] = decodeArrayCompact;
+}
+jump[152] = decodeArray8;
+jump[153] = decodeArray16;
+jump[154] = decodeArray32;
+jump[155] = decodeArray64;
+jump[156] = invalidMinor;
+jump[157] = invalidMinor;
+jump[158] = invalidMinor;
+jump[159] = decodeArrayIndefinite;
+for (let i = 160; i <= 183; i++) {
+  jump[i] = decodeMapCompact;
+}
+jump[184] = decodeMap8;
+jump[185] = decodeMap16;
+jump[186] = decodeMap32;
+jump[187] = decodeMap64;
+jump[188] = invalidMinor;
+jump[189] = invalidMinor;
+jump[190] = invalidMinor;
+jump[191] = decodeMapIndefinite;
+for (let i = 192; i <= 215; i++) {
+  jump[i] = decodeTagCompact;
+}
+jump[216] = decodeTag8;
+jump[217] = decodeTag16;
+jump[218] = decodeTag32;
+jump[219] = decodeTag64;
+jump[220] = invalidMinor;
+jump[221] = invalidMinor;
+jump[222] = invalidMinor;
+jump[223] = invalidMinor;
+for (let i = 224; i <= 243; i++) {
+  jump[i] = errorer('simple values are not supported');
+}
+jump[244] = invalidMinor;
+jump[245] = invalidMinor;
+jump[246] = invalidMinor;
+jump[247] = decodeUndefined;
+jump[248] = errorer('simple values are not supported');
+jump[249] = decodeFloat16;
+jump[250] = decodeFloat32;
+jump[251] = decodeFloat64;
+jump[252] = invalidMinor;
+jump[253] = invalidMinor;
+jump[254] = invalidMinor;
+jump[255] = decodeBreak;
+const quick = [];
+for (let i = 0; i < 24; i++) {
+  quick[i] = new Token(Type.uint, i, 1);
+}
+for (let i = -1; i >= -24; i--) {
+  quick[31 - i] = new Token(Type.negint, i, 1);
+}
+quick[64] = new Token(Type.bytes, new Uint8Array(0), 1);
+quick[96] = new Token(Type.string, '', 1);
+quick[128] = new Token(Type.array, 0, 1);
+quick[160] = new Token(Type.map, 0, 1);
+quick[244] = new Token(Type.false, false, 1);
+quick[245] = new Token(Type.true, true, 1);
+quick[246] = new Token(Type.null, null, 1);
+function quickEncodeToken(token) {
+  switch (token.type) {
+  case Type.false:
+    return fromArray([244]);
+  case Type.true:
+    return fromArray([245]);
+  case Type.null:
+    return fromArray([246]);
+  case Type.bytes:
+    if (!token.value.length) {
+      return fromArray([64]);
+    }
+    return;
+  case Type.string:
+    if (token.value === '') {
+      return fromArray([96]);
+    }
+    return;
+  case Type.array:
+    if (token.value === 0) {
+      return fromArray([128]);
+    }
+    return;
+  case Type.map:
+    if (token.value === 0) {
+      return fromArray([160]);
+    }
+    return;
+  case Type.uint:
+    if (token.value < 24) {
+      return fromArray([Number(token.value)]);
+    }
+    return;
+  case Type.negint:
+    if (token.value >= -24) {
+      return fromArray([31 - Number(token.value)]);
+    }
+  }
+}
+
+const defaultEncodeOptions = {
+  float64: false,
+  mapSorter,
+  quickEncodeToken
+};
+function makeCborEncoders() {
+  const encoders = [];
+  encoders[Type.uint.major] = encodeUint;
+  encoders[Type.negint.major] = encodeNegint;
+  encoders[Type.bytes.major] = encodeBytes;
+  encoders[Type.string.major] = encodeString;
+  encoders[Type.array.major] = encodeArray;
+  encoders[Type.map.major] = encodeMap;
+  encoders[Type.tag.major] = encodeTag;
+  encoders[Type.float.major] = encodeFloat;
+  return encoders;
+}
+const cborEncoders = makeCborEncoders();
+const buf = new Bl();
+class Ref {
+  constructor(obj, parent) {
+    this.obj = obj;
+    this.parent = parent;
+  }
+  includes(obj) {
+    let p = this;
+    do {
+      if (p.obj === obj) {
+        return true;
+      }
+    } while (p = p.parent);
+    return false;
+  }
+  static createCheck(stack, obj) {
+    if (stack && stack.includes(obj)) {
+      throw new Error(`${ encodeErrPrefix } object contains circular references`);
+    }
+    return new Ref(obj, stack);
+  }
+}
+const simpleTokens = {
+  null: new Token(Type.null, null),
+  undefined: new Token(Type.undefined, undefined),
+  true: new Token(Type.true, true),
+  false: new Token(Type.false, false),
+  emptyArray: new Token(Type.array, 0),
+  emptyMap: new Token(Type.map, 0)
+};
+const typeEncoders = {
+  number(obj, _typ, _options, _refStack) {
+    if (!Number.isInteger(obj) || !Number.isSafeInteger(obj)) {
+      return new Token(Type.float, obj);
+    } else if (obj >= 0) {
+      return new Token(Type.uint, obj);
+    } else {
+      return new Token(Type.negint, obj);
+    }
+  },
+  bigint(obj, _typ, _options, _refStack) {
+    if (obj >= BigInt(0)) {
+      return new Token(Type.uint, obj);
+    } else {
+      return new Token(Type.negint, obj);
+    }
+  },
+  Uint8Array(obj, _typ, _options, _refStack) {
+    return new Token(Type.bytes, obj);
+  },
+  string(obj, _typ, _options, _refStack) {
+    return new Token(Type.string, obj);
+  },
+  boolean(obj, _typ, _options, _refStack) {
+    return obj ? simpleTokens.true : simpleTokens.false;
+  },
+  null(_obj, _typ, _options, _refStack) {
+    return simpleTokens.null;
+  },
+  undefined(_obj, _typ, _options, _refStack) {
+    return simpleTokens.undefined;
+  },
+  ArrayBuffer(obj, _typ, _options, _refStack) {
+    return new Token(Type.bytes, new Uint8Array(obj));
+  },
+  DataView(obj, _typ, _options, _refStack) {
+    return new Token(Type.bytes, new Uint8Array(obj.buffer, obj.byteOffset, obj.byteLength));
+  },
+  Array(obj, _typ, options, refStack) {
+    if (!obj.length) {
+      if (options.addBreakTokens === true) {
+        return [
+          simpleTokens.emptyArray,
+          new Token(Type.break)
+        ];
+      }
+      return simpleTokens.emptyArray;
+    }
+    refStack = Ref.createCheck(refStack, obj);
+    const entries = [];
+    let i = 0;
+    for (const e of obj) {
+      entries[i++] = objectToTokens(e, options, refStack);
+    }
+    if (options.addBreakTokens) {
+      return [
+        new Token(Type.array, obj.length),
+        entries,
+        new Token(Type.break)
+      ];
+    }
+    return [
+      new Token(Type.array, obj.length),
+      entries
+    ];
+  },
+  Object(obj, typ, options, refStack) {
+    const isMap = typ !== 'Object';
+    const keys = isMap ? obj.keys() : Object.keys(obj);
+    const length = isMap ? obj.size : keys.length;
+    if (!length) {
+      if (options.addBreakTokens === true) {
+        return [
+          simpleTokens.emptyMap,
+          new Token(Type.break)
+        ];
+      }
+      return simpleTokens.emptyMap;
+    }
+    refStack = Ref.createCheck(refStack, obj);
+    const entries = [];
+    let i = 0;
+    for (const key of keys) {
+      entries[i++] = [
+        objectToTokens(key, options, refStack),
+        objectToTokens(isMap ? obj.get(key) : obj[key], options, refStack)
+      ];
+    }
+    sortMapEntries(entries, options);
+    if (options.addBreakTokens) {
+      return [
+        new Token(Type.map, length),
+        entries,
+        new Token(Type.break)
+      ];
+    }
+    return [
+      new Token(Type.map, length),
+      entries
+    ];
+  }
+};
+typeEncoders.Map = typeEncoders.Object;
+typeEncoders.Buffer = typeEncoders.Uint8Array;
+for (const typ of 'Uint8Clamped Uint16 Uint32 Int8 Int16 Int32 BigUint64 BigInt64 Float32 Float64'.split(' ')) {
+  typeEncoders[`${ typ }Array`] = typeEncoders.DataView;
+}
+function objectToTokens(obj, options = {}, refStack) {
+  const typ = is(obj);
+  const customTypeEncoder = options && options.typeEncoders && options.typeEncoders[typ] || typeEncoders[typ];
+  if (typeof customTypeEncoder === 'function') {
+    const tokens = customTypeEncoder(obj, typ, options, refStack);
+    if (tokens != null) {
+      return tokens;
+    }
+  }
+  const typeEncoder = typeEncoders[typ];
+  if (!typeEncoder) {
+    throw new Error(`${ encodeErrPrefix } unsupported type: ${ typ }`);
+  }
+  return typeEncoder(obj, typ, options, refStack);
+}
+function sortMapEntries(entries, options) {
+  if (options.mapSorter) {
+    entries.sort(options.mapSorter);
+  }
+}
+function mapSorter(e1, e2) {
+  const keyToken1 = Array.isArray(e1[0]) ? e1[0][0] : e1[0];
+  const keyToken2 = Array.isArray(e2[0]) ? e2[0][0] : e2[0];
+  if (keyToken1.type !== keyToken2.type) {
+    return keyToken1.type.compare(keyToken2.type);
+  }
+  const major = keyToken1.type.major;
+  const tcmp = cborEncoders[major].compareTokens(keyToken1, keyToken2);
+  if (tcmp === 0) {
+    console.warn('WARNING: complex key types used, CBOR key sorting guarantees are gone');
+  }
+  return tcmp;
+}
+function tokensToEncoded(buf, tokens, encoders, options) {
+  if (Array.isArray(tokens)) {
+    for (const token of tokens) {
+      tokensToEncoded(buf, token, encoders, options);
+    }
+  } else {
+    encoders[tokens.type.major](buf, tokens, options);
+  }
+}
+function encodeCustom(data, encoders, options) {
+  const tokens = objectToTokens(data, options);
+  if (!Array.isArray(tokens) && options.quickEncodeToken) {
+    const quickBytes = options.quickEncodeToken(tokens);
+    if (quickBytes) {
+      return quickBytes;
+    }
+    const encoder = encoders[tokens.type.major];
+    if (encoder.encodedSize) {
+      const size = encoder.encodedSize(tokens, options);
+      const buf = new Bl(size);
+      encoder(buf, tokens, options);
+      if (buf.chunks.length !== 1) {
+        throw new Error(`Unexpected error: pre-calculated length for ${ tokens } was wrong`);
+      }
+      return asU8A(buf.chunks[0]);
+    }
+  }
+  buf.reset();
+  tokensToEncoded(buf, tokens, encoders, options);
+  return buf.toBytes(true);
+}
+function encode$3(data, options) {
+  options = Object.assign({}, defaultEncodeOptions, options);
+  return encodeCustom(data, cborEncoders, options);
+}
+
+const defaultDecodeOptions = {
+  strict: false,
+  allowIndefinite: true,
+  allowUndefined: true,
+  allowBigInt: true
+};
+class Tokeniser {
+  constructor(data, options = {}) {
+    this.pos = 0;
+    this.data = data;
+    this.options = options;
+  }
+  done() {
+    return this.pos >= this.data.length;
+  }
+  next() {
+    const byt = this.data[this.pos];
+    let token = quick[byt];
+    if (token === undefined) {
+      const decoder = jump[byt];
+      if (!decoder) {
+        throw new Error(`${ decodeErrPrefix } no decoder for major type ${ byt >>> 5 } (byte 0x${ byt.toString(16).padStart(2, '0') })`);
+      }
+      const minor = byt & 31;
+      token = decoder(this.data, this.pos, minor, this.options);
+    }
+    this.pos += token.encodedLength;
+    return token;
+  }
+}
+const DONE = Symbol.for('DONE');
+const BREAK = Symbol.for('BREAK');
+function tokenToArray(token, tokeniser, options) {
+  const arr = [];
+  for (let i = 0; i < token.value; i++) {
+    const value = tokensToObject(tokeniser, options);
+    if (value === BREAK) {
+      if (token.value === Infinity) {
+        break;
+      }
+      throw new Error(`${ decodeErrPrefix } got unexpected break to lengthed array`);
+    }
+    if (value === DONE) {
+      throw new Error(`${ decodeErrPrefix } found array but not enough entries (got ${ i }, expected ${ token.value })`);
+    }
+    arr[i] = value;
+  }
+  return arr;
+}
+function tokenToMap(token, tokeniser, options) {
+  const useMaps = options.useMaps === true;
+  const obj = useMaps ? undefined : {};
+  const m = useMaps ? new Map() : undefined;
+  for (let i = 0; i < token.value; i++) {
+    const key = tokensToObject(tokeniser, options);
+    if (key === BREAK) {
+      if (token.value === Infinity) {
+        break;
+      }
+      throw new Error(`${ decodeErrPrefix } got unexpected break to lengthed map`);
+    }
+    if (key === DONE) {
+      throw new Error(`${ decodeErrPrefix } found map but not enough entries (got ${ i } [no key], expected ${ token.value })`);
+    }
+    if (useMaps !== true && typeof key !== 'string') {
+      throw new Error(`${ decodeErrPrefix } non-string keys not supported (got ${ typeof key })`);
+    }
+    if (options.rejectDuplicateMapKeys === true) {
+      if (useMaps && m.has(key) || !useMaps && key in obj) {
+        throw new Error(`${ decodeErrPrefix } found repeat map key "${ key }"`);
+      }
+    }
+    const value = tokensToObject(tokeniser, options);
+    if (value === DONE) {
+      throw new Error(`${ decodeErrPrefix } found map but not enough entries (got ${ i } [no value], expected ${ token.value })`);
+    }
+    if (useMaps) {
+      m.set(key, value);
+    } else {
+      obj[key] = value;
+    }
+  }
+  return useMaps ? m : obj;
+}
+function tokensToObject(tokeniser, options) {
+  if (tokeniser.done()) {
+    return DONE;
+  }
+  const token = tokeniser.next();
+  if (token.type === Type.break) {
+    return BREAK;
+  }
+  if (token.type.terminal) {
+    return token.value;
+  }
+  if (token.type === Type.array) {
+    return tokenToArray(token, tokeniser, options);
+  }
+  if (token.type === Type.map) {
+    return tokenToMap(token, tokeniser, options);
+  }
+  if (token.type === Type.tag) {
+    if (options.tags && typeof options.tags[token.value] === 'function') {
+      const tagged = tokensToObject(tokeniser, options);
+      return options.tags[token.value](tagged);
+    }
+    throw new Error(`${ decodeErrPrefix } tag not supported (${ token.value })`);
+  }
+  throw new Error('unsupported');
+}
+function decode$5(data, options) {
+  if (!(data instanceof Uint8Array)) {
+    throw new Error(`${ decodeErrPrefix } data to decode must be a Uint8Array`);
+  }
+  options = Object.assign({}, defaultDecodeOptions, options);
+  const tokeniser = options.tokenizer || new Tokeniser(data, options);
+  const decoded = tokensToObject(tokeniser, options);
+  if (decoded === DONE) {
+    throw new Error(`${ decodeErrPrefix } did not find any content to decode`);
+  }
+  if (decoded === BREAK) {
+    throw new Error(`${ decodeErrPrefix } got unexpected break`);
+  }
+  if (!tokeniser.done()) {
+    throw new Error(`${ decodeErrPrefix } too many terminals, data makes no sense`);
+  }
+  return decoded;
+}
+
+var encode_1 = encode$2;
+var MSB = 128, REST = 127, MSBALL = ~REST, INT = Math.pow(2, 31);
+function encode$2(num, out, offset) {
+  out = out || [];
+  offset = offset || 0;
+  var oldOffset = offset;
+  while (num >= INT) {
+    out[offset++] = num & 255 | MSB;
+    num /= 128;
+  }
+  while (num & MSBALL) {
+    out[offset++] = num & 255 | MSB;
+    num >>>= 7;
+  }
+  out[offset] = num | 0;
+  encode$2.bytes = offset - oldOffset + 1;
+  return out;
+}
+var decode$4 = read;
+var MSB$1 = 128, REST$1 = 127;
+function read(buf, offset) {
+  var res = 0, offset = offset || 0, shift = 0, counter = offset, b, l = buf.length;
+  do {
+    if (counter >= l) {
+      read.bytes = 0;
+      throw new RangeError('Could not decode varint');
+    }
+    b = buf[counter++];
+    res += shift < 28 ? (b & REST$1) << shift : (b & REST$1) * Math.pow(2, shift);
+    shift += 7;
+  } while (b >= MSB$1);
+  read.bytes = counter - offset;
+  return res;
+}
+var N1 = Math.pow(2, 7);
+var N2 = Math.pow(2, 14);
+var N3 = Math.pow(2, 21);
+var N4 = Math.pow(2, 28);
+var N5 = Math.pow(2, 35);
+var N6 = Math.pow(2, 42);
+var N7 = Math.pow(2, 49);
+var N8 = Math.pow(2, 56);
+var N9 = Math.pow(2, 63);
+var length = function (value) {
+  return value < N1 ? 1 : value < N2 ? 2 : value < N3 ? 3 : value < N4 ? 4 : value < N5 ? 5 : value < N6 ? 6 : value < N7 ? 7 : value < N8 ? 8 : value < N9 ? 9 : 10;
+};
+var varint = {
+  encode: encode_1,
+  decode: decode$4,
+  encodingLength: length
+};
+var _brrp_varint = varint;
+
+const decode$3 = (data, offset = 0) => {
+  const code = _brrp_varint.decode(data, offset);
+  return [
+    code,
+    _brrp_varint.decode.bytes
+  ];
+};
+const encodeTo = (int, target, offset = 0) => {
+  _brrp_varint.encode(int, target, offset);
+  return target;
+};
+const encodingLength = int => {
+  return _brrp_varint.encodingLength(int);
+};
+
+const equals$1 = (aa, bb) => {
+  if (aa === bb)
+    return true;
+  if (aa.byteLength !== bb.byteLength) {
+    return false;
+  }
+  for (let ii = 0; ii < aa.byteLength; ii++) {
+    if (aa[ii] !== bb[ii]) {
+      return false;
+    }
+  }
+  return true;
+};
+const coerce = o => {
+  if (o instanceof Uint8Array && o.constructor.name === 'Uint8Array')
+    return o;
+  if (o instanceof ArrayBuffer)
+    return new Uint8Array(o);
+  if (ArrayBuffer.isView(o)) {
+    return new Uint8Array(o.buffer, o.byteOffset, o.byteLength);
+  }
+  throw new Error('Unknown type, must be binary type');
+};
+
+const create$1 = (code, digest) => {
+  const size = digest.byteLength;
+  const sizeOffset = encodingLength(code);
+  const digestOffset = sizeOffset + encodingLength(size);
+  const bytes = new Uint8Array(digestOffset + size);
+  encodeTo(code, bytes, 0);
+  encodeTo(size, bytes, sizeOffset);
+  bytes.set(digest, digestOffset);
+  return new Digest(code, size, digest, bytes);
+};
+const decode$2 = multihash => {
+  const bytes = coerce(multihash);
+  const [code, sizeOffset] = decode$3(bytes);
+  const [size, digestOffset] = decode$3(bytes.subarray(sizeOffset));
+  const digest = bytes.subarray(sizeOffset + digestOffset);
+  if (digest.byteLength !== size) {
+    throw new Error('Incorrect length');
+  }
+  return new Digest(code, size, digest, bytes);
+};
+const equals = (a, b) => {
+  if (a === b) {
+    return true;
+  } else {
+    return a.code === b.code && a.size === b.size && equals$1(a.bytes, b.bytes);
+  }
+};
+class Digest {
+  constructor(code, size, digest, bytes) {
+    this.code = code;
+    this.size = size;
+    this.digest = digest;
+    this.bytes = bytes;
+  }
+}
+
+function base(ALPHABET, name) {
+  if (ALPHABET.length >= 255) {
+    throw new TypeError('Alphabet too long');
+  }
+  var BASE_MAP = new Uint8Array(256);
+  for (var j = 0; j < BASE_MAP.length; j++) {
+    BASE_MAP[j] = 255;
+  }
+  for (var i = 0; i < ALPHABET.length; i++) {
+    var x = ALPHABET.charAt(i);
+    var xc = x.charCodeAt(0);
+    if (BASE_MAP[xc] !== 255) {
+      throw new TypeError(x + ' is ambiguous');
+    }
+    BASE_MAP[xc] = i;
+  }
+  var BASE = ALPHABET.length;
+  var LEADER = ALPHABET.charAt(0);
+  var FACTOR = Math.log(BASE) / Math.log(256);
+  var iFACTOR = Math.log(256) / Math.log(BASE);
+  function encode(source) {
+    if (source instanceof Uint8Array);
+    else if (ArrayBuffer.isView(source)) {
+      source = new Uint8Array(source.buffer, source.byteOffset, source.byteLength);
+    } else if (Array.isArray(source)) {
+      source = Uint8Array.from(source);
+    }
+    if (!(source instanceof Uint8Array)) {
+      throw new TypeError('Expected Uint8Array');
+    }
+    if (source.length === 0) {
+      return '';
+    }
+    var zeroes = 0;
+    var length = 0;
+    var pbegin = 0;
+    var pend = source.length;
+    while (pbegin !== pend && source[pbegin] === 0) {
+      pbegin++;
+      zeroes++;
+    }
+    var size = (pend - pbegin) * iFACTOR + 1 >>> 0;
+    var b58 = new Uint8Array(size);
+    while (pbegin !== pend) {
+      var carry = source[pbegin];
+      var i = 0;
+      for (var it1 = size - 1; (carry !== 0 || i < length) && it1 !== -1; it1--, i++) {
+        carry += 256 * b58[it1] >>> 0;
+        b58[it1] = carry % BASE >>> 0;
+        carry = carry / BASE >>> 0;
+      }
+      if (carry !== 0) {
+        throw new Error('Non-zero carry');
+      }
+      length = i;
+      pbegin++;
+    }
+    var it2 = size - length;
+    while (it2 !== size && b58[it2] === 0) {
+      it2++;
+    }
+    var str = LEADER.repeat(zeroes);
+    for (; it2 < size; ++it2) {
+      str += ALPHABET.charAt(b58[it2]);
+    }
+    return str;
+  }
+  function decodeUnsafe(source) {
+    if (typeof source !== 'string') {
+      throw new TypeError('Expected String');
+    }
+    if (source.length === 0) {
+      return new Uint8Array();
+    }
+    var psz = 0;
+    if (source[psz] === ' ') {
+      return;
+    }
+    var zeroes = 0;
+    var length = 0;
+    while (source[psz] === LEADER) {
+      zeroes++;
+      psz++;
+    }
+    var size = (source.length - psz) * FACTOR + 1 >>> 0;
+    var b256 = new Uint8Array(size);
+    while (source[psz]) {
+      var carry = BASE_MAP[source.charCodeAt(psz)];
+      if (carry === 255) {
+        return;
+      }
+      var i = 0;
+      for (var it3 = size - 1; (carry !== 0 || i < length) && it3 !== -1; it3--, i++) {
+        carry += BASE * b256[it3] >>> 0;
+        b256[it3] = carry % 256 >>> 0;
+        carry = carry / 256 >>> 0;
+      }
+      if (carry !== 0) {
+        throw new Error('Non-zero carry');
+      }
+      length = i;
+      psz++;
+    }
+    if (source[psz] === ' ') {
+      return;
+    }
+    var it4 = size - length;
+    while (it4 !== size && b256[it4] === 0) {
+      it4++;
+    }
+    var vch = new Uint8Array(zeroes + (size - it4));
+    var j = zeroes;
+    while (it4 !== size) {
+      vch[j++] = b256[it4++];
+    }
+    return vch;
+  }
+  function decode(string) {
+    var buffer = decodeUnsafe(string);
+    if (buffer) {
+      return buffer;
+    }
+    throw new Error(`Non-${ name } character`);
+  }
+  return {
+    encode: encode,
+    decodeUnsafe: decodeUnsafe,
+    decode: decode
+  };
+}
+var src = base;
+var _brrp__multiformats_scope_baseX = src;
+
+class Encoder {
+  constructor(name, prefix, baseEncode) {
+    this.name = name;
+    this.prefix = prefix;
+    this.baseEncode = baseEncode;
+  }
+  encode(bytes) {
+    if (bytes instanceof Uint8Array) {
+      return `${ this.prefix }${ this.baseEncode(bytes) }`;
+    } else {
+      throw Error('Unknown type, must be binary type');
+    }
+  }
+}
+class Decoder {
+  constructor(name, prefix, baseDecode) {
+    this.name = name;
+    this.prefix = prefix;
+    if (prefix.codePointAt(0) === undefined) {
+      throw new Error('Invalid prefix character');
+    }
+    this.prefixCodePoint = prefix.codePointAt(0);
+    this.baseDecode = baseDecode;
+  }
+  decode(text) {
+    if (typeof text === 'string') {
+      if (text.codePointAt(0) !== this.prefixCodePoint) {
+        throw Error(`Unable to decode multibase string ${ JSON.stringify(text) }, ${ this.name } decoder only supports inputs prefixed with ${ this.prefix }`);
+      }
+      return this.baseDecode(text.slice(this.prefix.length));
+    } else {
+      throw Error('Can only multibase decode strings');
+    }
+  }
+  or(decoder) {
+    return or(this, decoder);
+  }
+}
+class ComposedDecoder {
+  constructor(decoders) {
+    this.decoders = decoders;
+  }
+  or(decoder) {
+    return or(this, decoder);
+  }
+  decode(input) {
+    const prefix = input[0];
+    const decoder = this.decoders[prefix];
+    if (decoder) {
+      return decoder.decode(input);
+    } else {
+      throw RangeError(`Unable to decode multibase string ${ JSON.stringify(input) }, only inputs prefixed with ${ Object.keys(this.decoders) } are supported`);
+    }
+  }
+}
+const or = (left, right) => new ComposedDecoder({
+  ...left.decoders || { [left.prefix]: left },
+  ...right.decoders || { [right.prefix]: right }
+});
+class Codec {
+  constructor(name, prefix, baseEncode, baseDecode) {
+    this.name = name;
+    this.prefix = prefix;
+    this.baseEncode = baseEncode;
+    this.baseDecode = baseDecode;
+    this.encoder = new Encoder(name, prefix, baseEncode);
+    this.decoder = new Decoder(name, prefix, baseDecode);
+  }
+  encode(input) {
+    return this.encoder.encode(input);
+  }
+  decode(input) {
+    return this.decoder.decode(input);
+  }
+}
+const from = ({name, prefix, encode, decode}) => new Codec(name, prefix, encode, decode);
+const baseX = ({prefix, name, alphabet}) => {
+  const {encode, decode} = _brrp__multiformats_scope_baseX(alphabet, name);
+  return from({
+    prefix,
+    name,
+    encode,
+    decode: text => coerce(decode(text))
+  });
+};
+const decode$1 = (string, alphabet, bitsPerChar, name) => {
+  const codes = {};
+  for (let i = 0; i < alphabet.length; ++i) {
+    codes[alphabet[i]] = i;
+  }
+  let end = string.length;
+  while (string[end - 1] === '=') {
+    --end;
+  }
+  const out = new Uint8Array(end * bitsPerChar / 8 | 0);
+  let bits = 0;
+  let buffer = 0;
+  let written = 0;
+  for (let i = 0; i < end; ++i) {
+    const value = codes[string[i]];
+    if (value === undefined) {
+      throw new SyntaxError(`Non-${ name } character`);
+    }
+    buffer = buffer << bitsPerChar | value;
+    bits += bitsPerChar;
+    if (bits >= 8) {
+      bits -= 8;
+      out[written++] = 255 & buffer >> bits;
+    }
+  }
+  if (bits >= bitsPerChar || 255 & buffer << 8 - bits) {
+    throw new SyntaxError('Unexpected end of data');
+  }
+  return out;
+};
+const encode$1 = (data, alphabet, bitsPerChar) => {
+  const pad = alphabet[alphabet.length - 1] === '=';
+  const mask = (1 << bitsPerChar) - 1;
+  let out = '';
+  let bits = 0;
+  let buffer = 0;
+  for (let i = 0; i < data.length; ++i) {
+    buffer = buffer << 8 | data[i];
+    bits += 8;
+    while (bits > bitsPerChar) {
+      bits -= bitsPerChar;
+      out += alphabet[mask & buffer >> bits];
+    }
+  }
+  if (bits) {
+    out += alphabet[mask & buffer << bitsPerChar - bits];
+  }
+  if (pad) {
+    while (out.length * bitsPerChar & 7) {
+      out += '=';
+    }
+  }
+  return out;
+};
+const rfc4648 = ({name, prefix, bitsPerChar, alphabet}) => {
+  return from({
+    prefix,
+    name,
+    encode(input) {
+      return encode$1(input, alphabet, bitsPerChar);
+    },
+    decode(input) {
+      return decode$1(input, alphabet, bitsPerChar, name);
+    }
+  });
+};
+
+const base58btc = baseX({
+  name: 'base58btc',
+  prefix: 'z',
+  alphabet: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+});
+baseX({
+  name: 'base58flickr',
+  prefix: 'Z',
+  alphabet: '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
+});
+
+const base32 = rfc4648({
+  prefix: 'b',
+  name: 'base32',
+  alphabet: 'abcdefghijklmnopqrstuvwxyz234567',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'B',
+  name: 'base32upper',
+  alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'c',
+  name: 'base32pad',
+  alphabet: 'abcdefghijklmnopqrstuvwxyz234567=',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'C',
+  name: 'base32padupper',
+  alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'v',
+  name: 'base32hex',
+  alphabet: '0123456789abcdefghijklmnopqrstuv',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'V',
+  name: 'base32hexupper',
+  alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUV',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 't',
+  name: 'base32hexpad',
+  alphabet: '0123456789abcdefghijklmnopqrstuv=',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'T',
+  name: 'base32hexpadupper',
+  alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUV=',
+  bitsPerChar: 5
+});
+rfc4648({
+  prefix: 'h',
+  name: 'base32z',
+  alphabet: 'ybndrfg8ejkmcpqxot1uwisza345h769',
+  bitsPerChar: 5
+});
+
+class CID {
+  constructor(version, code, multihash, bytes) {
+    this.code = code;
+    this.version = version;
+    this.multihash = multihash;
+    this.bytes = bytes;
+    this.byteOffset = bytes.byteOffset;
+    this.byteLength = bytes.byteLength;
+    this.asCID = this;
+    this._baseCache = new Map();
+    Object.defineProperties(this, {
+      byteOffset: hidden,
+      byteLength: hidden,
+      code: readonly,
+      version: readonly,
+      multihash: readonly,
+      bytes: readonly,
+      _baseCache: hidden,
+      asCID: hidden
+    });
+  }
+  toV0() {
+    switch (this.version) {
+    case 0: {
+        return this;
+      }
+    default: {
+        const {code, multihash} = this;
+        if (code !== DAG_PB_CODE) {
+          throw new Error('Cannot convert a non dag-pb CID to CIDv0');
+        }
+        if (multihash.code !== SHA_256_CODE) {
+          throw new Error('Cannot convert non sha2-256 multihash CID to CIDv0');
+        }
+        return CID.createV0(multihash);
+      }
+    }
+  }
+  toV1() {
+    switch (this.version) {
+    case 0: {
+        const {code, digest} = this.multihash;
+        const multihash = create$1(code, digest);
+        return CID.createV1(this.code, multihash);
+      }
+    case 1: {
+        return this;
+      }
+    default: {
+        throw Error(`Can not convert CID version ${ this.version } to version 0. This is a bug please report`);
+      }
+    }
+  }
+  equals(other) {
+    return other && this.code === other.code && this.version === other.version && equals(this.multihash, other.multihash);
+  }
+  toString(base) {
+    const {bytes, version, _baseCache} = this;
+    switch (version) {
+    case 0:
+      return toStringV0(bytes, _baseCache, base || base58btc.encoder);
+    default:
+      return toStringV1(bytes, _baseCache, base || base32.encoder);
+    }
+  }
+  toJSON() {
+    return {
+      code: this.code,
+      version: this.version,
+      hash: this.multihash.bytes
+    };
+  }
+  get [Symbol.toStringTag]() {
+    return 'CID';
+  }
+  [Symbol.for('nodejs.util.inspect.custom')]() {
+    return 'CID(' + this.toString() + ')';
+  }
+  static isCID(value) {
+    deprecate(/^0\.0/, IS_CID_DEPRECATION);
+    return !!(value && (value[cidSymbol] || value.asCID === value));
+  }
+  get toBaseEncodedString() {
+    throw new Error('Deprecated, use .toString()');
+  }
+  get codec() {
+    throw new Error('"codec" property is deprecated, use integer "code" property instead');
+  }
+  get buffer() {
+    throw new Error('Deprecated .buffer property, use .bytes to get Uint8Array instead');
+  }
+  get multibaseName() {
+    throw new Error('"multibaseName" property is deprecated');
+  }
+  get prefix() {
+    throw new Error('"prefix" property is deprecated');
+  }
+  static asCID(value) {
+    if (value instanceof CID) {
+      return value;
+    } else if (value != null && value.asCID === value) {
+      const {version, code, multihash, bytes} = value;
+      return new CID(version, code, multihash, bytes || encodeCID(version, code, multihash.bytes));
+    } else if (value != null && value[cidSymbol] === true) {
+      const {version, multihash, code} = value;
+      const digest = decode$2(multihash);
+      return CID.create(version, code, digest);
+    } else {
+      return null;
+    }
+  }
+  static create(version, code, digest) {
+    if (typeof code !== 'number') {
+      throw new Error('String codecs are no longer supported');
+    }
+    switch (version) {
+    case 0: {
+        if (code !== DAG_PB_CODE) {
+          throw new Error(`Version 0 CID must use dag-pb (code: ${ DAG_PB_CODE }) block encoding`);
+        } else {
+          return new CID(version, code, digest, digest.bytes);
+        }
+      }
+    case 1: {
+        const bytes = encodeCID(version, code, digest.bytes);
+        return new CID(version, code, digest, bytes);
+      }
+    default: {
+        throw new Error('Invalid version');
+      }
+    }
+  }
+  static createV0(digest) {
+    return CID.create(0, DAG_PB_CODE, digest);
+  }
+  static createV1(code, digest) {
+    return CID.create(1, code, digest);
+  }
+  static decode(bytes) {
+    const [cid, remainder] = CID.decodeFirst(bytes);
+    if (remainder.length) {
+      throw new Error('Incorrect length');
+    }
+    return cid;
+  }
+  static decodeFirst(bytes) {
+    const specs = CID.inspectBytes(bytes);
+    const prefixSize = specs.size - specs.multihashSize;
+    const multihashBytes = coerce(bytes.subarray(prefixSize, prefixSize + specs.multihashSize));
+    if (multihashBytes.byteLength !== specs.multihashSize) {
+      throw new Error('Incorrect length');
+    }
+    const digestBytes = multihashBytes.subarray(specs.multihashSize - specs.digestSize);
+    const digest = new Digest(specs.multihashCode, specs.digestSize, digestBytes, multihashBytes);
+    const cid = specs.version === 0 ? CID.createV0(digest) : CID.createV1(specs.codec, digest);
+    return [
+      cid,
+      bytes.subarray(specs.size)
+    ];
+  }
+  static inspectBytes(initialBytes) {
+    let offset = 0;
+    const next = () => {
+      const [i, length] = decode$3(initialBytes.subarray(offset));
+      offset += length;
+      return i;
+    };
+    let version = next();
+    let codec = DAG_PB_CODE;
+    if (version === 18) {
+      version = 0;
+      offset = 0;
+    } else if (version === 1) {
+      codec = next();
+    }
+    if (version !== 0 && version !== 1) {
+      throw new RangeError(`Invalid CID version ${ version }`);
+    }
+    const prefixSize = offset;
+    const multihashCode = next();
+    const digestSize = next();
+    const size = offset + digestSize;
+    const multihashSize = size - prefixSize;
+    return {
+      version,
+      codec,
+      multihashCode,
+      digestSize,
+      multihashSize,
+      size
+    };
+  }
+  static parse(source, base) {
+    const [prefix, bytes] = parseCIDtoBytes(source, base);
+    const cid = CID.decode(bytes);
+    cid._baseCache.set(prefix, source);
+    return cid;
+  }
+}
+const parseCIDtoBytes = (source, base) => {
+  switch (source[0]) {
+  case 'Q': {
+      const decoder = base || base58btc;
+      return [
+        base58btc.prefix,
+        decoder.decode(`${ base58btc.prefix }${ source }`)
+      ];
+    }
+  case base58btc.prefix: {
+      const decoder = base || base58btc;
+      return [
+        base58btc.prefix,
+        decoder.decode(source)
+      ];
+    }
+  case base32.prefix: {
+      const decoder = base || base32;
+      return [
+        base32.prefix,
+        decoder.decode(source)
+      ];
+    }
+  default: {
+      if (base == null) {
+        throw Error('To parse non base32 or base58btc encoded CID multibase decoder must be provided');
+      }
+      return [
+        source[0],
+        base.decode(source)
+      ];
+    }
+  }
+};
+const toStringV0 = (bytes, cache, base) => {
+  const {prefix} = base;
+  if (prefix !== base58btc.prefix) {
+    throw Error(`Cannot string encode V0 in ${ base.name } encoding`);
+  }
+  const cid = cache.get(prefix);
+  if (cid == null) {
+    const cid = base.encode(bytes).slice(1);
+    cache.set(prefix, cid);
+    return cid;
+  } else {
+    return cid;
+  }
+};
+const toStringV1 = (bytes, cache, base) => {
+  const {prefix} = base;
+  const cid = cache.get(prefix);
+  if (cid == null) {
+    const cid = base.encode(bytes);
+    cache.set(prefix, cid);
+    return cid;
+  } else {
+    return cid;
+  }
+};
+const DAG_PB_CODE = 112;
+const SHA_256_CODE = 18;
+const encodeCID = (version, code, multihash) => {
+  const codeOffset = encodingLength(version);
+  const hashOffset = codeOffset + encodingLength(code);
+  const bytes = new Uint8Array(hashOffset + multihash.byteLength);
+  encodeTo(version, bytes, 0);
+  encodeTo(code, bytes, codeOffset);
+  bytes.set(multihash, hashOffset);
+  return bytes;
+};
+const cidSymbol = Symbol.for('@ipld/js-cid/CID');
+const readonly = {
+  writable: false,
+  configurable: false,
+  enumerable: true
+};
+const hidden = {
+  writable: false,
+  enumerable: false,
+  configurable: false
+};
+const version = '0.0.0-dev';
+const deprecate = (range, message) => {
+  if (range.test(version)) {
+    console.warn(message);
+  } else {
+    throw new Error(message);
+  }
+};
+const IS_CID_DEPRECATION = `CID.isCID(v) is deprecated and will be removed in the next major release.
+Following code pattern:
+
+if (CID.isCID(value)) {
+  doSomethingWithCID(value)
+}
+
+Is replaced with:
+
+const cid = CID.asCID(value)
+if (cid) {
+  // Make sure to use cid instead of value
+  doSomethingWithCID(cid)
+}
+`;
+
+const CID_CBOR_TAG = 42;
+function cidEncoder(obj) {
+  if (obj.asCID !== obj) {
+    return null;
+  }
+  const cid = CID.asCID(obj);
+  if (!cid) {
+    return null;
+  }
+  const bytes = new Uint8Array(cid.bytes.byteLength + 1);
+  bytes.set(cid.bytes, 1);
+  return [
+    new Token(Type.tag, CID_CBOR_TAG),
+    new Token(Type.bytes, bytes)
+  ];
+}
+function undefinedEncoder() {
+  throw new Error('`undefined` is not supported by the IPLD Data Model and cannot be encoded');
+}
+function numberEncoder(num) {
+  if (Number.isNaN(num)) {
+    throw new Error('`NaN` is not supported by the IPLD Data Model and cannot be encoded');
+  }
+  if (num === Infinity || num === -Infinity) {
+    throw new Error('`Infinity` and `-Infinity` is not supported by the IPLD Data Model and cannot be encoded');
+  }
+  return null;
+}
+const encodeOptions = {
+  float64: true,
+  typeEncoders: {
+    Object: cidEncoder,
+    undefined: undefinedEncoder,
+    number: numberEncoder
+  }
+};
+function cidDecoder(bytes) {
+  if (bytes[0] !== 0) {
+    throw new Error('Invalid CID for CBOR tag 42; expected leading 0x00');
+  }
+  return CID.decode(bytes.subarray(1));
+}
+const decodeOptions = {
+  allowIndefinite: false,
+  allowUndefined: false,
+  allowNaN: false,
+  allowInfinity: false,
+  allowBigInt: true,
+  strict: true,
+  useMaps: false,
+  tags: []
+};
+decodeOptions.tags[CID_CBOR_TAG] = cidDecoder;
+const name = 'dag-cbor';
+const code = 113;
+const encode = node => encode$3(node, encodeOptions);
+const decode = data => decode$5(data, decodeOptions);
+
+var blockCodec = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  name: name,
+  code: code,
+  encode: encode,
+  decode: decode
+});
+
 function concat(arrays, length) {
   if (!length) {
     length = arrays.reduce((acc, curr) => acc + curr.length, 0);
@@ -10928,88 +17352,112 @@ var itAll = all;
 class IPFSSTORE {
     constructor(cid, ipfsClient) {
         this.cid = cid;
+        this.hamt = false;
         this.ipfsClient = ipfsClient;
+        this.key = "";
+        this.loader = {
+            async get(cid) {
+                const bytes = await ipfsClient.block.get(cid, {
+                    codec: "dag-cbor",
+                });
+                return bytes;
+            },
+            // For our purposes of reading the HashMap we don't need to implement put
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            async put(cid, bytes) {
+                return null;
+            },
+        };
     }
     keys() {
         throw new Error("Method not implemented.");
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async getItem(item, opts) {
-        if (item === ".zarray") {
-            const cid = this.cid;
-            const value = await this.ipfsClient.dag.get(cid);
-            if (value.status === 404) {
+        if (item === ".zgroup") {
+            // Loading Group
+            const { cid } = this;
+            const response = await this.ipfsClient.dag.get(cid);
+            if (response.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
             }
-            if (!value.value) {
+            if (!response.value) {
+                throw new Error("Zarr Group does not exist at CID");
+            }
+            else {
+                return response.value[item];
+            }
+        }
+        if (item.includes(".zarray")) {
+            const { cid } = this;
+            const response = await this.ipfsClient.dag.get(cid);
+            if (response.status === 404) {
+                throw new KeyError(item);
+            }
+            if (!response.value) {
                 throw new Error("Zarr does not exist at CID");
             }
             else {
-                let jsonKey = "";
-                let combinedTree = {};
-                // Find the location of the data being addressed. This is done by checking for an area with more than one dimension
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [key, keyValue] of Object.entries(value.value[".zmetadata"].metadata)) {
-                    try {
-                        if (value.value[".zmetadata"].metadata[key]["_ARRAY_DIMENSIONS"].length >= 2) {
-                            jsonKey = key.replace("/.zattrs", "");
-                        }
-                        // eslint-disable-next-line no-empty
+                const splitItems = item.split("/");
+                // This is used to get the .zarray object
+                // In the case of a nested array, we need to get the parent object
+                // and so we have the directory in case it is not hamt
+                let objectValue = response.value;
+                let objectValueParent = response.value;
+                for (let i = 0; i < splitItems.length; i += 1) {
+                    if (splitItems[0] === ".zarray") {
+                        objectValue = response.value[splitItems[i]];
+                        break;
                     }
-                    catch (error) { }
+                    if (i > 0) {
+                        objectValueParent =
+                            objectValueParent[splitItems[i - 1]];
+                    }
+                    objectValue = objectValue[splitItems[i]];
                 }
-                // To rebuild the tree we assume the data is found 
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                for (const [secondKey, secondKeyValue] of Object.entries(value.value[jsonKey])) {
-                    // If a tree exists we denominate the start of the object with a "/"
-                    if (secondKey.includes("/")) {
-                        const newCID = value.value[jsonKey][secondKey];
-                        const branch = await this.ipfsClient.dag.get(newCID);
-                        combinedTree = Object.assign(combinedTree, branch.value);
-                        // If an object does not have it and is not the ".zarray" or ".zattrs" then no tree exists
-                    }
-                    else if (secondKey !== ".zarray" && secondKey !== ".zattrs") {
-                        // assign to directory for later returns
-                        this.directory = value.value[jsonKey];
-                        // Ensure a codec is loaded
-                        try {
-                            if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
-                                addCodec(Zlib$1.codecId, () => Zlib$1);
-                            }
-                            if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
-                                addCodec(Zlib$1.codecId, () => Blosc$1);
-                            }
-                            // eslint-disable-next-line no-empty
-                        }
-                        catch (error) { }
-                        return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
-                    }
+                // now check if using hamt
+                if (response.value.hamt) {
+                    this.hamt = true;
+                    // if there is a hamt, load it
+                    const hamtOptions = { blockHasher: sha256, blockCodec };
+                    const hamt = await load(this.loader, response.value.hamt, hamtOptions);
+                    // the hamt will have the KV pair for all the zarr arrays in the group directory
+                    // so we can use it to get the CID for the array
+                    this.directory = hamt;
                 }
-                // after the tree has been rebuilt, assign to the directory for parsing later
-                this.directory = combinedTree;
+                else {
+                    this.hamt = false;
+                    this.directory = objectValueParent;
+                }
                 // Ensure a codec is loaded
                 try {
-                    if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "zlib") {
+                    if (response.value[".zmetadata"].metadata[item].compressor.id === "zlib") {
                         addCodec(Zlib$1.codecId, () => Zlib$1);
                     }
-                    if (value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`].compressor.id === "blosc") {
+                    if (response.value[".zmetadata"].metadata[item].compressor.id === "blosc") {
                         addCodec(Zlib$1.codecId, () => Blosc$1);
                     }
                     // eslint-disable-next-line no-empty
                 }
                 catch (error) { }
-                return value.value[".zmetadata"].metadata[`${jsonKey}/.zarray`];
+                return objectValue;
             }
         }
         else {
+            if (this.hamt) {
+                const location = await this.directory.get(item);
+                if (location) {
+                    const response = concat(await itAll(this.ipfsClient.cat(location)));
+                    return response.buffer;
+                }
+                throw new KeyError(item);
+            }
             if (this.directory[item]) {
                 const value = concat(await itAll(this.ipfsClient.cat(this.directory[item])));
                 return value.buffer;
             }
-            else {
-                throw new KeyError(item);
-            }
+            throw new KeyError(item);
         }
     }
     setItem(_item) {
@@ -11019,9 +17467,16 @@ class IPFSSTORE {
         throw new Error("Method not implemented.");
     }
     async containsItem(_item) {
-        const value = await this.ipfsClient.dag.get(this.cid);
-        if (value) {
-            return true;
+        const response = await this.ipfsClient.dag.get(this.cid);
+        const splitItems = _item.split("/");
+        let objectValue = response.value;
+        for (let i = 0; i < splitItems.length; i += 1) {
+            if (splitItems[i] === ".zarray" || splitItems[i] === ".zgroup") {
+                if (objectValue[splitItems[i]]) {
+                    return true;
+                }
+            }
+            objectValue = objectValue[splitItems[i]];
         }
         return false;
     }
@@ -11386,10 +17841,11 @@ async function group(store, path = null, chunkStore, overwrite = false, cacheAtt
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- *
+ * @param ipfsClient IPFS client
+ * @param cid IPFS CID
  */
-async function openGroup(store, path = null, mode = "a", chunkStore, cacheAttrs = true) {
-    store = normalizeStoreArgument(store);
+async function openGroup(store, path = null, mode = "a", chunkStore, cacheAttrs = true, ipfsClient, cid) {
+    store = normalizeStoreArgument(store, cid, ipfsClient);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -11459,5 +17915,5 @@ class ObjectStore {
     }
 }
 
-export { ArrayNotFoundError, Blosc$1 as Blosc, BoundsCheckError, ContainsArrayError, ContainsGroupError, GZip$1 as GZip, Group, GroupNotFoundError, HTTPError, HTTPStore, InvalidSliceError, KeyError, MemoryStore, NegativeStepError, NestedArray, ObjectStore, PathNotFoundError, PermissionError, TooManyIndicesError, ValueError, ZarrArray, Zlib$1 as Zlib, addCodec, array, create, createProxy, empty, full, getCodec, getTypedArrayCtr, getTypedArrayDtypeString, group, isKeyError, normalizeStoreArgument, ones, openArray, openGroup, rangeTypedArray, slice, sliceIndices, zeros };
+export { ArrayNotFoundError, Blosc$1 as Blosc, BoundsCheckError, ContainsArrayError, ContainsGroupError, GZip$1 as GZip, Group, GroupNotFoundError, HTTPError, HTTPStore, InvalidSliceError, KeyError, MemoryStore, NegativeStepError, NestedArray, ObjectStore, PathNotFoundError, PermissionError, TooManyIndicesError, ValueError, ZarrArray, Zlib$1 as Zlib, addCodec, array, create, createProxy, empty, full, getCodec, getTypedArrayCtr, getTypedArrayDtypeString, group, isKeyError, normalizeStoreArgument, ones, openArray, openGroup, rangeTypedArray, slice$1 as slice, sliceIndices, zeros };
 //# sourceMappingURL=core.mjs.map

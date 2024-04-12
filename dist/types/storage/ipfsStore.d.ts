@@ -7,7 +7,10 @@ export declare class IPFSSTORE<CID = any, IPFSCLIENT = any> implements AsyncStor
     cid: CID;
     directory: any;
     ipfsClient: any;
-    constructor(cid: CID, ipfsClient: IPFSCLIENT);
+    loader: any;
+    hamt: boolean;
+    key: string;
+    constructor(cid: CID, ipfsClient: any);
     keys(): Promise<string[]>;
     getItem(item: string, opts?: RequestInit): Promise<any>;
     setItem(_item: string): Promise<boolean>;
