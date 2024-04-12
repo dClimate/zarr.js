@@ -2,17 +2,15 @@ import { AsyncStore } from "./types";
 import { KeyError } from "../errors";
 import { load } from 'ipld-hashmap';
 import { sha256 as blockHasher } from 'multiformats/hashes/sha2';
-import type { CID } from 'multiformats/cid';
 import * as blockCodec from '@ipld/dag-cbor'; // encode blocks using the DAG-CBOR format
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
 import { addCodec } from "../zarr-core";
 
 import all from "it-all";
-import { IPFSHTTPClient } from "../types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class IPFSSTORE implements AsyncStore<ArrayBuffer>
+export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<ArrayBuffer>
 {
     listDir?: undefined;
     rmDir?: undefined;
@@ -21,21 +19,20 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
 
     public cid: CID;
     public directory: any;
-    public ipfsClient: IPFSHTTPClient;
+    public ipfsElements: IPFSELEMENTS;
     public loader: any;
     public hamt: boolean;
     public key: string;
 
-    constructor(cid: CID, ipfsClient: IPFSHTTPClient) {
+    constructor(cid: CID, ipfsElements: IPFSELEMENTS) {
         this.cid = cid;
         this.hamt = false;
-        this.ipfsClient = ipfsClient;
+        this.ipfsElements = ipfsElements;
         this.key="";
         this.loader = {
             async get(cid: CID) {
-                const bytes = await ipfsClient.block.get(cid, {
-                    codec: "dag-cbor",
-                });
+                const dagCbor =(ipfsElements as any).dagCbor;
+                const bytes = await dagCbor.components.blockstore.get(cid);
                 return bytes;
             },
             // For our purposes of reading the HashMap we don't need to implement put
@@ -54,36 +51,38 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
     async getItem(item: string, opts?: RequestInit) {
         if (item === ".zgroup") {
             // Loading Group
-            const { cid } = this;
-            const response = await this.ipfsClient.dag.get(cid);
+            const { cid, ipfsElements } = this;
+            const dagCbor = (ipfsElements as any).dagCbor;
+            const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 // Item is not found
                 throw new KeyError(item);
             }
-            if (!response.value) {
+            if (!response) {
                 throw new Error("Zarr Group does not exist at CID");
             } else {
-                return response.value[item];
+                return response[item];
             }
         }
         if (item.includes(".zarray")) {
-            const { cid } = this;
-            const response = await this.ipfsClient.dag.get(cid);
+            const { cid, ipfsElements } = this;
+            const dagCbor = (ipfsElements as any).dagCbor;
+            const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
             }
-            if (!response.value) {
+            if (!response) {
                 throw new Error("Zarr does not exist at CID");
             } else {
                 const splitItems = item.split("/");
                 // This is used to get the .zarray object
                 // In the case of a nested array, we need to get the parent object
                 // and so we have the directory in case it is not hamt
-                let objectValue = response.value;
-                let objectValueParent = response.value;
+                let objectValue = response;
+                let objectValueParent = response;
                 for (let i = 0; i < splitItems.length; i += 1) {
                     if (splitItems[0] === ".zarray") {
-                        objectValue = response.value[splitItems[i]];
+                        objectValue = response[splitItems[i]];
                         break;
                     }
                     if (i > 0) {
@@ -93,13 +92,13 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
                     objectValue = objectValue[splitItems[i]];
                 }
                 // now check if using hamt
-                if (response.value.hamt) {
+                if (response.hamt) {
                     this.hamt = true;
                     // if there is a hamt, load it
                     const hamtOptions = { blockHasher, blockCodec };
                     const hamt = await load(
                         this.loader,
-                        response.value.hamt,
+                        response.hamt,
                         hamtOptions,
                     );
                     // the hamt will have the KV pair for all the zarr arrays in the group directory
@@ -112,12 +111,12 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
                 // Ensure a codec is loaded
                 try {
                     if (
-                        response.value[".zmetadata"].metadata[item].compressor.id === "zlib"
+                        response[".zmetadata"].metadata[item].compressor.id === "zlib"
                     ) {
                         addCodec(Zlib.codecId, () => Zlib);
                     }
                     if (
-                        response.value[".zmetadata"].metadata[item].compressor.id === "blosc"
+                        response[".zmetadata"].metadata[item].compressor.id === "blosc"
                     ) {
                         addCodec(Zlib.codecId, () => Blosc);
                     }
@@ -126,11 +125,12 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
                 return objectValue;
             }
         } else {
+            const fs = (this.ipfsElements as any).unixfs;
             if (this.hamt) {
                 const location = await this.directory.get(item);
                 if (location) {
                     const response = uint8ArrayConcat(
-                        await all(this.ipfsClient.cat(location)),
+                        await all(fs.cat(location)),
                     );
                     return response.buffer;
                 }
@@ -138,7 +138,7 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
             }
             if (this.directory[item]) {
                 const value = uint8ArrayConcat(
-                    await all(this.ipfsClient.cat(this.directory[item])),
+                    await all(fs.cat(this.directory[item])),
                 );
                 return value.buffer;
             }
@@ -155,9 +155,10 @@ export class IPFSSTORE implements AsyncStore<ArrayBuffer>
     }
 
     async containsItem(_item: string): Promise<boolean> {
-        const response = await this.ipfsClient.dag.get(this.cid);
+        const dagCbor = (this.ipfsElements as any).dagCbor;
+        const response = await dagCbor.get(this.cid);
         const splitItems = _item.split("/");
-        let objectValue = response.value;
+        let objectValue = response;
         for (let i = 0; i < splitItems.length; i += 1) {
             if (splitItems[i] === ".zarray" || splitItems[i] === ".zgroup") {
                 if (objectValue[splitItems[i]]) {
