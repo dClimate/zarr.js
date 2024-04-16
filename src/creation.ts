@@ -1,4 +1,4 @@
-import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType, PersistenceMode, IPFSHTTPClient } from './types';
+import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType, PersistenceMode } from './types';
 import { Store } from './storage/types';
 import { ZarrArray } from './core/index';
 import { MemoryStore } from './storage/memoryStore';
@@ -129,7 +129,7 @@ export async function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>
 type OpenArrayOptions = Partial<CreateArrayOptions & { mode: PersistenceMode }>;
 
 export async function openArray({
-    ipfsClient,
+    ipfsElements,
     cid,
     shape,
     mode = "a",
@@ -147,7 +147,7 @@ export async function openArray({
     cacheAttrs = true,
     dimensionSeparator,
 }: any = {}) {
-    const store = normalizeStoreArgument(storeArgument, cid, ipfsClient);
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -196,17 +196,17 @@ export async function openArray({
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
 
-export function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsClient?: IPFSHTTPClient): Store {
+export function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsElements?: any): Store {
     if (store === undefined) {
         return new MemoryStore();
     } else if (store === "ipfs") {
         if (!cid) {
             throw new Error("CID is required for IPFS store");
         }
-        if (!ipfsClient) {
-            throw new Error("IPFS Http Client is required for IPFS store");
+        if (!ipfsElements) {
+            throw new Error("IPFS Elements are required for IPFS store");
         }
-        return new IPFSSTORE(cid, ipfsClient);
+        return new IPFSSTORE(cid, ipfsElements);
     } else if (typeof store === "string") {
         return new HTTPStore(store);
     }

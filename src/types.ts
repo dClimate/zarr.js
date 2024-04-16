@@ -239,9 +239,3 @@ interface EndpointConfig {
   pathname: string;
   "api-path": string;
 }
-
-export interface IPFSHTTPClient extends IPFS {
-  getEndpointConfig: () => EndpointConfig;
-  headers?: Record<string, string>;
-  searchParams?: URLSearchParams;
-}

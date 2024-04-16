@@ -4,7 +4,7 @@ import { Store, } from './storage/types';
 import { normalizeStoragePath } from './util';
 import { containsArray, pathToPrefix, containsGroup, initGroup } from './storage/index';
 import { ContainsArrayError, GroupNotFoundError, PermissionError, KeyError, ValueError, ContainsGroupError } from './errors';
-import { ZarrGroupMetadata, UserAttributes, PersistenceMode, IPFSHTTPClient } from './types';
+import { ZarrGroupMetadata, UserAttributes, PersistenceMode } from './types';
 import { GROUP_META_KEY, ATTRS_META_KEY } from './names';
 import { parseMetadata } from './metadata';
 import { Attributes } from './attributes';
@@ -276,12 +276,12 @@ export async function group<StoreGetOptions>(store?: Store<StoreGetOptions> | st
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- * @param ipfsClient IPFS client which will be used to fetch and store data on the IPFS network
+ * @param ipfsElements IPFS elements which will be used to fetch and store data on the IPFS network
  * @param cid IPFS CID (content identifier) of the zarr file (if it is stored on the IPFS network)
  */
-export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsClient?: IPFSHTTPClient,
+export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsElements?: any,
 cid?: CID,) {
-    store = normalizeStoreArgument(store, cid, ipfsClient);
+    store = normalizeStoreArgument(store, cid, ipfsElements);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
