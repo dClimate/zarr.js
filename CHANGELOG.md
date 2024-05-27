@@ -1,5 +1,20 @@
 # Changelog
 
+## Release 0.6.3
+**Date:** 2024-03-20
+
+* Fix error passthrough in queued tasks.
+
+## Release 0.6.2
+**Date:** 2023-10-09
+
+* Added store get options pass through to `ZarrArray.get` and `ZarrArray.getRaw`.
+
+## Release 0.6.1
+**Date:** 2023-02-01
+
+* Added support for `|b1` data type.
+
 ## Release 0.6.0
 **Date:** 2022-09-12
 
