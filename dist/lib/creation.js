@@ -87,8 +87,8 @@ export async function array(data, opts = {}) {
     z.readOnly = wasReadOnly;
     return z;
 }
-export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
-    const store = normalizeStoreArgument(storeArgument, cid, ipfsClient);
+export async function openArray({ ipfsElements, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
+    const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -140,7 +140,7 @@ export async function openArray({ ipfsClient, cid, shape, mode = "a", chunks = t
     const readOnly = mode === "r";
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
-export function normalizeStoreArgument(store, cid, ipfsClient) {
+export function normalizeStoreArgument(store, cid, ipfsElements) {
     if (store === undefined) {
         return new MemoryStore();
     }
@@ -148,10 +148,10 @@ export function normalizeStoreArgument(store, cid, ipfsClient) {
         if (!cid) {
             throw new Error("CID is required for IPFS store");
         }
-        if (!ipfsClient) {
-            throw new Error("IPFS Http Client is required for IPFS store");
+        if (!ipfsElements) {
+            throw new Error("IPFS Elements are required for IPFS store");
         }
-        return new IPFSSTORE(cid, ipfsClient);
+        return new IPFSSTORE(cid, ipfsElements);
     }
     else if (typeof store === "string") {
         return new HTTPStore(store);

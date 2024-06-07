@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType, IPFSHTTPClient } from './types';
+import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType } from './types';
 import { Store } from './storage/types';
 import { ZarrArray } from './core/index';
 import { TypedArray } from './nestedArray/types';
@@ -69,5 +69,5 @@ export declare function ones(shape: number | number[], opts?: Omit<CreateArrayOp
  */
 export declare function full(shape: number | number[], fillValue: FillType, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
 export declare function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>): Promise<ZarrArray<any>>;
-export declare function openArray({ ipfsClient, cid, shape, mode, chunks, dtype, compressor, fillValue, order, store: storeArgument, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, dimensionSeparator, }?: any): Promise<ZarrArray<any>>;
-export declare function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsClient?: IPFSHTTPClient): Store;
+export declare function openArray({ ipfsElements, cid, shape, mode, chunks, dtype, compressor, fillValue, order, store: storeArgument, overwrite, path, chunkStore, filters, cacheMetadata, cacheAttrs, dimensionSeparator, }?: any): Promise<ZarrArray<any>>;
+export declare function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsElements?: any): Store;

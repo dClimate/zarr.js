@@ -28,6 +28,9 @@ export interface CompressorConfig {
 export interface Filter {
     id: string;
 }
+export interface FilterDclimateEtl extends Filter {
+    key_hash: string;
+}
 export interface ZarrArrayMetadata {
     /**
      * An integer defining the version of the storage specification to which the array store adheres.
@@ -62,7 +65,7 @@ export interface ZarrArrayMetadata {
     /**
      * A list of JSON objects providing codec configurations, or `null` if no filters are to be applied. Each codec configuration object MUST contain a `"id"` key identifying the codec to be used.
      */
-    filters: null | Filter[];
+    filters: null | Filter[] | FilterDclimateEtl[];
     /**
      * Separator placed between the dimensions of a chunk.
      */
@@ -83,101 +86,3 @@ export interface ZarrGroupMetadata {
  * * 'w-' means create (fail if exists).
  */
 export declare type PersistenceMode = 'r' | 'r+' | 'a' | 'w' | 'w-';
-interface RootAPI {
-    add: (entry: any, options?: any) => Promise<AddResult>;
-    addAll: (source: any, options?: any) => AsyncIterable<AddResult>;
-    cat: (ipfsPath: any, options?: any) => AsyncIterable<Uint8Array>;
-    get: (ipfsPath: any, options?: any) => AsyncIterable<Uint8Array>;
-    ls: (ipfsPath: any, options?: any) => AsyncIterable<IPFSEntry>;
-    id: (options?: any) => Promise<IDResult>;
-    version: (options?: any) => Promise<VersionResult>;
-    dns: (domain: string, options?: any) => Promise<string>;
-    start: () => Promise<void>;
-    stop: (options?: any) => Promise<void>;
-    ping: (peerId: string, options?: any) => AsyncIterable<PingResult>;
-    resolve: (name: string, options?: any) => Promise<string>;
-    commands: (options?: any) => Promise<string[]>;
-    mount: (options?: any) => Promise<MountResult>;
-    isOnline: () => boolean;
-}
-interface IPFSEntry {
-    readonly type: "dir" | "file";
-    readonly cid: any;
-    readonly name: string;
-    readonly path: string;
-    mode?: number;
-    mtime?: any;
-    size: number;
-}
-interface AddResult {
-    cid: any;
-    size: number;
-    path: string;
-    mode?: number;
-    mtime?: any;
-}
-interface IDResult {
-    id: string;
-    publicKey: string;
-    addresses: any[];
-    agentVersion: string;
-    protocolVersion: string;
-    protocols: string[];
-}
-interface VersionResult {
-    version: string;
-    commit?: string;
-    repo?: string;
-    system?: string;
-    golang?: string;
-    "interface-ipfs-core"?: string;
-    "ipfs-http-client"?: string;
-}
-interface PingResult {
-    success: boolean;
-    time: number;
-    text: string;
-}
-interface MountResult {
-    fuseAllowOther?: boolean;
-    ipfs?: string;
-    ipns?: string;
-}
-interface IPFS extends RootAPI {
-    bitswap: any;
-    block: any;
-    bootstrap: any;
-    config: any;
-    dag: any;
-    dht: any;
-    diag: any;
-    files: any;
-    key: any;
-    log: any;
-    name: any;
-    object: any;
-    pin: any;
-    pubsub: any;
-    refs: any;
-    repo: any;
-    stats: any;
-    swarm: any;
-    bases: any;
-    codecs: any;
-    hashers: any;
-    headers?: Record<string, string>;
-    searchParams?: URLSearchParams;
-}
-interface EndpointConfig {
-    host: string;
-    port: string;
-    protocol: string;
-    pathname: string;
-    "api-path": string;
-}
-export interface IPFSHTTPClient extends IPFS {
-    getEndpointConfig: () => EndpointConfig;
-    headers?: Record<string, string>;
-    searchParams?: URLSearchParams;
-}
-export {};

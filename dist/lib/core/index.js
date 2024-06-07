@@ -287,6 +287,25 @@ export class ZarrArray {
         return out;
     }
     /**
+     * Function to decrypt zarr chunks encrypted with xchacha20poly1305
+     * @param encryptedData raw information encrypted
+     * @param keyString encryption key
+     * @param headerString header used in the encryption
+     * @param sodiumLibrary sodium library to decrypt in frontend
+     * @returns
+     */
+    async decrypt(encryptedData, keyString, headerString, sodiumLibrary) {
+        const key = Buffer.from(keyString, "hex");
+        const header = new TextEncoder().encode(headerString);
+        // Extract nonce, tag, and ciphertext from the encryptedData
+        const nonce = encryptedData.slice(0, 24);
+        const tag = encryptedData.slice(24, 40);
+        const ciphertext = encryptedData.slice(40);
+        // Create a Sodium crypto box instance with the provided key and nonce
+        const box = sodiumLibrary.crypto_aead_xchacha20poly1305_ietf_decrypt_detached(null, ciphertext, tag, header, nonce, key, null);
+        return box;
+    }
+    /**
      * Obtain part or whole of a chunk.
      * @param chunkCoords Indices of the chunk.
      * @param chunkSelection Location of region within the chunk to extract.
@@ -384,6 +403,7 @@ export class ZarrArray {
         return new NestedArray(buffer, this.chunks, this.dtype);
     }
     async decodeChunk(chunkData) {
+        var _a, _b;
         let bytes = this.ensureByteArray(chunkData);
         if (this.compressor !== null) {
             bytes = await (await this.compressor).decode(bytes);
@@ -399,6 +419,10 @@ export class ZarrArray {
             const out = new (getTypedArrayCtr(this.dtype))(src.length);
             convertColMajorToRowMajor(src, out, this.chunks);
             return out.buffer;
+        }
+        // Handling the filters set by Dclimate Etl
+        if (this.meta.filters && ((_a = this.meta.filters) === null || _a === void 0 ? void 0 : _a[0].id) == "xchacha20poly1305" && "key_hash" in ((_b = this.meta.filters) === null || _b === void 0 ? void 0 : _b[0])) {
+            bytes = await this.decrypt(new Uint8Array(bytes), this.chunkStore.ipfsElements.keyString, this.chunkStore.ipfsElements.headerString, this.chunkStore.ipfsElements.sodiumLibrary);
         }
         // TODO filtering etc
         return bytes.buffer;
