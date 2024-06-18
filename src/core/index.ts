@@ -380,19 +380,19 @@ export class ZarrArray<StoreGetOptions = any> {
   /**
    * Function to decrypt zarr chunks encrypted with xchacha20poly1305
    * @param encryptedData raw information encrypted 
-   * @param keyString encryption key
-   * @param headerString header used in the encryption
+   * @param key encryption key
+   * @param header header used in the encryption
    * @param sodiumLibrary sodium library to decrypt in frontend
    * @returns 
    */
   private async decrypt (
     encryptedData: Uint8Array,
-    keyString: string,
-    headerString: string,
+    key: string,
+    header: string,
     sodiumLibrary: any,
 ) {
-    const key = Buffer.from(keyString, "hex");
-    const header = new TextEncoder().encode(headerString);
+    const keyBytes = Buffer.from(key, "hex");
+    const headerBytes = new TextEncoder().encode(header);
     // Extract nonce, tag, and ciphertext from the encryptedData
     const nonce = encryptedData.slice(0, 24);
     const tag = encryptedData.slice(24, 40);
@@ -404,9 +404,9 @@ export class ZarrArray<StoreGetOptions = any> {
             null,
             ciphertext,
             tag,
-            header,
+            headerBytes,
             nonce,
-            key,
+            keyBytes,
             null,
         );
 
@@ -542,7 +542,18 @@ export class ZarrArray<StoreGetOptions = any> {
 
     // Handling the filters set by Dclimate Etl
     if (this.meta.filters && this.meta.filters?.[0].id == "xchacha20poly1305" && "key_hash" in this.meta.filters?.[0]) {
-      bytes = await this.decrypt(new Uint8Array(bytes), (this.chunkStore as IPFSSTORE).ipfsElements.keyString, (this.chunkStore as IPFSSTORE).ipfsElements.headerString, (this.chunkStore as IPFSSTORE).ipfsElements.sodiumLibrary);
+        const decryptionItems = (this.chunkStore as IPFSSTORE).ipfsElements.decryptionItems;
+
+        if (!decryptionItems) {
+            throw new Error("Decryption items are required but are undefined.");
+        }
+
+        bytes = await this.decrypt(
+            new Uint8Array(bytes),
+            decryptionItems.key,
+            decryptionItems.header,
+            decryptionItems.sodiumLibrary
+        );
     }
 
     // TODO filtering etc

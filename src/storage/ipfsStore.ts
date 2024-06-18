@@ -9,8 +9,17 @@ import { addCodec } from "../zarr-core";
 
 import all from "it-all";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<ArrayBuffer>
+export interface DECRYPTION_ITEMS_INTERFACE {
+        sodiumLibrary: any; // Sodium library used to decrypt in the frontend
+        key: string; // Key needed to decrypt
+        header: string; // Header needed to decrypt
+    }
+export interface IPFSELEMENTS_INTERFACE {
+        dagCbor: any;
+        unixfs: any;
+        decryptionItems?: DECRYPTION_ITEMS_INTERFACE;
+}
+export class IPFSSTORE<CID = any> implements AsyncStore<ArrayBuffer>
 {
     listDir?: undefined;
     rmDir?: undefined;
@@ -19,19 +28,19 @@ export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<Arra
 
     public cid: CID;
     public directory: any;
-    public ipfsElements: IPFSELEMENTS;
+    public ipfsElements: IPFSELEMENTS_INTERFACE;
     public loader: any;
     public hamt: boolean;
     public key: string;
 
-    constructor(cid: CID, ipfsElements: IPFSELEMENTS) {
+    constructor(cid: CID, ipfsElements: IPFSELEMENTS_INTERFACE) {
         this.cid = cid;
         this.hamt = false;
         this.ipfsElements = ipfsElements;
         this.key="";
         this.loader = {
             async get(cid: CID) {
-                const dagCbor =(ipfsElements as any).dagCbor;
+                const dagCbor = (ipfsElements as IPFSELEMENTS_INTERFACE).dagCbor;
                 const bytes = await dagCbor.components.blockstore.get(cid);
                 return bytes;
             },
@@ -52,7 +61,7 @@ export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<Arra
         if (item === ".zgroup") {
             // Loading Group
             const { cid, ipfsElements } = this;
-            const dagCbor = (ipfsElements as any).dagCbor;
+            const dagCbor = ipfsElements.dagCbor;
             const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 // Item is not found
@@ -66,7 +75,7 @@ export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<Arra
         }
         if (item.includes(".zarray")) {
             const { cid, ipfsElements } = this;
-            const dagCbor = (ipfsElements as any).dagCbor;
+            const dagCbor = ipfsElements.dagCbor;
             const response = await dagCbor.get(cid);
             if (response.status === 404) {
                 throw new KeyError(item);
@@ -125,7 +134,7 @@ export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<Arra
                 return objectValue;
             }
         } else {
-            const fs = (this.ipfsElements as any).unixfs;
+            const fs = this.ipfsElements.unixfs;
             if (this.hamt) {
                 const location = await this.directory.get(item);
                 if (location) {
@@ -155,7 +164,7 @@ export class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<Arra
     }
 
     async containsItem(_item: string): Promise<boolean> {
-        const dagCbor = (this.ipfsElements as any).dagCbor;
+        const dagCbor = this.ipfsElements.dagCbor;
         const response = await dagCbor.get(this.cid);
         const splitItems = _item.split("/");
         let objectValue = response;
