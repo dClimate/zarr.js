@@ -6,7 +6,6 @@ import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 import { Zlib, Blosc } from "numcodecs";
 import { addCodec } from "../zarr-core";
 import all from "it-all";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class IPFSSTORE {
     constructor(cid, ipfsElements) {
         this.cid = cid;

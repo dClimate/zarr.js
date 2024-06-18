@@ -129,8 +129,8 @@ export declare class ZarrArray<StoreGetOptions = any> {
     /**
      * Function to decrypt zarr chunks encrypted with xchacha20poly1305
      * @param encryptedData raw information encrypted
-     * @param keyString encryption key
-     * @param headerString header used in the encryption
+     * @param key encryption key
+     * @param header header used in the encryption
      * @param sodiumLibrary sodium library to decrypt in frontend
      * @returns
      */
