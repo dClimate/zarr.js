@@ -30,14 +30,14 @@ export class ArrayNotFoundError extends Error {
 }
 export class GroupNotFoundError extends Error {
     constructor(path) {
-        super(`ground not found at path ${path}`);
+        super(`group not found at path ${path}`);
         this.__zarr__ = 'GroupNotFoundError';
         Object.setPrototypeOf(this, GroupNotFoundError.prototype);
     }
 }
 export class PathNotFoundError extends Error {
     constructor(path) {
-        super(`nothing not found at path ${path}`);
+        super(`nothing found at path ${path}`);
         this.__zarr__ = 'PathNotFoundError';
         Object.setPrototypeOf(this, PathNotFoundError.prototype);
     }

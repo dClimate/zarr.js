@@ -8,7 +8,7 @@ interface HTTPStoreOptions {
     fetchOptions?: RequestInit;
     supportedMethods?: HTTPMethod[];
 }
-export declare class HTTPStore<UrlRoot extends string | URL = string> implements AsyncStore<ArrayBuffer> {
+export declare class HTTPStore<UrlRoot extends string | URL = string> implements AsyncStore<ArrayBuffer, RequestInit> {
     listDir?: undefined;
     rmDir?: undefined;
     getSize?: undefined;

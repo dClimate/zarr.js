@@ -3,6 +3,7 @@ import { ValueError } from '../errors';
 const Float16Array = globalThis.Float16Array;
 const DTYPE_TYPEDARRAY_MAPPING = {
     '|b': Int8Array,
+    '|b1': Uint8Array,
     '|B': Uint8Array,
     '|u1': Uint8Array,
     '|i1': Int8Array,
