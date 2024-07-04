@@ -1,4 +1,5 @@
 import { AsyncStore } from "./types";
+<<<<<<< HEAD
 export interface DECRYPTION_ITEMS_INTERFACE {
     sodiumLibrary: any;
     key: string;
@@ -10,6 +11,9 @@ export interface IPFSELEMENTS_INTERFACE {
     decryptionItems?: DECRYPTION_ITEMS_INTERFACE;
 }
 export declare class IPFSSTORE<CID = any> implements AsyncStore<ArrayBuffer> {
+=======
+export declare class IPFSSTORE<CID = any, IPFSELEMENTS = any> implements AsyncStore<ArrayBuffer> {
+>>>>>>> master
     listDir?: undefined;
     rmDir?: undefined;
     getSize?: undefined;
