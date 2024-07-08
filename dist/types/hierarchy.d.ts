@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import type { CID } from 'multiformats/cid';
 import { AsyncMutableMapping, AsyncMutableMappingProxy } from './mutableMapping';
 import { Store } from './storage/types';
 import { UserAttributes, PersistenceMode } from './types';
@@ -83,6 +84,7 @@ export declare function group<StoreGetOptions>(store?: Store<StoreGetOptions> | 
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- *
+ * @param ipfsElements IPFS elements which will be used to fetch and store data on the IPFS network
+ * @param cid IPFS CID (content identifier) of the zarr file (if it is stored on the IPFS network)
  */
-export declare function openGroup<StoreGetOptions>(store?: Store<StoreGetOptions> | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store<StoreGetOptions>, cacheAttrs?: boolean): Promise<Group<StoreGetOptions>>;
+export declare function openGroup(store?: Store | string, path?: string | null, mode?: PersistenceMode, chunkStore?: Store, cacheAttrs?: boolean, ipfsElements?: any, cid?: CID): Promise<Group<any>>;

@@ -1,3 +1,4 @@
+import type { CID } from 'multiformats/cid';
 import { createProxy, AsyncMutableMapping, AsyncMutableMappingProxy } from './mutableMapping';
 import { Store, } from './storage/types';
 import { normalizeStoragePath } from './util';
@@ -275,10 +276,12 @@ export async function group<StoreGetOptions>(store?: Store<StoreGetOptions> | st
  * @param chunkStore Store or path to directory in file system or name of zip file.
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations
  *   If False, user attributes are reloaded from the store prior to all attribute read operations.
- *
+ * @param ipfsElements IPFS elements which will be used to fetch and store data on the IPFS network
+ * @param cid IPFS CID (content identifier) of the zarr file (if it is stored on the IPFS network)
  */
-export async function openGroup<StoreGetOptions>(store?: Store<StoreGetOptions> | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store<StoreGetOptions>, cacheAttrs = true) {
-    store = normalizeStoreArgument(store);
+export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsElements?: any,
+cid?: CID,) {
+    store = normalizeStoreArgument(store, cid, ipfsElements);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
@@ -315,3 +318,4 @@ export async function openGroup<StoreGetOptions>(store?: Store<StoreGetOptions> 
     const readOnly = mode === "r";
     return Group.create(store, path, readOnly, chunkStore, cacheAttrs);
 }
+

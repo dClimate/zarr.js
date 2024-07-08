@@ -145,6 +145,12 @@ export function normalizeStoreArgument(store, cid, ipfsElements) {
         return new MemoryStore();
     }
     else if (store === "ipfs") {
+        if (!cid) {
+            throw new Error("CID is required for IPFS store");
+        }
+        if (!ipfsElements) {
+            throw new Error("IPFS Elements are required for IPFS store");
+        }
         return new IPFSSTORE(cid, ipfsElements);
     }
     else if (typeof store === "string") {
