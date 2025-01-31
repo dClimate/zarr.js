@@ -12,41 +12,6 @@ import { getCodec } from "../compression/registry";
 import PQueue from 'p-queue';
 export class ZarrArray {
     /**
-     * Instantiate an array from an initialized store.
-     * @param store Array store, already initialized.
-     * @param path Storage path.
-     * @param metadata The initial value for the metadata
-     * @param readOnly True if array should be protected against modification.
-     * @param chunkStore Separate storage for chunks. If not provided, `store` will be used for storage of both chunks and metadata.
-     * @param cacheMetadata If true (default), array configuration metadata will be cached for the lifetime of the object.
-     * If false, array metadata will be reloaded prior to all data access and modification operations (may incur overhead depending on storage and data access pattern).
-     * @param cacheAttrs If true (default), user attributes will be cached for attribute read operations.
-     * If false, user attributes are reloaded from the store prior to all attribute read operations.
-     */
-    constructor(store, path = null, metadata, readOnly = false, chunkStore = null, cacheMetadata = true, cacheAttrs = true) {
-        // N.B., expect at this point store is fully initialized with all
-        // configuration metadata fully specified and normalized
-        this.store = store;
-        this._chunkStore = chunkStore;
-        this.path = normalizeStoragePath(path);
-        this.keyPrefix = pathToPrefix(this.path);
-        this.readOnly = readOnly;
-        this.cacheMetadata = cacheMetadata;
-        this.cacheAttrs = cacheAttrs;
-        this.meta = metadata;
-        if (this.meta.compressor === undefined) {
-            this.meta.compressor = null;
-        }
-        if (this.meta.compressor !== null) {
-            this.compressor = getCodec(this.meta.compressor);
-        }
-        else {
-            this.compressor = null;
-        }
-        const attrKey = this.keyPrefix + ATTRS_META_KEY;
-        this.attrs = new Attributes(this.store, attrKey, this.readOnly, cacheAttrs);
-    }
-    /**
      * A `Store` providing the underlying storage for array chunks.
      */
     get chunkStore() {
@@ -191,6 +156,41 @@ export class ZarrArray {
             }
             throw new Error("Failed to load metadata for ZarrArray:" + error.toString());
         }
+    }
+    /**
+     * Instantiate an array from an initialized store.
+     * @param store Array store, already initialized.
+     * @param path Storage path.
+     * @param metadata The initial value for the metadata
+     * @param readOnly True if array should be protected against modification.
+     * @param chunkStore Separate storage for chunks. If not provided, `store` will be used for storage of both chunks and metadata.
+     * @param cacheMetadata If true (default), array configuration metadata will be cached for the lifetime of the object.
+     * If false, array metadata will be reloaded prior to all data access and modification operations (may incur overhead depending on storage and data access pattern).
+     * @param cacheAttrs If true (default), user attributes will be cached for attribute read operations.
+     * If false, user attributes are reloaded from the store prior to all attribute read operations.
+     */
+    constructor(store, path = null, metadata, readOnly = false, chunkStore = null, cacheMetadata = true, cacheAttrs = true) {
+        // N.B., expect at this point store is fully initialized with all
+        // configuration metadata fully specified and normalized
+        this.store = store;
+        this._chunkStore = chunkStore;
+        this.path = normalizeStoragePath(path);
+        this.keyPrefix = pathToPrefix(this.path);
+        this.readOnly = readOnly;
+        this.cacheMetadata = cacheMetadata;
+        this.cacheAttrs = cacheAttrs;
+        this.meta = metadata;
+        if (this.meta.compressor === undefined) {
+            this.meta.compressor = null;
+        }
+        if (this.meta.compressor !== null) {
+            this.compressor = getCodec(this.meta.compressor);
+        }
+        else {
+            this.compressor = null;
+        }
+        const attrKey = this.keyPrefix + ATTRS_META_KEY;
+        this.attrs = new Attributes(this.store, attrKey, this.readOnly, cacheAttrs);
     }
     /**
      * (Re)load metadata from store

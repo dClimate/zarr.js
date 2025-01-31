@@ -1,4 +1,7 @@
 import { AsyncStore } from "./types";
+import { NestedArray, TypedArray } from "../zarr-core";
+import { hasher } from 'multiformats';
+export declare function extractBits(hashBytes: Uint8Array, depth: number, nbits: number): number;
 export interface DECRYPTION_ITEMS_INTERFACE {
     sodiumLibrary: any;
     key: string;
@@ -9,21 +12,38 @@ export interface IPFSELEMENTS_INTERFACE {
     unixfs: any;
     decryptionItems?: DECRYPTION_ITEMS_INTERFACE;
 }
-export declare class IPFSSTORE<CID = any> implements AsyncStore<ArrayBuffer> {
+export declare const blake3: hasher.Hasher<"blake3", 30>;
+export declare class IPFSStore<CID = any> implements AsyncStore<ArrayBuffer> {
     listDir?: undefined;
     rmDir?: undefined;
     getSize?: undefined;
     rename?: undefined;
     cid: CID;
-    directory: any;
     ipfsElements: IPFSELEMENTS_INTERFACE;
-    loader: any;
-    hamt: boolean;
-    key: string;
+    private rootNode;
+    private cache;
+    private readonly maxCacheSize;
     constructor(cid: CID, ipfsElements: IPFSELEMENTS_INTERFACE);
+    private hashFn;
+    private writeNode;
+    private readNode;
+    private maintainCacheSize;
     keys(): Promise<string[]>;
-    getItem(item: string, opts?: RequestInit): Promise<any>;
+    getMetadata(metadataInput?: string): Promise<Record<string, any>>;
+    getBounds(): Promise<{
+        latMin: number | NestedArray<TypedArray>;
+        latMax: number | NestedArray<TypedArray>;
+        lonMin: number | NestedArray<TypedArray>;
+        lonMax: number | NestedArray<TypedArray>;
+        timeMin: string;
+        timeMax: string;
+        spatialResolution: number;
+        temporalResolution: string;
+    }>;
+    _findCIDInNode(item: string): Promise<string>;
+    _findItemInNode(item: string): Promise<Uint8Array>;
+    getItem(item: string): Promise<any>;
     setItem(_item: string): Promise<boolean>;
     deleteItem(_item: string): Promise<boolean>;
-    containsItem(_item: string): Promise<boolean>;
+    containsItem(item: string): Promise<boolean>;
 }

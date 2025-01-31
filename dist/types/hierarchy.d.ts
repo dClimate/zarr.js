@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import type { CID } from 'multiformats/cid';
 import { AsyncMutableMapping, AsyncMutableMappingProxy } from './mutableMapping';
 import { Store } from './storage/types';

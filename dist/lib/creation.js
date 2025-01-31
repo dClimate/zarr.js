@@ -4,7 +4,7 @@ import { initArray, containsArray, containsGroup } from './storage/index';
 import { NestedArray } from './nestedArray/index';
 import { ContainsArrayError, ValueError, ArrayNotFoundError, ContainsGroupError } from './errors';
 import { HTTPStore } from './storage/httpStore';
-import { IPFSSTORE } from './storage/ipfsStore';
+import { IPFSStore } from './storage/ipfsStore';
 /**
  *
  * @param shape Array shape.
@@ -151,7 +151,7 @@ export function normalizeStoreArgument(store, cid, ipfsElements) {
         if (!ipfsElements) {
             throw new Error("IPFS Elements are required for IPFS store");
         }
-        return new IPFSSTORE(cid, ipfsElements);
+        return new IPFSStore(cid, ipfsElements);
     }
     else if (typeof store === "string") {
         return new HTTPStore(store);

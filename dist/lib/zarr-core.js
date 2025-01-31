@@ -12,4 +12,5 @@ export * from "./nestedArray/types";
 export * from "./storage/memoryStore";
 export * from "./storage/objectStore";
 export * from "./storage/httpStore";
+export * from "./storage/ipfsStore";
 //# sourceMappingURL=zarr-core.js.map

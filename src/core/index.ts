@@ -17,7 +17,7 @@ import { getCodec } from "../compression/registry";
 
 import type { Codec } from 'numcodecs';
 import PQueue from 'p-queue';
-import { IPFSSTORE } from "../storage/ipfsStore";
+import { IPFSStore } from "../storage/ipfsStore";
 
 export interface GetOptions<StoreGetOptions> {
   concurrencyLimit?: number;
@@ -241,13 +241,11 @@ export class ZarrArray<StoreGetOptions = any> {
     if (this.meta.compressor === undefined) {
       this.meta.compressor = null;
     } 
-
     if (this.meta.compressor !== null) {
       this.compressor = getCodec(this.meta.compressor);
     } else {
       this.compressor = null;
     }
-
 
     const attrKey = this.keyPrefix + ATTRS_META_KEY;
     this.attrs = new Attributes<UserAttributes>(this.store, attrKey, this.readOnly, cacheAttrs);
@@ -521,7 +519,6 @@ export class ZarrArray<StoreGetOptions = any> {
 
   private async decodeChunk(chunkData: ValidStoreType) {
     let bytes = this.ensureByteArray(chunkData);
-
     if (this.compressor !== null) {
       bytes = await (await this.compressor).decode(bytes);
     }
@@ -542,8 +539,8 @@ export class ZarrArray<StoreGetOptions = any> {
 
     // Handling the filters set by Dclimate Etl
     if (this.meta.filters && this.meta.filters?.[0].id == "xchacha20poly1305" && "key_hash" in this.meta.filters?.[0]) {
-        const decryptionItems = (this.chunkStore as IPFSSTORE).ipfsElements.decryptionItems;
-
+        const decryptionItems = (this.chunkStore as IPFSStore).ipfsElements.decryptionItems;
+    
         if (!decryptionItems) {
             throw new Error("Decryption items are required but are undefined.");
         }
