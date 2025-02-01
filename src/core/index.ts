@@ -17,6 +17,7 @@ import { getCodec } from "../compression/registry";
 
 import type { Codec } from 'numcodecs';
 import PQueue from 'p-queue';
+import { IPFSSTORE } from "../storage/ipfsStore";
 
 export interface GetOptions<StoreGetOptions> {
   concurrencyLimit?: number;
@@ -237,6 +238,10 @@ export class ZarrArray<StoreGetOptions = any> {
     this.cacheMetadata = cacheMetadata;
     this.cacheAttrs = cacheAttrs;
     this.meta = metadata;
+    if (this.meta.compressor === undefined) {
+      this.meta.compressor = null;
+    } 
+
     if (this.meta.compressor !== null) {
       this.compressor = getCodec(this.meta.compressor);
     } else {
@@ -373,6 +378,42 @@ export class ZarrArray<StoreGetOptions = any> {
   }
 
   /**
+   * Function to decrypt zarr chunks encrypted with xchacha20poly1305
+   * @param encryptedData raw information encrypted 
+   * @param key encryption key
+   * @param header header used in the encryption
+   * @param sodiumLibrary sodium library to decrypt in frontend
+   * @returns 
+   */
+  private async decrypt (
+    encryptedData: Uint8Array,
+    key: string,
+    header: string,
+    sodiumLibrary: any,
+) {
+    const keyBytes = Buffer.from(key, "hex");
+    const headerBytes = new TextEncoder().encode(header);
+    // Extract nonce, tag, and ciphertext from the encryptedData
+    const nonce = encryptedData.slice(0, 24);
+    const tag = encryptedData.slice(24, 40);
+    const ciphertext = encryptedData.slice(40);
+
+    // Create a Sodium crypto box instance with the provided key and nonce
+    const box =
+        sodiumLibrary.crypto_aead_xchacha20poly1305_ietf_decrypt_detached(
+            null,
+            ciphertext,
+            tag,
+            headerBytes,
+            nonce,
+            keyBytes,
+            null,
+        );
+
+    return box;
+}
+
+  /**
    * Obtain part or whole of a chunk.
    * @param chunkCoords Indices of the chunk.
    * @param chunkSelection Location of region within the chunk to extract.
@@ -384,7 +425,6 @@ export class ZarrArray<StoreGetOptions = any> {
     if (chunkCoords.length !== this._chunkDataShape.length) {
       throw new ValueError(`Inconsistent shapes: chunkCoordsLength: ${chunkCoords.length}, cDataShapeLength: ${this.chunkDataShape.length}`);
     }
-
     const cKey = this.chunkKey(chunkCoords);
     try {
       const cdata = await this.chunkStore.getItem(cKey, storeOptions);
@@ -498,6 +538,22 @@ export class ZarrArray<StoreGetOptions = any> {
       const out = new (getTypedArrayCtr(this.dtype))(src.length);
       convertColMajorToRowMajor(src, out, this.chunks);
       return out.buffer;
+    }
+
+    // Handling the filters set by Dclimate Etl
+    if (this.meta.filters && this.meta.filters?.[0].id == "xchacha20poly1305" && "key_hash" in this.meta.filters?.[0]) {
+        const decryptionItems = (this.chunkStore as IPFSSTORE).ipfsElements.decryptionItems;
+
+        if (!decryptionItems) {
+            throw new Error("Decryption items are required but are undefined.");
+        }
+
+        bytes = await this.decrypt(
+            new Uint8Array(bytes),
+            decryptionItems.key,
+            decryptionItems.header,
+            decryptionItems.sodiumLibrary
+        );
     }
 
     // TODO filtering etc

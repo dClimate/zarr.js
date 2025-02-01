@@ -1,34 +1,28 @@
-import type { CID } from 'multiformats/cid';
-import { createProxy, AsyncMutableMapping, AsyncMutableMappingProxy } from './mutableMapping';
-import { Store, } from './storage/types';
+import { createProxy } from './mutableMapping';
 import { normalizeStoragePath } from './util';
 import { containsArray, pathToPrefix, containsGroup, initGroup } from './storage/index';
 import { ContainsArrayError, GroupNotFoundError, PermissionError, KeyError, ValueError, ContainsGroupError } from './errors';
-import { ZarrGroupMetadata, UserAttributes, PersistenceMode } from './types';
 import { GROUP_META_KEY, ATTRS_META_KEY } from './names';
 import { parseMetadata } from './metadata';
 import { Attributes } from './attributes';
-import { array, empty, zeros, ones, full, create, normalizeStoreArgument, CreateArrayOptions } from './creation';
-import { NestedArray } from './nestedArray';
-import { TypedArray } from './nestedArray/types';
+import { array, empty, zeros, ones, full, create, normalizeStoreArgument } from './creation';
 import { ZarrArray } from './core';
-
-
-export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<StoreGetOptions> | ZarrArray<StoreGetOptions>> {
-    /**
-     * A `Store` providing the underlying storage for the group.
-     */
-    public store: Store<StoreGetOptions>;
-
-    /**
-     * Storage path.
-     */
-    public path: string;
-
+export class Group {
+    constructor(store, path = null, metadata, readOnly = false, chunkStore = null, cacheAttrs = true) {
+        this.store = store;
+        this._chunkStore = chunkStore;
+        this.path = normalizeStoragePath(path);
+        this.keyPrefix = pathToPrefix(this.path);
+        this.readOnly = readOnly;
+        this.meta = metadata;
+        // Initialize attributes
+        const attrKey = this.keyPrefix + ATTRS_META_KEY;
+        this.attrs = new Attributes(this.store, attrKey, this.readOnly, cacheAttrs);
+    }
     /**
      * Group name following h5py convention.
      */
-    public get name(): string {
+    get name() {
         if (this.path.length > 0) {
             if (this.path[0] !== "/") {
                 return "/" + this.path;
@@ -37,70 +31,41 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
         }
         return "/";
     }
-
     /**
      * Final component of name.
      */
-    public get basename(): string {
+    get basename() {
         const parts = this.name.split("/");
         return parts[parts.length - 1];
     }
-
-    /**
-     * An object containing user-defined attributes. Note that
-     * attribute values are stored as a JSON string in a store.
-     */
-    public attrs: Attributes<UserAttributes>;
-
-
-    private _chunkStore: Store<StoreGetOptions> | null;
     /**
      * A `Store` providing the underlying storage for array chunks.
      */
-    public get chunkStore(): Store<StoreGetOptions> {
+    get chunkStore() {
         if (this._chunkStore) {
             return this._chunkStore;
         }
         return this.store;
     }
-
-    private keyPrefix: string;
-    public readOnly: boolean;
-    private meta: ZarrGroupMetadata;
-
-    public static async create<StoreGetOptions>(store: Store<StoreGetOptions>, path: string | null = null, readOnly = false, chunkStore: Store<StoreGetOptions> | null = null, cacheAttrs = true) {
+    static async create(store, path = null, readOnly = false, chunkStore = null, cacheAttrs = true) {
         const metadata = await this.loadMetadataForConstructor(store, path);
-        return new Group(store, path, metadata as ZarrGroupMetadata, readOnly, chunkStore, cacheAttrs);
+        return new Group(store, path, metadata, readOnly, chunkStore, cacheAttrs);
     }
-
-    private static async loadMetadataForConstructor<StoreGetOptions>(store: Store<StoreGetOptions>, path: null | string) {
+    static async loadMetadataForConstructor(store, path) {
         path = normalizeStoragePath(path);
         const keyPrefix = pathToPrefix(path);
         try {
             const metaStoreValue = await store.getItem(keyPrefix + GROUP_META_KEY);
             return parseMetadata(metaStoreValue);
-        } catch (error) {
+        }
+        catch (error) {
             if (await containsArray(store, path)) {
                 throw new ContainsArrayError(path);
             }
             throw new GroupNotFoundError(path);
         }
     }
-
-    private constructor(store: Store<StoreGetOptions>, path: string | null = null, metadata: ZarrGroupMetadata, readOnly = false, chunkStore: Store<StoreGetOptions> | null = null, cacheAttrs = true) {
-        this.store = store;
-        this._chunkStore = chunkStore;
-        this.path = normalizeStoragePath(path);
-        this.keyPrefix = pathToPrefix(this.path);
-        this.readOnly = readOnly;
-        this.meta = metadata;
-
-        // Initialize attributes
-        const attrKey = this.keyPrefix + ATTRS_META_KEY;
-        this.attrs = new Attributes<UserAttributes>(this.store, attrKey, this.readOnly, cacheAttrs);
-    }
-
-    private itemPath(item: string | null) {
+    itemPath(item) {
         const absolute = typeof item === "string" && item.length > 0 && item[0] === '/';
         const path = normalizeStoragePath(item);
         // Absolute path
@@ -109,11 +74,10 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
         }
         return path;
     }
-
     /**
      * Create a sub-group.
      */
-    public async createGroup(name: string, overwrite = false) {
+    async createGroup(name, overwrite = false) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
@@ -121,11 +85,10 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
         await initGroup(this.store, path, this._chunkStore, overwrite);
         return Group.create(this.store, path, this.readOnly, this._chunkStore, this.attrs.cache);
     }
-
     /**
      * Obtain a sub-group, creating one if it doesn't exist.
      */
-    public async requireGroup(name: string, overwrite = false) {
+    async requireGroup(name, overwrite = false) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
@@ -135,11 +98,9 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
         }
         return Group.create(this.store, path, this.readOnly, this._chunkStore, this.attrs.cache);
     }
-
-    private getOptsForArrayCreation(name: string, opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+    getOptsForArrayCreation(name, opts = {}) {
         const path = this.itemPath(name);
         opts.path = path;
-
         if (opts.cacheAttrs === undefined) {
             opts.cacheAttrs = this.attrs.cache;
         }
@@ -147,107 +108,91 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
         opts.chunkStore = this.chunkStore;
         return opts;
     }
-
     /**
      * Creates an array
      */
-    public array(name: string, data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>, overwrite?: boolean) {
+    array(name, data, opts, overwrite) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
         opts.overwrite = overwrite === undefined ? opts.overwrite : overwrite;
-
         return array(data, opts);
     }
-
-    public empty(name: string, shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'>= {}) {
+    empty(name, shape, opts = {}) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
-
         return empty(shape, opts);
     }
-
-    public zeros(name: string, shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'>= {}) {
+    zeros(name, shape, opts = {}) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
-
         return zeros(shape, opts);
     }
-
-    public ones(name: string, shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'>= {}) {
+    ones(name, shape, opts = {}) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
-
         return ones(shape, opts);
     }
-
-    public full(name: string, shape: number | number[], fillValue: number | null, opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+    full(name, shape, fillValue, opts = {}) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
-
         return full(shape, fillValue, opts);
     }
-
-    public createDataset(name: string, shape?: number | number[], data?: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts?: Omit<CreateArrayOptions, 'shape'>) {
+    createDataset(name, shape, data, opts) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         opts = this.getOptsForArrayCreation(name, opts);
-
-        let z: Promise<ZarrArray<StoreGetOptions>>;
+        let z;
         if (data === undefined) {
             if (shape === undefined) {
                 throw new ValueError("Shape must be set if no data is passed to CreateDataset");
             }
             z = create({ shape, ...opts });
-        } else {
+        }
+        else {
             z = array(data, opts);
         }
         return z;
     }
-
-    async getItem(item: string) {
+    async getItem(item) {
         const path = this.itemPath(item);
         if (await containsArray(this.store, path)) {
             return ZarrArray.create(this.store, path, this.readOnly, this.chunkStore, undefined, this.attrs.cache);
-        } else if (await containsGroup(this.store, path)) {
+        }
+        else if (await containsGroup(this.store, path)) {
             return Group.create(this.store, path, this.readOnly, this._chunkStore, this.attrs.cache);
         }
         throw new KeyError(item);
     }
-
-    async setItem(item: string, value: any) {
+    async setItem(item, value) {
         await this.array(item, value, {}, true);
         return true;
     }
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async deleteItem(_item: string): Promise<boolean> {
+    async deleteItem(_item) {
         if (this.readOnly) {
             throw new PermissionError("group is read only");
         }
         throw new Error("Method not implemented.");
     }
-
-    async containsItem(item: string) {
+    async containsItem(item) {
         const path = this.itemPath(item);
         return await containsArray(this.store, path) || containsGroup(this.store, path);
     }
-
-    proxy(): AsyncMutableMappingProxy<Group<StoreGetOptions>> {
+    proxy() {
         return createProxy(this);
     }
 }
-
 /**
  * Create a group.
  * @param store Store or path to directory in file system.
@@ -257,17 +202,14 @@ export class Group<StoreGetOptions = any> implements AsyncMutableMapping<Group<S
  * @param cacheAttrs If `true` (default), user attributes will be cached for attribute read operations.
  *   If `false`, user attributes are reloaded from the store prior to all attribute read operations.
  */
-export async function group<StoreGetOptions>(store?: Store<StoreGetOptions> | string, path: string | null = null, chunkStore?: Store<StoreGetOptions>, overwrite = false, cacheAttrs = true) {
+export async function group(store, path = null, chunkStore, overwrite = false, cacheAttrs = true) {
     store = normalizeStoreArgument(store);
     path = normalizeStoragePath(path);
-
     if (overwrite || await containsGroup(store)) {
         await initGroup(store, path, chunkStore, overwrite);
     }
-
     return Group.create(store, path, false, chunkStore, cacheAttrs);
 }
-
 /**
  * Open a group using file-mode-like semantics.
  * @param store Store or path to directory in file system or name of zip file.
@@ -279,14 +221,12 @@ export async function group<StoreGetOptions>(store?: Store<StoreGetOptions> | st
  * @param ipfsElements IPFS elements which will be used to fetch and store data on the IPFS network
  * @param cid IPFS CID (content identifier) of the zarr file (if it is stored on the IPFS network)
  */
-export async function openGroup(store?: Store | string, path: string | null = null, mode: PersistenceMode = "a", chunkStore?: Store, cacheAttrs = true, ipfsElements?: any,
-cid?: CID,) {
+export async function openGroup(store, path = null, mode = "a", chunkStore, cacheAttrs = true, ipfsElements, cid) {
     store = normalizeStoreArgument(store, cid, ipfsElements);
     if (chunkStore !== undefined) {
         chunkStore = normalizeStoreArgument(store);
     }
     path = normalizeStoragePath(path);
-
     if (mode === "r" || mode === "r+") {
         if (!await containsGroup(store, path)) {
             if (await containsArray(store, path)) {
@@ -294,28 +234,33 @@ cid?: CID,) {
             }
             throw new GroupNotFoundError(path);
         }
-    } else if (mode === "w") {
+    }
+    else if (mode === "w") {
         await initGroup(store, path, chunkStore, true);
-    } else if (mode === "a") {
+    }
+    else if (mode === "a") {
         if (!await containsGroup(store, path)) {
             if (await containsArray(store, path)) {
                 throw new ContainsArrayError(path);
             }
             await initGroup(store, path, chunkStore);
         }
-    } else if (mode === "w-" || (mode as any) === "x") {
+    }
+    else if (mode === "w-" || mode === "x") {
         if (await containsArray(store, path)) {
             throw new ContainsArrayError(path);
-        } else if (await containsGroup(store, path)) {
+        }
+        else if (await containsGroup(store, path)) {
             throw new ContainsGroupError(path);
-        } else {
+        }
+        else {
             await initGroup(store, path, chunkStore);
         }
-    } else {
+    }
+    else {
         throw new ValueError(`Invalid mode argument: ${mode}`);
     }
-
     const readOnly = mode === "r";
     return Group.create(store, path, readOnly, chunkStore, cacheAttrs);
 }
-
+//# sourceMappingURL=hierarchy.js.map

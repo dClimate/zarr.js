@@ -1,36 +1,12 @@
-import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType, PersistenceMode } from './types';
-import { Store } from './storage/types';
 import { ZarrArray } from './core/index';
 import { MemoryStore } from './storage/memoryStore';
 import { initArray, containsArray, containsGroup } from './storage/index';
-import { TypedArray } from './nestedArray/types';
 import { NestedArray } from './nestedArray/index';
-import { normalizeStoragePath } from './util';
 import { ContainsArrayError, ValueError, ArrayNotFoundError, ContainsGroupError } from './errors';
 import { HTTPStore } from './storage/httpStore';
 import { IPFSSTORE } from './storage/ipfsStore';
-import type { CID } from 'multiformats/cid';
-
-export type CreateArrayOptions = {
-    shape: number | number[];
-    chunks?: ChunksArgument;
-    dtype?: DtypeString;
-    compressor?: CompressorConfig | null;
-    fillValue?: FillType;
-    order?: Order;
-    store?: Store | string;
-    overwrite?: boolean;
-    path?: string | null;
-    chunkStore?: Store;
-    filters?: Filter[];
-    cacheMetadata?: boolean;
-    cacheAttrs?: boolean;
-    readOnly?: boolean;
-    dimensionSeparator?: '.' | '/';
-};
-
 /**
- * 
+ *
  * @param shape Array shape.
  * @param chunks  Chunk shape. If `true`, will be guessed from `shape` and `dtype`. If
  *      `false`, will be set to `shape`, i.e., single chunk for the whole array.
@@ -55,98 +31,63 @@ export type CreateArrayOptions = {
  * @param readOnly `true` if array should be protected against modification, defaults to `false`.
  * @param dimensionSeparator if specified, defines an alternate string separator placed between the dimension chunks.
  */
-export async function create(
-    { shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }: CreateArrayOptions,
-): Promise<ZarrArray> {
-    
+export async function create({ shape, chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, readOnly = false, dimensionSeparator }) {
     const store = normalizeStoreArgument(storeArgument);
-
     await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
     const z = await ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
-
     return z;
 }
-
-
 /**
  * Create an empty array.
  */
-export async function empty(shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+export async function empty(shape, opts = {}) {
     opts.fillValue = null;
     return create({ shape, ...opts });
 }
-
 /**
  * Create an array, with zero being used as the default value for
  * uninitialized portions of the array.
  */
-export async function zeros(shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+export async function zeros(shape, opts = {}) {
     opts.fillValue = 0;
     return create({ shape, ...opts });
 }
-
 /**
  * Create an array, with one being used as the default value for
  * uninitialized portions of the array.
  */
-export async function ones(shape: number | number[], opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+export async function ones(shape, opts = {}) {
     opts.fillValue = 1;
     return create({ shape, ...opts });
 }
-
 /**
  * Create an array, with `fill_value` being used as the default value for
  * uninitialized portions of the array
  */
-export async function full(shape: number | number[], fillValue: FillType, opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+export async function full(shape, fillValue, opts = {}) {
     opts.fillValue = fillValue;
     return create({ shape, ...opts });
 }
-
-export async function array(data: Buffer | ArrayBuffer | NestedArray<TypedArray>, opts: Omit<CreateArrayOptions, 'shape'> = {}) {
+export async function array(data, opts = {}) {
     // TODO: infer chunks?
-
     let shape = null;
     if (data instanceof NestedArray) {
         shape = data.shape;
         opts.dtype = opts.dtype === undefined ? data.dtype : opts.dtype;
-    } else {
+    }
+    else {
         shape = data.byteLength;
         // TODO: infer datatype
     }
     // TODO: support TypedArray
-
     const wasReadOnly = opts.readOnly === undefined ? false : opts.readOnly;
     opts.readOnly = false;
-
     const z = await create({ shape, ...opts });
     await z.set(null, data);
     z.readOnly = wasReadOnly;
-
     return z;
 }
-
-type OpenArrayOptions = Partial<CreateArrayOptions & { mode: PersistenceMode }>;
-
-export async function openArray({
-    ipfsElements,
-    cid,
-    shape,
-    mode = "a",
-    chunks = true,
-    dtype = "<i4",
-    compressor = null,
-    fillValue = null,
-    order = "C",
-    store: storeArgument,
-    overwrite = false,
-    path = null,
-    chunkStore,
-    filters,
-    cacheMetadata = true,
-    cacheAttrs = true,
-    dimensionSeparator,
-}: any = {}) {
+export async function openArray({ ipfsElements, cid, shape, mode = "a", chunks = true, dtype = "<i4", compressor = null, fillValue = null, order = "C", store: storeArgument, overwrite = false, path = null, chunkStore, filters, cacheMetadata = true, cacheAttrs = true, dimensionSeparator, } = {}) {
     const store = normalizeStoreArgument(storeArgument, cid, ipfsElements);
     if (chunkStore === undefined) {
         chunkStore = normalizeStoreArgument(store);
@@ -154,7 +95,6 @@ export async function openArray({
     if (path === null) {
         path = "";
     }
-
     if (mode === "r" || mode === "r+") {
         if (!(await containsArray(store, path))) {
             if (await containsGroup(store, path)) {
@@ -162,12 +102,14 @@ export async function openArray({
             }
             throw new ArrayNotFoundError(path);
         }
-    } else if (mode === "w") {
+    }
+    else if (mode === "w") {
         if (shape === undefined) {
             throw new ValueError("Shape can not be undefined when creating a new array");
         }
         await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
-    } else if (mode === "a") {
+    }
+    else if (mode === "a") {
         if (!(await containsArray(store, path))) {
             if (await containsGroup(store, path)) {
                 throw new ContainsGroupError(path);
@@ -177,29 +119,32 @@ export async function openArray({
             }
             await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
         }
-    } else if (mode === "w-" || (mode as any) === "x") {
+    }
+    else if (mode === "w-" || mode === "x") {
         if (await containsArray(store, path)) {
             throw new ContainsArrayError(path);
-        } else if (await containsGroup(store, path)) {
+        }
+        else if (await containsGroup(store, path)) {
             throw new ContainsGroupError(path);
-        } else {
+        }
+        else {
             if (shape === undefined) {
                 throw new ValueError("Shape can not be undefined when creating a new array");
             }
             await initArray(store, shape, chunks, dtype, path, compressor, fillValue, order, overwrite, chunkStore, filters, dimensionSeparator);
         }
-    } else {
+    }
+    else {
         throw new ValueError(`Invalid mode argument: ${mode}`);
     }
-
     const readOnly = mode === "r";
     return ZarrArray.create(store, path, readOnly, chunkStore, cacheMetadata, cacheAttrs);
 }
-
-export function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsElements?: any): Store {
+export function normalizeStoreArgument(store, cid, ipfsElements) {
     if (store === undefined) {
         return new MemoryStore();
-    } else if (store === "ipfs") {
+    }
+    else if (store === "ipfs") {
         if (!cid) {
             throw new Error("CID is required for IPFS store");
         }
@@ -207,8 +152,10 @@ export function normalizeStoreArgument(store?: Store | string, cid?: CID, ipfsEl
             throw new Error("IPFS Elements are required for IPFS store");
         }
         return new IPFSSTORE(cid, ipfsElements);
-    } else if (typeof store === "string") {
+    }
+    else if (typeof store === "string") {
         return new HTTPStore(store);
     }
     return store;
 }
+//# sourceMappingURL=creation.js.map
