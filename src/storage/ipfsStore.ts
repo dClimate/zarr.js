@@ -245,8 +245,11 @@ export class IPFSStore<CID = any> implements AsyncStore<ArrayBuffer> {
         const lonMin: any = await zLon.get([0]);
         const lonMax: any = await zLon.get([lonChunkSize - 1]);
 
+        const secondLon: any = await zLon.get([1]);
+
         // calculate spatial resolution
-        const spatialResolution = Math.abs(lonMax - lonMin) / lonChunkSize;
+        const spatialResolution = Math.abs(secondLon - lonMin);
+
 
     
         // Extract time attributes

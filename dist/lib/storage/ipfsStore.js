@@ -185,8 +185,9 @@ export class IPFSStore {
         const lonChunkSize = zLon.meta.chunks[0];
         const lonMin = await zLon.get([0]);
         const lonMax = await zLon.get([lonChunkSize - 1]);
+        const secondLon = await zLon.get([1]);
         // calculate spatial resolution
-        const spatialResolution = Math.abs(lonMax - lonMin) / lonChunkSize;
+        const spatialResolution = Math.abs(secondLon - lonMin);
         // Extract time attributes
         const timeUnits = timeAttrs.units; // e.g., "days since 1980-01-01"
         const [unit, referenceDate] = timeUnits.split(" since ");
