@@ -1,7 +1,6 @@
-/// <reference types="node" />
 import { MutableMapping, AsyncMutableMapping } from "../mutableMapping";
-export declare type ValidStoreType = Buffer | string | ArrayBuffer;
-export declare type Store<StoreGetOptions = any> = SyncStore<ValidStoreType, StoreGetOptions> | AsyncStore<ValidStoreType, StoreGetOptions>;
+export type ValidStoreType = Buffer | string | ArrayBuffer;
+export type Store<StoreGetOptions = any> = SyncStore<ValidStoreType, StoreGetOptions> | AsyncStore<ValidStoreType, StoreGetOptions>;
 /**
  * This module contains storage classes for use with Zarr arrays and groups.
  * Note that any object implementing the `Store` interface found in types.ts can be used as a Zarr

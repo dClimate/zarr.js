@@ -1,11 +1,10 @@
-/// <reference types="node" />
 import { ChunksArgument, DtypeString, CompressorConfig, Order, Filter, FillType } from './types';
 import { Store } from './storage/types';
 import { ZarrArray } from './core/index';
 import { TypedArray } from './nestedArray/types';
 import { NestedArray } from './nestedArray/index';
 import type { CID } from 'multiformats/cid';
-export declare type CreateArrayOptions = {
+export type CreateArrayOptions = {
     shape: number | number[];
     chunks?: ChunksArgument;
     dtype?: DtypeString;

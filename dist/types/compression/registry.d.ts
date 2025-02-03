@@ -1,6 +1,6 @@
 import type { Codec, CodecConstructor } from 'numcodecs';
-declare type Config = Record<string, unknown>;
-declare type CodecImporter = () => CodecConstructor<Config> | Promise<CodecConstructor<Config>>;
+type Config = Record<string, unknown>;
+type CodecImporter = () => CodecConstructor<Config> | Promise<CodecConstructor<Config>>;
 export declare function addCodec(id: string, importFn: CodecImporter): void;
 export declare function getCodec(config: Config & {
     id: string;

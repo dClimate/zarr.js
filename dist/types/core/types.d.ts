@@ -1,9 +1,9 @@
-export declare type ArraySelection = DimensionArraySelection[] | DimensionArraySelection;
-export declare type DimensionArraySelection = Slice | number | number[] | "..." | ":" | null;
-export declare type NormalizedArraySelection = (Slice | number)[];
-export declare type DimensionSelection = Slice | number | null;
-export declare type SliceArgument = number | ":" | null;
-export declare type SliceIndices = [number, number, number, number];
+export type ArraySelection = DimensionArraySelection[] | DimensionArraySelection;
+export type DimensionArraySelection = Slice | number | number[] | "..." | ":" | null;
+export type NormalizedArraySelection = (Slice | number)[];
+export type DimensionSelection = Slice | number | null;
+export type SliceArgument = number | ":" | null;
+export type SliceIndices = [number, number, number, number];
 export interface Slice {
     start: number | null;
     stop: number | null;

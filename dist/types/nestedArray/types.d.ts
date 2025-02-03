@@ -1,11 +1,11 @@
 import { DtypeString } from '../types';
-declare type Float16ArrayConstructor = typeof globalThis extends {
+type Float16ArrayConstructor = typeof globalThis extends {
     Float16Array: infer T;
 } ? T : never;
-export declare type NestedArrayData = TypedArray | NDNestedArrayData;
-export declare type NDNestedArrayData = TypedArray[] | TypedArray[][] | TypedArray[][][] | TypedArray[][][][] | TypedArray[][][][][] | TypedArray[][][][][][];
-export declare type TypedArray = Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array | Float32Array | Float64Array | InstanceType<Float16ArrayConstructor>;
-export declare type TypedArrayConstructor<T extends TypedArray> = {
+export type NestedArrayData = TypedArray | NDNestedArrayData;
+export type NDNestedArrayData = TypedArray[] | TypedArray[][] | TypedArray[][][] | TypedArray[][][][] | TypedArray[][][][][] | TypedArray[][][][][][];
+export type TypedArray = Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array | Float32Array | Float64Array | InstanceType<Float16ArrayConstructor>;
+export type TypedArrayConstructor<T extends TypedArray> = {
     new (): T;
     new (size: number): T;
     new (buffer: ArrayBuffer): T;

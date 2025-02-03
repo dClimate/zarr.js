@@ -1,18 +1,18 @@
-export declare type ZarrMetadataType = ZarrArrayMetadata | ZarrGroupMetadata;
-export declare type UserAttributes = Record<string, any>;
+export type ZarrMetadataType = ZarrArrayMetadata | ZarrGroupMetadata;
+export type UserAttributes = Record<string, any>;
 /**
  * A scalar value providing the default value to use for uninitialized portions of the array, or `null` if no fill_value is to be used.
  */
-export declare type FillType = number | null;
-export declare type FillTypeSerialized = number | 'NaN' | 'Infinity' | '-Infinity' | null;
+export type FillType = number | null;
+export type FillTypeSerialized = number | 'NaN' | 'Infinity' | '-Infinity' | null;
 /**
  * Either `"C"` or `"F"`, defining the layout of bytes within each chunk of the array. `“C”` means row-major order, i.e., the last dimension varies fastest; `“F”` means column-major order, i.e., the first dimension varies fastest.
  */
-export declare type Order = 'C' | 'F';
+export type Order = 'C' | 'F';
 /**
  * Currently supported dtypes are listed here only.
  */
-export declare type DtypeString = '|u1' | '|i1' | '|b' | '|b1' | '|B' | '<u1' | '<i1' | '<b' | '<B' | '<u2' | '<i2' | '<u4' | '<i4' | '<f2' | '<f4' | '<f8' | '>u1' | '>i1' | '>b' | '>B' | '>u2' | '>i2' | '>u4' | '>i4' | '>f4' | '>f2' | '>f8';
+export type DtypeString = '|u1' | '|i1' | '|b' | '|b1' | '|B' | '<u1' | '<i1' | '<b' | '<B' | '<u2' | '<i2' | '<u4' | '<i4' | '<f2' | '<f4' | '<f8' | '>u1' | '>i1' | '>b' | '>B' | '>u2' | '>i2' | '>u4' | '>i4' | '>f4' | '>f2' | '>f8';
 /**
  * User interface for chunking.
  * - `null` or `true`: Automatic chunking (zarr will try to guess an appropriate) - not supported yet.
@@ -21,7 +21,7 @@ export declare type DtypeString = '|u1' | '|i1' | '|b' | '|b1' | '|B' | '<u1' | 
  *   - `number > 0`: Chunks of given size along dimension.
  *   - `null` or `-1`: No chunking along this dimension.
  */
-export declare type ChunksArgument = number | (number | null)[] | boolean | null;
+export type ChunksArgument = number | (number | null)[] | boolean | null;
 export interface CompressorConfig {
     id: string;
 }
@@ -85,4 +85,4 @@ export interface ZarrGroupMetadata {
  * * 'w' means create (overwrite if exists);
  * * 'w-' means create (fail if exists).
  */
-export declare type PersistenceMode = 'r' | 'r+' | 'a' | 'w' | 'w-';
+export type PersistenceMode = 'r' | 'r+' | 'a' | 'w' | 'w-';

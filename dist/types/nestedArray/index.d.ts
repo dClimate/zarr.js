@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { DtypeString } from '../types';
 import { NestedArrayData, TypedArray, TypedArrayConstructor } from './types';
 import { ArraySelection, Slice } from '../core/types';

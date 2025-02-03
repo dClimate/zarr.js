@@ -35,7 +35,7 @@ export default [
     plugins: [
       ...commonPlugins(),
       visualizer({ filename: "stats.html" }),
-      visualizer({ filename: "stats.min.html", sourcemap: true })
+      visualizer({ filename: "stats.min.html", sourcemap: true }),
     ],
   },
   {

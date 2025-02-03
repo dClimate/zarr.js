@@ -8,17 +8,6 @@ import { Attributes } from './attributes';
 import { array, empty, zeros, ones, full, create, normalizeStoreArgument } from './creation';
 import { ZarrArray } from './core';
 export class Group {
-    constructor(store, path = null, metadata, readOnly = false, chunkStore = null, cacheAttrs = true) {
-        this.store = store;
-        this._chunkStore = chunkStore;
-        this.path = normalizeStoragePath(path);
-        this.keyPrefix = pathToPrefix(this.path);
-        this.readOnly = readOnly;
-        this.meta = metadata;
-        // Initialize attributes
-        const attrKey = this.keyPrefix + ATTRS_META_KEY;
-        this.attrs = new Attributes(this.store, attrKey, this.readOnly, cacheAttrs);
-    }
     /**
      * Group name following h5py convention.
      */
@@ -64,6 +53,17 @@ export class Group {
             }
             throw new GroupNotFoundError(path);
         }
+    }
+    constructor(store, path = null, metadata, readOnly = false, chunkStore = null, cacheAttrs = true) {
+        this.store = store;
+        this._chunkStore = chunkStore;
+        this.path = normalizeStoragePath(path);
+        this.keyPrefix = pathToPrefix(this.path);
+        this.readOnly = readOnly;
+        this.meta = metadata;
+        // Initialize attributes
+        const attrKey = this.keyPrefix + ATTRS_META_KEY;
+        this.attrs = new Attributes(this.store, attrKey, this.readOnly, cacheAttrs);
     }
     itemPath(item) {
         const absolute = typeof item === "string" && item.length > 0 && item[0] === '/';
