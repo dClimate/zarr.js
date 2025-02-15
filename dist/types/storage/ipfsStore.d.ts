@@ -2,15 +2,9 @@ import { AsyncStore } from "./types";
 import { NestedArray, TypedArray } from "../zarr-core";
 import { hasher } from 'multiformats';
 export declare function extractBits(hashBytes: Uint8Array, depth: number, nbits: number): number;
-export interface DECRYPTION_ITEMS_INTERFACE {
-    sodiumLibrary: any;
-    key: string;
-    header: string;
-}
 export interface IPFSELEMENTS_INTERFACE {
     dagCbor: any;
     unixfs: any;
-    decryptionItems?: DECRYPTION_ITEMS_INTERFACE;
 }
 export declare const blake3: hasher.Hasher<"blake3", 30>;
 export declare class IPFSStore<CID = any> implements AsyncStore<ArrayBuffer> {

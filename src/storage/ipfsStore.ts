@@ -102,16 +102,10 @@ export function extractBits(hashBytes: Uint8Array, depth: number, nbits: number)
     return result;
 }
 
-export interface DECRYPTION_ITEMS_INTERFACE {
-    sodiumLibrary: any;
-    key: string;
-    header: string;
-}
 
 export interface IPFSELEMENTS_INTERFACE {
     dagCbor: any;
     unixfs: any;
-    decryptionItems?: DECRYPTION_ITEMS_INTERFACE;
 }
 
 export const blake3 = hasher.from({
