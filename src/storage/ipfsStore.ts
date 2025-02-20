@@ -293,7 +293,7 @@ export class IPFSStore<CID = any> implements AsyncStore<ArrayBuffer> {
     async _findCIDInNode(item: string): Promise<string> {
         const hash = await this.hashFn(item);
         let currentNodeId = this.cid;
-        let depth = 1;
+        let depth = 0;
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const node = await this.readNode(currentNodeId);
@@ -325,7 +325,7 @@ export class IPFSStore<CID = any> implements AsyncStore<ArrayBuffer> {
     async _findItemInNode(item: string): Promise<Uint8Array> {
         const hash = await this.hashFn(item);
         let currentNodeId = this.cid;
-        let depth = 1;
+        let depth = 0;
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const node = await this.readNode(currentNodeId);

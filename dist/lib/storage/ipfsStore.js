@@ -234,7 +234,7 @@ export class IPFSStore {
     async _findCIDInNode(item) {
         const hash = await this.hashFn(item);
         let currentNodeId = this.cid;
-        let depth = 1;
+        let depth = 0;
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const node = await this.readNode(currentNodeId);
@@ -261,7 +261,7 @@ export class IPFSStore {
     async _findItemInNode(item) {
         const hash = await this.hashFn(item);
         let currentNodeId = this.cid;
-        let depth = 1;
+        let depth = 0;
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const node = await this.readNode(currentNodeId);
