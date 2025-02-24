@@ -127,15 +127,6 @@ export declare class ZarrArray<StoreGetOptions = any> {
     private getBasicSelectionND;
     private getSelection;
     /**
-     * Function to decrypt zarr chunks encrypted with xchacha20poly1305
-     * @param encryptedData raw information encrypted
-     * @param key encryption key
-     * @param header header used in the encryption
-     * @param sodiumLibrary sodium library to decrypt in frontend
-     * @returns
-     */
-    private decrypt;
-    /**
      * Obtain part or whole of a chunk.
      * @param chunkCoords Indices of the chunk.
      * @param chunkSelection Location of region within the chunk to extract.
